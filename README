@@ -1,0 +1,18 @@
+This file should contain a small log / documentation of the setu process for ERA5Climat runs.
+
+General:
+Different to 'usual strategy' development is done on the master branch and releases are 'splited' to individual branches.
+This strategy is also used by big companies as Check24 and Trivago.
+I want to test this!
+
+Version numbering:
+directory nomencltur: [...]_vXXX[...]
+branches: vXXX_YYY
+
+Setup:
+INT2LMv2.0.4
+Workflow from LPO 14102020
+TSMPv1.2.1
+
+ERA5 data are downloaded vi MARS retrieves on the same boundary as TSMP-Monitoring IC/BC but on 0.25degree resolution
+The related MARSScript is located (copyed from ECGATE) in: ctrl/MARSScripts/
