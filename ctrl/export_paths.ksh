@@ -11,7 +11,7 @@
 # The script will then only use the environment variables provided this way. 
 # In principle, only the 'rootdir' has to be adjusted, all other paths result 
 # from it.
-expid="ERA5-Climatology_TSMPv1.2.1_v001aJuwelsCpuLpoWorkflow"
+expid="/ERA5Climat_EUR-11_ECMWF-ERA5_analysis_FZJ-IBG3-_TSMPv1.2.1_v001JuwelsCpuProdT19802020"
 rootdir="/p/scratch/cslts/tsmpforecast/operational/${expid}"
 export EXPID="${expid}"
 # export needed paths
