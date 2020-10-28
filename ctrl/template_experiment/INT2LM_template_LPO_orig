@@ -1,0 +1,108 @@
+ ! # IBG3_final_COSMO_clim_grb1 #
+ !modified by Poshyvailo L., 2020: interpolates GCM data (from Heimo Truhetz/DKRZ) to TSMP_clim EURO-Cordex domain, and saves output in grib format 
+&CONTRL
+	! Initial time and forecast range
+    ydate_bd='__start_date__', ydate_ini='__start_date__',  !creates output "laf1979020100.nc" based on "ydate_ini" date
+    itype_calendar=0 !0, !2, LPo; (1) changed back to 2, as CLM calendar could not be adjusted to the "leap-years", thus TSMP would crash; (2) changed back to 0, as Heimo's caf-data did not work with calendar 2
+    hstart=0, hstop=240, !change here for .nc output files; for instance, 3600; for .grb keep it as 240 + ii loop in int2lm_batch_script.sh
+    hincbound=6,
+    nincwait = 5, nmaxwait = 20,  
+	! Domain decomposition and parallelization 
+    nprocx=6, nprocy=4, nprocio=0,
+    lreorder=.false., 
+    lasync_io=.false.,
+	! Basic Control
+    yinput_model='CM',
+    linitial=.true.,
+    lboundaries=.true.,
+    lbdclim = .true.,   !LPo
+    leps_bc=.false.,
+    luvcor=.true.,
+    l_cressman = .FALSE., 
+    l_bicub_spl = .FALSE.,
+    idbg_level=100, !LPo
+    ltime_mean=.true.,  
+    lroutine=.false.,
+	! Controlling use of additional external parameters
+    lforest=.true.,
+    lsso=.true.,
+    llake=.FALSE.,
+	! Control over variables that have to be written for the COSMO-Mode
+    lprog_qi=.true.,
+    lprog_qr_qs=.false.,
+    lmulti_layer_in=.true., 
+    lmulti_layer_lm=.true.,
+    lprog_rho_snow=.false.,
+    itype_w_so_rel = 0,
+    !itype_t_cl = 1, !LPo changed for cosmo-clim!!! -- does not work!
+    !itype_t_cl --  selects the source for the deep soil (climatological) temperature; by default it is 0: take t_cl from coarse grid model; 1: take t_cl from the external parameters for the COSMO-Model
+    itype_rootdp = 3, !LPo changed for cosmo-clim!!!
+    !itype aerosol = 2, !LPo: not included in Heimo's and Car's setups; needs the additional vertical grid HHL(height of half levels)-file  
+    lt_cl_corr=.true.,
+    luse_t_skin = .FALSE.,
+    	! Treatment of orography and filtering
+    lfilter_oro=.true.,
+    lfilter_pp=.false., !.true.,changed for cosmo-clim!!!
+    !eps_filter=0.1, !LPo changed for cosmo-clim!!!
+    !norder_filter=5, !LPo changed for cosmo-clim!!!
+    !ilow_pass_oro=4, !LPo changed for cosmo-clim!!!
+    !ilow_pass_xso=5, !LPo changed for cosmo-clim!!!
+    !rxso_mask=625.0, !LPo changed for cosmo-clim!!!
+ /
+ &GRID_IN !from Heimo -- Poshyvailo 16.01.2020
+  pcontrol_fi = 30000.,
+  ie_in_tot = 192,
+  je_in_tot = 96,
+  ke_in_tot = 47,
+  startlat_in_tot = -88.57217,
+  startlon_in_tot = -180.0,
+  endlat_in_tot = 88.57217,
+  endlon_in_tot = 178.125,
+  pollat_in = 90.0, pollon_in = 180.0,
+  ke_soil_in = 4,
+  czml_soil_in = 0.03, 0.19, 0.78, 2.68, 6.89,
+/
+ &LMGRID !from Carl -- Poshyvailo 27.01.2020
+  startlat_tot=-24.4724, startlon_tot=-29.4713,
+  pollat=39.25, pollon=-162.0,
+  dlon=0.11, dlat=0.11,
+  ielm_tot=444, jelm_tot=432, kelm_tot=50,
+  irefatm=2, !13.03.2020
+  ivctype=2, vcflat=11357.0,
+  vcoord_d=22000.00,21000.00,20028.57,19085.36,18170.00,17282.14,
+           16421.43,15587.50,14780.00,13998.57,13242.86,12512.50,
+           11807.14,11126.43,10470.00, 9837.50, 9228.57, 8642.86,
+            8080.00, 7539.64, 7021.43, 6525.00, 6050.00, 5596.07,5162.86,
+            4750.00, 4357.14, 3983.93, 3630.00, 3295.00, 2978.57,2680.36,
+            2400.00, 2137.14, 1891.43, 1662.50, 1450.00, 1253.57,1072.86,
+             907.50,  757.14,  621.43,  500.00,  392.50,  298.57, 217.86,
+             150.00,   94.64,   51.43,   20.00,    0.00,
+  !ke_soil_lm = 9, !LPo
+  !czml_soil_lm = 0.005, 0.025, 0.07, 0.16, 0.34, 0.70, 1.42, 2.86, 5.74, 11.5,  !LPo
+  !czvw_so_lm = 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75,    !LPo
+ /
+ &DATABASE
+ /
+ &DATA
+  ie_ext=448, je_ext=436,
+  ylmext_lfn='lmboden.g1',
+  ylmext_cat='__setup_dir__',
+  yinext_lfn= 'caf__start_date__.nc', 
+  yinext_cat='__work_dir__/forcing_caf/year__cur_year__', !external parameter file's path; for GCM: there is no separate external parameter file, instead it is located at each caf-file LPo
+  yin_cat='__work_dir__/forcing_caf/year__cur_year__', !LPo
+  yinput_type='analysis',
+  ytunit_in = 'd',
+  ytunit_out = 'd',
+  ylm_cat='__work_dir__/laf_lbfd_int2lm_jureca2015b_ouput/__cur_year__',  !the directoy of the int2lm ouput LPo
+  yinext_form_read = 'ncdf',
+  ylmext_form_read='grb1',
+  yin_form_read = 'ncdf',
+  ylm_form_write='grb1',
+  nprocess_ini = 137, nprocess_bd = 138,
+  l_ke_in_gds=.TRUE.,
+ /
+ &PRICTR
+  igp_tot = 36,
+  jgp_tot = 30,
+  lchkin = .TRUE., lchkout = .TRUE., !LPo
+ /

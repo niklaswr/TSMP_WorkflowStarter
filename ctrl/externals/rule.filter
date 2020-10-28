@@ -1,0 +1,12 @@
+
+transient pre = "eaf";
+transient tim = time / 100;
+transient in1 = "";
+
+if (tim < 10) {
+  set in1 = "0";
+}
+
+
+write "[pre][date][in1][tim]";
+

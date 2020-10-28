@@ -1,0 +1,103 @@
+        Preparing the environment for use of requested stage ( 2018a ).
+     
+
+The following have been reloaded with a version change:
+  1) libxml2/.2.9.7-Python-2.7.14 => libxml2/.2.9.7
+
+
+The following have been reloaded with a version change:
+  1) Python/2.7.14 => Python/3.6.5
+  2) SciPy-Stack/2018a-Python-2.7.14 => SciPy-Stack/2018a-Python-3.6.5
+
+
+The following have been reloaded with a version change:
+  1) Python/3.6.5 => Python/2.7.14
+
+
+Currently Loaded Modules:
+  1) Stages/2018a                       (S)
+  2) GCCcore/.5.5.0                     (H)
+  3) binutils/.2.30                     (H)
+  4) icc/.2018.2.199-GCC-5.5.0          (H)
+  5) ifort/.2018.2.199-GCC-5.5.0        (H)
+  6) Intel/2018.2.199-GCC-5.5.0
+  7) pscom/.Default                     (H)
+  8) ParaStationMPI/5.2.1-1
+  9) zlib/.1.2.11                       (H)
+ 10) Tcl/.8.6.8                         (H)
+ 11) imkl/2018.2.199
+ 12) Hypre/2.14.0
+ 13) Szip/.2.1.1                        (H)
+ 14) HDF5/1.8.20
+ 15) Silo/4.10.2
+ 16) cURL/7.59.0
+ 17) netCDF/4.6.1
+ 18) netCDF-Fortran/4.4.4
+ 19) parallel-netcdf/1.9.0
+ 20) expat/.2.2.5                       (H)
+ 21) UDUNITS/.2.2.26                    (H)
+ 22) GSL/2.4
+ 23) Java/1.8.0_162
+ 24) bzip2/.1.0.6                       (H)
+ 25) ncurses/.6.0                       (H)
+ 26) libreadline/.7.0                   (H)
+ 27) SQLite/.3.22.0                     (H)
+ 28) libpng/.1.6.34                     (H)
+ 29) freetype/.2.9                      (H)
+ 30) gperf/.3.1                         (H)
+ 31) fontconfig/.2.12.6                 (H)
+ 32) X11/20180131
+ 33) Tk/.8.6.8                          (H)
+ 34) GMP/6.1.2
+ 35) XZ/.5.2.3                          (H)
+ 36) libxslt/.1.1.32                    (H)
+ 37) libffi/.3.2.1                      (H)
+ 38) libyaml/.0.1.7                     (H)
+ 39) PostgreSQL/10.3
+ 40) protobuf/.3.5.1                    (H)
+ 41) gflags/.2.2.1                      (H)
+ 42) libspatialindex/.1.8.5             (H)
+ 43) ANTLR/.2.7.7-Python-2.7.14         (H)
+ 44) libdap/.3.19.1                     (H)
+ 45) NCO/4.7.4
+ 46) nettle/.3.4                        (H)
+ 47) libdrm/.2.4.91                     (H)
+ 48) LLVM/5.0.1
+ 49) Mesa/.17.3.7                       (H)
+ 50) libGLU/.9.0.0                      (H)
+ 51) freeglut/.3.0.0                    (H)
+ 52) NASM/.2.13.03                      (H)
+ 53) libjpeg-turbo/.1.5.3               (H)
+ 54) JasPer/.2.0.14                     (H)
+ 55) g2lib/.3.1.0                       (H)
+ 56) HDF/4.2.13
+ 57) g2clib/.1.6.0                      (H)
+ 58) netCDF-C++4/4.3.0
+ 59) ESMF/7.1.0r
+ 60) libxml2/.2.9.7                     (H)
+ 61) gettext/.0.19.8.1                  (H)
+ 62) PCRE/.8.42                         (H)
+ 63) util-linux/.2.32                   (H)
+ 64) GLib/.2.56.0                       (H)
+ 65) pixman/.0.34.0                     (H)
+ 66) cairo/.1.15.10                     (H)
+ 67) NCL/6.4.0
+ 68) YAXT/.0.6.0                        (H)
+ 69) grib_api/.1.26.0                   (H)
+ 70) CDO/1.9.3
+ 71) netcdf4-python/1.4.0-Python-2.7.14
+ 72) GEOS/3.6.2-Python-2.7.14
+ 73) basemap/1.0.7-Python-2.7.14
+ 74) h5py/2.7.1-Python-2.7.14
+ 75) PETSc/3.9.0
+ 76) SciPy-Stack/2018a-Python-3.6.5
+ 77) petsc4py/3.9.0-Python-3.6.5
+ 78) Python/2.7.14
+ 79) mpi4py/3.0.0-Python-2.7.14
+
+  Where:
+   H:  Hidden Module
+   S:  Module is Sticky, requires --force to unload or purge
+
+ 
+

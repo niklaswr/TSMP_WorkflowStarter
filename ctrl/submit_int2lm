@@ -1,0 +1,57 @@
+#!/bin/sh
+#
+# author: Niklas Wagner
+# e-mail: n.wagner@fz-juelich.de
+# last modified: 2020-04-17
+# USAGE: sbatch --export=ALL,initDate=$initDate,CTRLDIR=$BASE_CTRLDIR $0
+#
+#SBATCH --account=jibg35
+#SBATCH --job-name="Nint2lm_juwels"
+#SBATCH --nodes=1
+#SBATCH --ntasks=24
+#SBATCH --ntasks-per-node=24
+#SBATCH --output=int2lm_juwels-out.%j
+#SBATCH --error=int2lm_juwels-err.%j
+#SBATCH --time=00:10:00
+##SBATCH --partition=batch
+#SBATCH --partition=devel
+#SBATCH --mail-type=NONE
+
+start_date=$(TZ=UTC date '+%Y%m%d%H' -d "1980-01-01T00:00Z")
+int2lm_exe="int2lm_204a"
+#int2lm_exe="int2lm_200"
+
+source ${CTRLDIR}/export_paths.ksh
+source ${BASE_SRCDIR}/module_load_new
+
+export LD_LIBRARY_PATH=${BASE_SRCDIR}/libgrib_api/lib:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH=/p/scratch/cslts/tsmpforecast/operational/ERA5-Climatology_TSMPv1.2.1_v001aJuwelsCpuTest/src/libgrib_api/lib:$LD_LIBRARY_PATH
+#export GRIB_DEFINITION_PATH="${BASE_SRCDIR}/int2lm_2.00/1.11.0/definitions.edzw:${BASE_SRCDIR}/int2lm_2.00/1.11.0/definitions"
+#export GRIB_DEFINITION_PATH="/p/scratch/cslts/tsmpforecast/operational/ERA5-Climatology_TSMPv1.2.1_v001aJuwelsCpuTest/src/int2lm_2.00/1.11.0/definitions.edzw:/p/scratch/cslts/tsmpforecast/operational/ERA5-Climatology_TSMPv1.2.1_v001aJuwelsCpuTest/src/int2lm_2.00/1.11.0/definitions"
+export PATH=${BASE_SRCDIR}/libgrib_api/bin:$PATH
+#export PATH=/p/scratch/cslts/tsmpforecast/operational/ERA5-Climatology_TSMPv1.2.1_v001aJuwelsCpuTest/src/libgrib_api/bin:$PATH
+export GRIB_DEFINITION_PATH=${BASE_SRCDIR}/libgrib_api/share/grib_api/definitions/:${BASE_SRCDIR}/int2lm_2.00/1.11.0/definitions.edzw:${BASE_SRCDIR}/int2lm_2.00/1.11.0/definitions
+export GRIB_SAMPLES_PATH=${BASE_SRCDIR}libgrib_api/share/grib_api/samples/:${BASE_SRCDIR}/int2lm_2.00/1.11.0/samples/
+
+echo "--- copy INT2LM namelist-template"
+INT2LM_nam_template="INT2LM_template_ERA5"
+echo "-- ${BASE_TEMPLATEDIR}/${INT2LM_nam_template} ${BASE_RUNDIR_INT2LM}/INPUT"
+cp ${BASE_TEMPLATEDIR}/${INT2LM_nam_template} ${BASE_RUNDIR_INT2LM}/INPUT
+echo "--- -- filling adjustable parameters in INT2LM namelist"
+sed "s,__start_date__,${start_date},g" -i ${BASE_RUNDIR_INT2LM}/INPUT
+sed "s,__init_date__,${start_date},g" -i ${BASE_RUNDIR_INT2LM}/INPUT
+sed "s,__ext_dir__,${BASE_EXTDIR},g" -i ${BASE_RUNDIR_INT2LM}/INPUT
+sed "s,__in_cat_dir__,${BASE_FORCINGDIR}/ERA5/1980,g" -i ${BASE_RUNDIR_INT2LM}/INPUT
+sed "s,__lm_cat_dir__,${BASE_FORCINGDIR}/INT2LM/1980,g" -i ${BASE_RUNDIR_INT2LM}/INPUT
+
+echo "--- copy INT2LM executable"
+#if [ ! -e ${BASE_RUNDIR_INT2LM}/${int2lm_exe} ] ; then cp ${BASE_SRCDIR}/int2lm_2.00/${int2lm_exe} ${BASE_RUNDIR_INT2LM}/ ; fi
+cp ${BASE_SRCDIR}/int2lm_170406_2.04a/${int2lm_exe} ${BASE_RUNDIR_INT2LM}/ 
+#cp ${BASE_SRCDIR}/int2lm_2.00/${int2lm_exe} ${BASE_RUNDIR_INT2LM}/ 
+
+echo "--- move to rundir and clean up"
+cd ${BASE_RUNDIR_INT2LM}
+rm -rf YU*
+echo "--- start INT2LM"
+srun ./${int2lm_exe}
+
