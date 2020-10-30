@@ -75,17 +75,11 @@
     !rxso_mask=625.0, !LPo changed for cosmo-clim!!!
  /
  &GRID_IN
- ie_in_tot=521, je_in_tot=281, ke_in_tot=137,
+ ie_in_tot=434, je_in_tot=233, ke_in_tot=137,
  pcontrol_fi=20000,nlevskip=0,
- dlon_in=0.25, dlat_in=0.25,
+ dlon_in=0.30, dlat_in=0.30,
  pollat_in=90.0, pollon_in=180.0,
- startlat_in_tot=10.0, startlon_in_tot=-55.0,
-! &GRID_IN
-! ie_in_tot=261, je_in_tot=141, ke_in_tot=137,
-! pcontrol_fi=20000,nlevskip=0,
-! dlon_in=0.5, dlat_in=0.5,
-! pollat_in=90.0, pollon_in=180.0,
-! startlat_in_tot=10.0, startlon_in_tot=-55.0,
+ startlat_in_tot=10.2, startlon_in_tot=-54.9,
 
 /
  &LMGRID !from Carl -- Poshyvailo 27.01.2020
@@ -117,7 +111,7 @@
   ylmext_lfn='lmboden.g1',
   ylmext_cat='__ext_dir__',
   ylmext_form_read='grb1',
-  yinext_lfn='eafc_N80W55S10E75_025D', 
+  yinext_lfn='eafc_N80W55S10E75_030D', 
   yinext_cat='__ext_dir__',
 ! NWR 20201026
 ! maybe 'newer' external files could not be read by 'grib1'

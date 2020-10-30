@@ -37,7 +37,7 @@ OUTPUT_FOLDER="laf_lbfd_int2lm_juwels2019a_ouput"
 export LD_LIBRARY_PATH=${BASE_SRCDIR}/libgrib_api/lib:$LD_LIBRARY_PATH
 export PATH=${BASE_SRCDIR}/libgrib_api/bin:$PATH
 export GRIB_DEFINITION_PATH=${BASE_SRCDIR}/libgrib_api/share/grib_api/definitions/:${BASE_SRCDIR}/int2lm_2.00/1.11.0/definitions.edzw:${BASE_SRCDIR}/int2lm_2.00/1.11.0/definitions
-export GRIB_SAMPLES_PATH=${BASE_SRCDIR}libgrib_api/share/grib_api/samples/:${BASE_SRCDIR}/int2lm_2.00/1.11.0/samples/
+export GRIB_SAMPLES_PATH=${BASE_SRCDIR}/libgrib_api/share/grib_api/samples/:${BASE_SRCDIR}/int2lm_2.00/1.11.0/samples/
 
 
 #-----------------------------------------------------------
@@ -65,17 +65,23 @@ do
 		start_date=${init_date}
 	else
        	last_file=$(ls ${WORK_DIR}/${OUTPUT_FOLDER}/${cur_year}/lbfd* -1rt | cut -d"/" -f11 | tail -1)
+        echo "DEBUG last_file: $(ls ${WORK_DIR}/${OUTPUT_FOLDER}/${cur_year}/lbfd* -1rt)" 
 		echo $last_file >> FILE
 		prev_yr=`echo ${last_file} | cut -c5-8`
+        echo "DEBUG prev_year: ${prev_year}" 
 		echo $prev_year >> FILE
 		prev_mon=`echo ${last_file} | cut -c9-10`
+        echo "DEBUG prev_mon: ${prev_mon}" 
 		prev_day=`echo ${last_file} | cut -c11-12`
+        echo "DEBUG prev_day: ${prev_day}" 
 		prev_hr=`echo ${last_file} | cut -c13-14`
+        echo "DEBUG prev_hr: ${prev_hr}" 
 		start_date=$(date -u '+%Y%m%d%H' --date="${prev_yr}-${prev_mon}-${prev_day} ${prev_hr} + 3 hours")
-		date -u '+%Y%m%d%H' --date="${prev_yr}-${prev_mon}-${prev_day} ${prev_hr} + 3 hours"
+		#date -u '+%Y%m%d%H' --date="${prev_yr}-${prev_mon}-${prev_day} ${prev_hr} + 3 hours"
 	fi
 
 	echo $start_date >> FILE 
+        echo "DEBUG start_date: ${start_date}" 
 
 	#sed -i "s/__start_date__/${start_date}/g" INPUT
 	#sed -i "s/__prev_yr__/${prev_yr}/g" INPUT
@@ -92,5 +98,7 @@ do
         cd ${BASE_RUNDIR_INT2LM}
 	rm -rf YU*  
 	srun ./${int2lm_exe}
+        # exit loop / script, if something crashed int2lm
+        if [[ $? != 0 ]] ; then exit 1 ; fi
 	wait
 done
