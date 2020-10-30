@@ -14,6 +14,12 @@
 #8->4, 384->192, 6:00:00->2:00:00, batch->devel; 12, 576
 
 export PSP_RENDEZVOUS_OPENIB=-1
+# NWR 20201029
+# According to AGI the occurrence of
+# `<PSP:r0000025:precon(0x2e76500): write(16, 0x2e76730, 8) : Broken pipe>`
+# at the end of the SLURM *-err.* file (even if the simulation succeeded)
+# can be 'workarouned' with `export PSP_GUARD=0` 
+export PSP_GUARD=0
 
 WORK_DIR=__work_dir__
 SETUP_DIR=__setup_dir__
@@ -101,7 +107,9 @@ sed -i "s/__runTime__/$runTime/g" namcouple
 ##############################################################
 echo "started" > started.txt
 rm -rf YU*
+echo "DEBUG: start simulation"
 srun --multi-prog slm_multiprog_mapping.conf
+if [[ $? != 0 ]] ; then ; exit 1 ; fi 
 date
 wait
 
@@ -109,6 +117,7 @@ wait
 # Copy CLM and ParFlow restarts to central directory
 # COSMO writes restarts to central directory
 ##############################################################
+echo "DEBUG: start copying restar files"
 clm_restart=`ls -1rt clmoas.clm2.r.*00000.nc | tail -1`
 cp ${clm_restart} ${WORK_DIR}/${WORK_FOLDER}/restarts/clm
 pfl_restart=`ls -1rt cordex0.11_${cur_year}_${cur_month}.out.press*.pfb | tail -1`
