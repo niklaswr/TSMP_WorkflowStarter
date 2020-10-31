@@ -17,18 +17,18 @@
         # Service) normal, which, if this option is not specified, is
         # the default.
  
-#SBATCH --job-name=ERA5_01-02
+#SBATCH --job-name=ERA5_11-12
  
         # Assigns the specified name to the request
  
-#SBATCH --output=ERA5_01-02.%N.%j.out
+#SBATCH --output=ERA5_11-12.%N.%j.out
  
         # Specifies the name and location of STDOUT where %N is the
         # node where the job runs and %j the job-id. The file will be 
         # written in the workdir directory if it is a relative path.
         # If not given, the default is slurm-%j.out in the workdir.
  
-#SBATCH --error=ERA5_01-02.%N.%j.err
+#SBATCH --error=ERA5_11-12.%N.%j.err
  
         # Specifies the name and location of STDERR where %N is the
         # node where the job runs and %j the job-id. The file will be 
@@ -87,8 +87,8 @@ cd $CTRL_ICBCERA5
 #--------------------------------------------------------------------
 # Set up the DATE and TIME
 #--------------------------------------------------------------------
-year=1981
-for month in 01 02; do # 01 02 03 04 05 06 07 08 09 10 11 12
+year=1980
+for month in 11 12; do # 01 02 03 04 05 06 07 08 09 10 11 12
   if [ "$month" -eq "01" ] || [ "$month" -eq "03" ] || [ "$month" -eq "05" ] || [ "$month" -eq "07" ] || [ "$month" -eq "08" ] || [ "$month" -eq "10" ] || [ "$month" -eq "12" ]
   then
     numDays=30; echo $numDays
@@ -116,7 +116,7 @@ for month in 01 02; do # 01 02 03 04 05 06 07 08 09 10 11 12
   # Define the filename
   #   target_filename: filename to send to JURECA
   #   filename: filename to (temporary) save on $SCRATCH
-  target_filename="ERA5_EU11_${START_DATE}-${END_DATE}.03h.025D.boundary"
+  target_filename="ERA5_EU11_${START_DATE}-${END_DATE}.03h.030D.boundary"
   filename="${target_filename}"
 
   #--------------------------------------------------------------------
@@ -135,11 +135,12 @@ retrieve, # retrive param on pl level
 	#date = ${START_DATE},
 	date = ${START_DATE}/to/${END_DATE},
 	time = ${TIME},
-    area = 80.0/-55.0/10.0/75.0, # north/west/south/east
+    area = 79.8/-54.9/10.2/75.0, # north/west/south/east
     # Parts of the output is in grib1
     # so ECMWF recomend to use 3digits only:
     # https://confluence.ecmwf.int/display/CKB/ERA5%3A+What+is+the+spatial+reference
-	grid = 0.25/0.25,
+    # to match meteocloud grid (JSC) we use 0.3degree
+	grid = 0.3/0.3,
 	#step = ${Step},
 	levtype = pl,
     levelist = 200,
