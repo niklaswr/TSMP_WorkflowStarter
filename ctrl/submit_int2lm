@@ -22,7 +22,7 @@ int2lm_exe="int2lm_204a"
 #int2lm_exe="int2lm_200"
 
 source ${CTRLDIR}/export_paths.ksh
-source ${BASE_SRCDIR}/module_load_new
+source ${BASE_SRCDIR}/loadenv
 
 export LD_LIBRARY_PATH=${BASE_SRCDIR}/libgrib_api/lib:$LD_LIBRARY_PATH
 #export LD_LIBRARY_PATH=/p/scratch/cslts/tsmpforecast/operational/ERA5-Climatology_TSMPv1.2.1_v001aJuwelsCpuTest/src/libgrib_api/lib:$LD_LIBRARY_PATH

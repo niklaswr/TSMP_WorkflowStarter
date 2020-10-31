@@ -2,7 +2,7 @@
 
 # author: Niklas WAGNER
 # email: n.wagner@fz-juelich.de
-# version: 2020-10-12
+# version: 2020-10-30
 # USAGE:
 # >> source export_paths.ksh
 
@@ -11,8 +11,8 @@
 # The script will then only use the environment variables provided this way. 
 # In principle, only the 'rootdir' has to be adjusted, all other paths result 
 # from it.
-expid="ERA5Climat_EUR-11_ECMWF-ERA5_analysis_FZJ-IBG3-_TSMPv1.2.1_v001JuwelsCpuProdT19802020"
-rootdir="/p/scratch/cslts/tsmpforecast/operational/${expid}"
+expid="era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3"
+rootdir="/p/scratch/cjibg35/tsmpforecast/${expid}"
 export EXPID="${expid}"
 # export needed paths
 export BASE_ROOTDIR="${rootdir}"
