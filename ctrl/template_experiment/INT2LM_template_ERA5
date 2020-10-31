@@ -13,8 +13,8 @@
 ! "leap-years", thus TSMP would crash; 
 ! (2) changed back to 0, as Heimo's caf-data did not work with calendar 2
     itype_calendar=0 
-    hstart=0, hstop=240,
-    hincbound=3,
+    hstart=0, hstop=__hstop__,
+    hincbound=__hincbound__,
 !    hincbound=6, ! LPO origin
 ! NWR 20201019
 ! Manual: 'seconds to wait until next attempt if a readyfile is not available'

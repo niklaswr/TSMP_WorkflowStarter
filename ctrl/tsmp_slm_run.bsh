@@ -1,0 +1,121 @@
+#!/bin/bash
+#SBATCH --job-name="__job_name__"
+#SBATCH --nodes=12
+#SBATCH --ntasks=576
+#SBATCH --ntasks-per-node=48
+#SBATCH --output=mpiMPMD-out.%j
+#SBATCH --error=mpiMPMD-err.%j
+#SBATCH --time=06:00:00
+#SBATCH --partition=batch
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=n.wagner@fz-juelich.de
+#SBATCH --account=jibg35
+
+#8->4, 384->192, 6:00:00->2:00:00, batch->devel; 12, 576
+
+export PSP_RENDEZVOUS_OPENIB=-1
+
+WORK_DIR=__work_dir__
+SETUP_DIR=__setup_dir__
+WORK_FOLDER=__work_folder__
+
+#--------------- Adds a backslash in front of each slash, to make sed work--------------
+#WORK_DIR_REPLACE=$(echo $WORK_DIR | sed 's/\//\\\//g')
+#SETUP_DIR_REPLACE=$(echo $SETUP_DIR | sed 's/\//\\\//g')
+#---------------------------------------------------------------------------------------
+
+cd ${WORK_DIR}/${WORK_FOLDER}/__expId__
+source ${WORK_DIR}/${WORK_FOLDER}/__expId__/loadenvs 
+
+startDate="__startDate__"
+initDate="__initDate__"
+cur_year=__cur_year__
+cur_month=__cur_month__
+prev_year=__prev_year__
+prev_month=__prev_month__
+
+numHours=__numHours__
+numLeapDays=__numLeapDays__
+
+#hstart=$(( ($(date -u '+%s' -d "${startDate}") - $(date -u '+%s' -d "${initDate}"))/3600))
+hstart=$(( ($(date -u '+%s' -d "${startDate}") - $(date -u '+%s' -d "${initDate}"))/3600 - numLeapDays*24))
+hstop=$((hstart+numHours))
+initDateCut=`echo $initDate | cut -c1-13 | cut -c1-4,6-7,9-10,12-13`
+
+echo ${initDateCut}
+
+##############################################################
+# Modifying COSMO namelists
+##############################################################
+sed -i "s,__hstart__,${hstart},g" INPUT_IO
+sed -i "s,__hstop__,${hstop},g" INPUT_IO
+sed -i "s,__year__,${cur_year},g" INPUT_IO
+sed -i "s,__exp_id__,TSMP_3.1.0MCT_cordex11_${cur_year}_${cur_month},g" INPUT_IO
+sed -i "s,__setup_dir_rep__,${SETUP_DIR},g" INPUT_IO
+sed -i "s,__work_dir_rep__,${WORK_DIR},g" INPUT_IO
+sed -i "s,__work_folder_rep__,${WORK_FOLDER},g" INPUT_IO
+
+sed -i "s,__hstart__,${hstart}," INPUT_ORG
+sed -i "s,__hstop__,${hstop},g" INPUT_ORG
+sed -i "s,__initDateCut__,${initDateCut},g" INPUT_ORG
+
+
+##############################################################
+# Modifying CLM namelists
+##############################################################
+nelapse=$((numHours*3600/900+1))
+sed -i "s,__nelapse__,${nelapse},g" lnd.stdin
+start_ymd=`echo $startDate | cut -c1-10 | cut -c1-4,6-7,9-10`
+sed -i "s,__start_ymd__,${start_ymd},g" lnd.stdin 
+sed -i "s,__exp_id__,TSMP_3.1.0MCT_cordex11_${cur_year}_${cur_month},g" lnd.stdin 
+clm_restart=`echo $startDate | cut -c1-10`
+sed -i "s,__clm_restart__,clmoas.clm2.r.${clm_restart}-00000.nc,g" lnd.stdin
+sed -i "s,__setup_dir_rep__,${SETUP_DIR_REPLACE},g" lnd.stdin
+sed -i "s,__work_dir_rep__,${WORK_DIR_REPLACE},g" lnd.stdin
+sed -i "s,__work_folder_rep__,${WORK_FOLDER},g" lnd.stdin
+
+##############################################################
+# Modifying ParFlow TCL flags
+##############################################################
+#export PARFLOW_DIR=$HOME/cordex11_tsmp_source/terrsysmp/bin/JURECA_3.1.0MCT_clm-cos-pfl
+#dir_parflow="$(dirname ${SETUP_DIR})"  
+export PARFLOW_DIR=/p/project/cesmtst/poshyvailo1/terrsysmp_current_pfl_sink/bin/JUWELS_3.1.0MCT_clm-cos-pfl
+sed -i "s,##numHours##,${numHours},g" coup_oas.tcl
+cp ${WORK_DIR}/${WORK_FOLDER}/restarts/parflow/cordex0.11_${prev_year}_${prev_month}.out.press.*.pfb .
+ic_pressure=`ls -1rt cordex0.11_${prev_year}_${prev_month}.out.press.*.pfb | tail -1`
+sed -i "s,__ICPressure__,$ic_pressure,g" coup_oas.tcl
+sed -i "s,__year__,${cur_year},g" coup_oas.tcl
+sed -i "s,__month__,${cur_month},g" coup_oas.tcl 
+tclsh coup_oas.tcl
+
+sed -i "s,__pfidb__,cordex0.11_${cur_year}_${cur_month},g" slm_multiprog_mapping.conf
+
+##############################################################
+# Modifying OASIS3-MCT namelist
+##############################################################
+runTime=$((numHours*3600+900))
+sed -i "s,__runTime__,${runTime},g" namcouple
+
+##############################################################
+# Running the simulation
+##############################################################
+echo "started" > started.txt
+rm -rf YU*
+echo "DEBUG: start simulation"
+srun --multi-prog slm_multiprog_mapping.conf
+if [[ $? != 0 ]] ; then exit 1 ; fi 
+date
+wait
+
+##############################################################
+# Copy CLM and ParFlow restarts to central directory
+# COSMO writes restarts to central directory
+##############################################################
+echo "DEBUG: start copying restar files"
+clm_restart=`ls -1rt clmoas.clm2.r.*00000.nc | tail -1`
+cp ${clm_restart} ${WORK_DIR}/${WORK_FOLDER}/restarts/clm
+pfl_restart=`ls -1rt cordex0.11_${cur_year}_${cur_month}.out.press*.pfb | tail -1`
+cp ${pfl_restart} ${WORK_DIR}/${WORK_FOLDER}/restarts/parflow
+wait
+echo "ready: TSMP simulation for ${cur_month} is complete!" > ready.txt
+#exit 0
