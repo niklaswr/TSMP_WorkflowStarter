@@ -65,7 +65,8 @@ SETUP_DIR_REPLACE=$(echo $SETUP_DIR | sed 's/\//\\\//g')
     echo ${numLeapDays}
 
     #---------------------------------------------
-    for mon in {1..1..1} # {1..12..1}; #in 12; in{1..12..1}; # CHANGE LINE below -> dependent jobs  {1..12..1}
+    first_job="yes"
+    for mon in {12..12..1} # {1..12..1}; #in 12; in{1..12..1}; # CHANGE LINE below -> dependent jobs  {1..12..1}
     do
 	if [ `echo $mon | wc -m` -eq 2 ]; then 
 	    cur_month=0${mon}; 
@@ -134,7 +135,7 @@ SETUP_DIR_REPLACE=$(echo $SETUP_DIR | sed 's/\//\\\//g')
         sed -i "s/__work_dir__/${WORK_DIR_REPLACE}/g" $submission_file
         sed -i "s/__work_folder__/${WORK_FOLDER}/g" $submission_file
 
-	if [ "$mon" -gt 4 ]; then   #change it for the dependent jobs! for {1..12..1}, -gt 1
+	if [ "${first_job}" == "no" ]; then   #change it for the dependent jobs! for {1..12..1}, -gt 1
 		echo "Submitting a dependent job"
 		jID2=$(sbatch --parsable --dependency=afterok:${jID} tsmp_slm_run.bsh)
 		jID=$jID2
@@ -142,7 +143,7 @@ SETUP_DIR_REPLACE=$(echo $SETUP_DIR | sed 's/\//\\\//g')
 	else
 		echo "Submitting an initial job"
 		jID=$(sbatch --parsable tsmp_slm_run.bsh)
+		first_job="no"
 		wait
 	fi
-	cd ${SETUP_DIR}
 done
