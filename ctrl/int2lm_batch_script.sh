@@ -11,12 +11,12 @@
 #SBATCH --ntasks-per-node=48
 #SBATCH --output=int2lm-out.%j
 #SBATCH --error=int2lm-err.%j
-#SBATCH --time=1:00:00
-##SBATCH --partition=devel
+#SBATCH --time=02:00:00
+#SBATCH --partition=devel
 ##SBATCH --mail-type=ALL
 #SBATCH --mail-user=n.wagner@fz-juelich.de
 #SBATCH --account=jibg35
-#SBATCH --reservation=maint-centos8
+##SBATCH --reservation=maint-centos8
 
 echo "DEBUG: setup environment"
 source ${CTRLDIR}/export_paths.ksh

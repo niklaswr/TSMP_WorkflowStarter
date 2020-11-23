@@ -19,7 +19,8 @@ cur_year=1980
 #--------------- Adds a backslash in front of each slash, to make sed work--------------
 WORK_FOLDER="sim_output_heter_geology_improved_with_pfl_sink"
 #WORK_FOLDER="sim_output_heter_geology_improved_with_pfl_sink"
-template_FOLDER="template_experiment_TSMP_climate_mode_heter_geology_improved_with_pfl_sink_14102020"
+template_FOLDER="template_experiment_Stage2020"
+#template_FOLDER="template_experiment_TSMP_climate_mode_heter_geology_improved_with_pfl_sink_14102020"
 #template_FOLDER="template_experiment_TSMP_climate_mode_heter_geology_improved_with_pfl_sink"
 
 WORK_DIR_REPLACE=$(echo $WORK_DIR | sed 's/\//\\\//g')
@@ -117,6 +118,7 @@ SETUP_DIR_REPLACE=$(echo $SETUP_DIR | sed 's/\//\\\//g')
 	cd ${WORK_DIR}/${WORK_FOLDER}/${expID}
 	mkdir ${WORK_DIR}/${WORK_FOLDER}/${expID}/cosmo_out
         submission_file="tsmp_slm_run.bsh"
+	sed -i "s,__CTRLDIR__,${CTRLDIR},g" $submission_file
 	sed -i "s/__expId__/${expID}/g" $submission_file
 	sed -i "s/__job_name__/${cur_year}_${cur_month}/g" $submission_file
 	startDate="${cur_year}-${cur_month}-01 00"

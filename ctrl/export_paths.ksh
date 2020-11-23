@@ -2,7 +2,7 @@
 
 # author: Niklas WAGNER
 # email: n.wagner@fz-juelich.de
-# version: 2020-10-30
+# version: 2020-11-16
 # USAGE:
 # >> source export_paths.ksh
 
@@ -25,3 +25,4 @@ export BASE_RUNDIR_INT2LM="${rootdir}/run_INT2LM"
 export BASE_SIMRESDIR="${rootdir}/simres"
 export BASE_POSTPRODDIR="${rootdir}/postprod"
 export BASE_SRCDIR="${rootdir}/src"
+export PARFLOW_DIR="${rootdir}/src/TSMP/bin/JUWELS_3.1.0MCT_clm-cos-pfl"
