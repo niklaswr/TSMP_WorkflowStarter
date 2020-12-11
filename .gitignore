@@ -15,6 +15,12 @@ run_INT2LM/**
 run_TSMP/*
 # ignore stuf in src directory
 src/**
+# ignore temp_devel dir in ctrl/
+ctrl/tmp_devel/**
+# ignore content of simres
+simres/**
+# ignore content of postpro
+postpro/**
 
 # general keeps:
 ################
