@@ -9,9 +9,6 @@ forcing/INT2LM/**
 # ignore rundir for INT2LM
 run_INT2LM/**
 # ignore rundirs for TSMP
-#run_TSMP/laf_lbfd_int2lm_juwels2019a_ouput/*
-#run_TSMP/sim_output_heter_geology_improved_with_pfl_sink/restarts/*
-#run_TSMP/sim_output_heter_geology_improved_with_pfl_sink/TSMP*/*
 run_TSMP/*
 # ignore stuf in src directory
 src/**
@@ -27,7 +24,7 @@ postpro/**
 # keep .gitkeep files to keep dir-structure
 !**/.gitkeep
 # keep template directory wich is located in rundir_TSMP
-!run_TSMP/sim_output_heter_geology_improved_with_pfl_sink/template_experiment_TSMP_climate_mode_heter_geology_improved_with_pfl_sink_14102020/*
+!run_TSMP/sim_output_heter_geology_improved_with_pfl_sink/tsmp_era5clima_template
 
 # special ignores:
 ##################

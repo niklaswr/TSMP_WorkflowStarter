@@ -1,0 +1,3 @@
+[submodule "run_TSMP/sim_output_heter_geology_improved_with_pfl_sink/tsmp_era5clima_template"]
+	path = run_TSMP/sim_output_heter_geology_improved_with_pfl_sink/tsmp_era5clima_template
+	url = https://icg4geo.icg.kfa-juelich.de/Configurations/TSMP/tsmp_era5clima_template.git
