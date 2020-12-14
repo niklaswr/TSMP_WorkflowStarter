@@ -118,6 +118,28 @@ timeseries TMIN_2M   cosmo_out
 timeseries VMAX_10M  cosmo_out
 timeseries VABSMX_10M  cosmo_out
 
+#LPo added 14.12.2020
+timeseries FIS cosmo_out
+timeseries TQR cosmo_out
+timeseries TWATER cosmo_out
+timeseries TQS cosmo_out
+timeseries TDIV_HUM cosmo_out
+timeseries TCM cosmo_out
+timeseries TCH cosmo_out
+timeseries HBAS_CON cosmo_out
+timeseries HTOP_CON cosmo_out
+timeseries CEILING cosmo_out
+timeseries CAPE_ML cosmo_out
+timeseries CIN_ML cosmo_out
+timeseries CAPE_MU cosmo_out
+timeseries CIN_MU cosmo_out
+timeseries TKE_CON cosmo_out
+timeseries TD_2M cosmo_out
+timeseries QV_2M cosmo_out
+timeseries HBAS_SC cosmo_out
+timeseries HTOP_SC cosmo_out
+timeseries CAPE_CON cosmo_out
+
 echo "--- Starting CCLM default output timeseriesp"
 PLEVS=(5 200. 500. 850. 925. 1000) # list of pressure levels. Must be the same as or a subset
                                    # of the plev list in the specific GRIBOUT
