@@ -130,16 +130,16 @@ timeseriesp QV       cosmo_out  PLEVS[@]
 timeseriesp RELHUM   cosmo_out  PLEVS[@]
 
 echo "--- Starting calculate further fields"
-#windspeed10M
-#derotatewind10M
-#winddir10M
-#snowfraction
-#addfields ASWDIR_S ASWDIFD_S ASWD_S
-#subtractfields ASOD_T ASOB_T ASOU_T
-#addfields RUNOFF_S RUNOFF_G RUNOFF_T
-#addfields RAIN_CON SNOW_CON PREC_CON
-#addfields SNOW_GSP SNOW_CON TOT_SNOW
-#addfields TQC TQI TQW
+windspeed10M
+derotatewind10M
+winddir10M
+snowfraction
+addfields ASWDIR_S ASWDIFD_S ASWD_S
+subtractfields ASOD_T ASOB_T ASOU_T
+addfields RUNOFF_S RUNOFF_G RUNOFF_T
+addfields RAIN_CON SNOW_CON PREC_CON
+addfields SNOW_GSP SNOW_CON TOT_SNOW
+addfields TQC TQI TQW
 
 # NWR 20201130
 # there is an error of calculating windspeed on p-lev
