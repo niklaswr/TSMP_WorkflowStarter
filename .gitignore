@@ -1,5 +1,7 @@
 # general ignores:
 ##################
+# ignore swap fiels
+*.swp
 # ignore slurm log-files
 *-out.*
 *-err.*

@@ -79,6 +79,7 @@ git show --oneline -s >> $histfile
 git submodule >> $histfile
 check4error $? "--- ERROR while creating HISTORY.txt"
 
+
 echo "--- move modeloutput to individual simresdir"
 cp ${rundir}/cosmo_out/* $new_simres/cosmo
 cp ${rundir}/cordex0.11_${y0}_${m0}.out.*.pfb $new_simres/parflow
@@ -103,8 +104,10 @@ wait
 
 echo "-- tar simres/${y0}_${m}"
 cd ${BASE_SIMRESDIR}
-tar cvf ${new_simres}.tar -C ${BASE_SIMRESDIR} ${new_simres_name}
+tar cf ${BASE_ARCROOTDIR}/simres/${new_simres_name}.tar -C ${BASE_SIMRESDIR} ${new_simres_name}
+if [[ $? != 0 ]] ; then exit 1 ; fi
 rm -rf ${new_simres}
+ln -s ${BASE_ARCROOTDIR}/simres/${new_simres_name}.tar ./
 
 echo "--- clean/remove rundir"
 #mv $rundir ${rundir}_REMOVE
