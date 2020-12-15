@@ -102,12 +102,15 @@ parallelGzip 48 $new_simres/restarts
 wait
 
 
-echo "-- tar simres/${y0}_${m}"
-cd ${BASE_SIMRESDIR}
-tar cf ${BASE_ARCROOTDIR}/simres/${new_simres_name}.tar -C ${BASE_SIMRESDIR} ${new_simres_name}
-if [[ $? != 0 ]] ; then exit 1 ; fi
-rm -rf ${new_simres}
-ln -s ${BASE_ARCROOTDIR}/simres/${new_simres_name}.tar ./
+# NWR 20201215
+# ARCHIVE is not accessable from computenode, wherefore I need to rethink
+# the archiving routine
+# write an extra script for tar -cf (direkt to archive) and ln -sf
+#echo "-- tar simres/${y0}_${m0}"
+#cd ${BASE_SIMRESDIR}
+#tar cf ${new_simres_name}.tar -C ${BASE_SIMRESDIR} ${new_simres_name}
+#if [[ $? != 0 ]] ; then exit 1 ; fi
+#rm -rf ${new_simres}
 
 echo "--- clean/remove rundir"
 #mv $rundir ${rundir}_REMOVE
