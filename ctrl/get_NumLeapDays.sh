@@ -55,13 +55,15 @@ get_numLeapDays() {
   # (the current leap-day)
   tmp_correct=0
   curr_leap=$(isleap ${currYear})
-  init_leap=$(isleap ${initYear})
-  if [[ ${curr_leap} -eq "yes" && $(date '+%Y%m%d' -d "$currDate") -ge $(date '+%Y%m%d' -d "${currYear}-03-01 00") ]]; then
+  if [[ ${curr_leap} == "yes" ]] && [[ $(date '+%Y%m%d' -d "$currDate") -ge $(date '+%Y%m%d' -d "${currYear}-03-01 00") ]]; then
+    echo "-- jumped 1"
     tmp_correct=$((tmp_correct + 1))
   fi
-  if [[ ${init_leap} -eq "yes" && $(date '+%Y%m%d' -d "$initDate") -ge $(date '+%Y%m%d' -d "${initYear}-03-01 00") ]]; then
+  if [[ ${init_leap} == "yes" ]] && [[ $(date '+%Y%m%d' -d "$initDate") -ge $(date '+%Y%m%d' -d "${initYear}-03-01 00") ]]; then
+    echo "-- jumped 2"
     tmp_correct=$((tmp_correct - 1))
   else
+    echo "-- jumped 3"
     tmp_correct=$((tmp_correct + 0))
   fi
   numLeapDays_printed=$((numLeapDays + tmp_correct))
@@ -69,8 +71,9 @@ get_numLeapDays() {
   return $numLeapDays_printed
 }
 
-#initDate="1980-02-01 00"
-#currDate="1980-03-01 00"
-#
-##echo "numLeapDaysprinted: ${numLeapDays_FUNK}"
+#initDate="19800101"
+#startDate="19810301"
+#get_numLeapDays "$initDate" "$startDate"
+#numLeapDays=$?
+#echo "numLeapDays: ${numLeapDays}"
 
