@@ -38,8 +38,8 @@ for simdir in $simdirs; do
   tar -cvf ${BASE_ARCROOTDIR}/simres/${simres_name}.tar ${simres_name}
   if [[ $? != 0 ]] ; then echo "ERROR" && exit 1 ; fi
   echo "-- remove simresdir"
-  mv ${simres_name} REMOVE_${simres_name} 
-  #rm -r ${simres_name}
+  #mv ${simres_name} REMOVE_${simres_name} 
+  rm -r ${simres_name}
   echo "-- linking"
   ln -sf ${BASE_ARCROOTDIR}/simres/${simres_name}.tar ./
   echo "-- done"
