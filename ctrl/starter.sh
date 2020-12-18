@@ -14,7 +14,7 @@
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
 # last modified: 2020-12-11
-# USAGE: sbatch --export=ALL,startDate=YYYYMMDD,months=X,CTRLDIR="PATH/TO/CRTL/DIR" starter.sh
+# USAGE: sbatch --export=ALL,dependency=JOBID,startDate=YYYYMMDD,months=X,CTRLDIR="PATH/TO/CRTL/DIR" starter.sh
 
 # IMPORTANT
 # initDate HASE TO be set via sbatch --export command
@@ -39,9 +39,18 @@ cd $BASE_CTRLDIR
 start_prepro=$(sbatch --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
 	-o "${BASE_LOGDIR}/%x-out.%j" -e "${BASE_LOGDIR}/%x-err.%j" \
 	start_prepro.sh 2>&1 | awk '{print $(NF)}')
-echo $start_prepro
+echo "prepro: $start_prepro"
 
-start_simulation=$start_prepro
+# If a specific JobID is passed to use as dependency, use that one
+# otherwise use prepro from above.
+# This way one can 'add' additional simulations to a already running chain
+# instead of waiting until a chain is compleated before submit new runs
+if [[ $dependency ]]; then
+    start_simulation=$dependency
+else
+    start_simulation=$start_prepro
+fi
+
 loop_counter=1
 while [ $loop_counter -le $months ]
 do
@@ -53,19 +62,19 @@ do
 	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
 	  -o "${BASE_LOGDIR}/%x-out.%j" -e "${BASE_LOGDIR}/%x-err.%j" \
 	  start_simulation.sh 2>&1 | awk '{print $(NF)}')
-  echo $start_simulation
+  echo "simulation for $startDate: $start_simulation"
 
   start_postpro=$(sbatch -d afterok:${start_simulation} \
 	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
 	  -o "${BASE_LOGDIR}/%x-out.%j" -e "${BASE_LOGDIR}/%x-err.%j" \
 	  start_postpro.sh 2>&1 | awk '{print $(NF)}')
-  echo $start_postpro
+  echo "postpro for $startDate: $start_postpro"
 
   start_finishing=$(sbatch -d afterok:${start_postpro} \
 	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
 	  -o "${BASE_LOGDIR}/%x-out.%j" -e "${BASE_LOGDIR}/%x-err.%j" \
 	  start_finishing.sh 2>&1 | awk '{print $(NF)}')
-  echo $start_finishing
+  echo "finishing for $startDate: $start_finishing"
 
   loop_counter=$[${loop_counter}+1]
   echo "-- started: $startDate"
