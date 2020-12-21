@@ -68,17 +68,38 @@ check4error $? "--- ERROR while creating simres-dir"
 echo "--- store setup/history information in simres (reusability etc.)"
 histfile=$new_simres/HISTORY.txt
 /bin/cat <<EOM >$histfile
-This simulation was run with the ERA5Clima setup:
-main repo:
+This simulation was run with 
+###############################################################################
+WORKFLOW 'era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3'
+-- REPO:
 https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_scripts_tools_engines/era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3
-submodules:
-https://icg4geo.icg.kfa-juelich.de/Configurations/TSMP/tsmp_era5clima_template
-Current git-commit (main, submodule):
+-- COMMIT: 
 EOM
+cd ${BASE_CTRLDIR}
 git show --oneline -s >> $histfile
-git submodule >> $histfile
-check4error $? "--- ERROR while creating HISTORY.txt"
 
+# NOTE the difference > and >> here and above!
+/bin/cat <<EOM >>$histfile
+###############################################################################
+SETUP / CONFIGURATION 'tsmp_era5clima_template'
+-- REPO:
+https://icg4geo.icg.kfa-juelich.de/Configurations/TSMP/tsmp_era5clima_template
+-- COMMIT:
+EOM
+cd ${BASE_RUNDIR_TSMP}/${WORK_FOLDER}/${template_FOLDER}
+git show --oneline -s >> $histfile
+
+# NOTE the difference > and >> here and above!
+/bin/cat <<EOM >>$histfile
+###############################################################################
+MODEL 'TSMP' (build with: './build_tsmp.ksh -v 3.1.0MCT -c clm-cos-pfl -m JUWELS -O Intel')
+-- REPO:
+https://github.com/HPSCTerrSys/TSMP
+-- COMMIT:
+EOM
+cd ${BASE_SRCDIR}/TSMP
+git show --oneline -s >> $histfile
+check4error $? "--- ERROR while creating HISTORY.txt"
 
 echo "--- move modeloutput to individual simresdir"
 cp ${rundir}/cosmo_out/* $new_simres/cosmo
