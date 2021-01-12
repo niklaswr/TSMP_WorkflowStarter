@@ -13,7 +13,19 @@ branches: vXXX_YYY
 v001_002
 ========
 
-[edit]
+Setup:
+INT2LMv2.0.4
+Workflow from LPO 14102020
+TSMPv1.2.1
+
+Changes:
+- IC/BC resolution 0.25 --> 0.3
+- project cslts --> cjibg35
+- OS change of compute and login nodes: OS7 --> OS8
+- reworked dir-structure torwards 'final / ideal' structur
+- add post-processing routines
+- add archiving routines
+- add aux-tools to handle moving data to tape and largdata more easily
 
 
 v001_001
