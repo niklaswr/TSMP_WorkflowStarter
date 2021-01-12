@@ -4,7 +4,7 @@
 #SBATCH --nodes=12
 #SBATCH --ntasks=576
 #SBATCH --ntasks-per-node=48
-#SBATCH --time=04:00:00
+#SBATCH --time=05:00:00
 #SBATCH --partition=batch
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=n.wagner@fz-juelich.de
