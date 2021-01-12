@@ -3,7 +3,7 @@
 # author: Liubai POSHYVAILO, Niklas WAGNER
 # e-mail: l.poshyvailo@fz-juelich.de, n.wagner@fz-juelich.de
 # last modified: 2020-10-30
-# USAGE: sbatch --export=ALL,initDate=$initDate,CTRLDIR=$BASE_CTRLDIR $0
+# USAGE: sbatch --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR $0
 #
 #SBATCH --job-name="int2lm"
 #SBATCH --nodes=1
@@ -11,8 +11,8 @@
 #SBATCH --ntasks-per-node=48
 #SBATCH --output=int2lm-out.%j
 #SBATCH --error=int2lm-err.%j
-#SBATCH --time=02:00:00
-#SBATCH --partition=devel
+#SBATCH --time=03:00:00
+#SBATCH --partition=batch
 ##SBATCH --mail-type=ALL
 #SBATCH --mail-user=n.wagner@fz-juelich.de
 #SBATCH --account=jibg35
@@ -27,7 +27,8 @@ export GRIB_DEFINITION_PATH=${BASE_SRCDIR}/libgrib_api/share/grib_api/definition
 export GRIB_SAMPLES_PATH=${BASE_SRCDIR}/libgrib_api/share/grib_api/samples/:${BASE_SRCDIR}/int2lm_170406_2.04a/1.16.0/samples/
 
 echo "DEBUG: def individual settings"
-start_date=$(TZ=UTC date --date "1980-01-01T00:00Z")
+start_date=$(TZ=UTC date --date "$startDate")
+#start_date=$(TZ=UTC date --date "1984-01-01T00:00Z")
 cur_year=$(TZ=UTC date '+%Y' --date="${start_date}")
 #int2lm_init_date=$(TZ=UTC date '+%Y%m%d%H' -d "1980-01-01T00:00Z")
 int2lm_exe="int2lm_204a"
@@ -37,8 +38,6 @@ int2lm_hincbound=3
 int2lm_nam_template="INT2LM_template_ERA5"
 
 echo "DEBUG: create INT2LM lm_cat_dir (ex OUTPUT_DIR) dir"
-#WORK_DIR="${BASE_RUNDIR_TSMP}"
-#SETUP_DIR="${BASE_CTRLDIR}"
 int2lm_LmCatDir="${BASE_RUNDIR_TSMP}/laf_lbfd_int2lm_juwels2019a_ouput/${cur_year}"
 mkdir -p ${int2lm_LmCatDir}
 

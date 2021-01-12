@@ -5,6 +5,8 @@
 # ignore slurm log-files
 *-out.*
 *-err.*
+*.out
+*.err
 # ignore forcing files
 forcing/ERA5/**
 forcing/INT2LM/**
