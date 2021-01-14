@@ -1,4 +1,3 @@
-[[_TOC_]]
 # Welcome to the Wiki of `era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3`
 
 This repository is containing (or pointing to) everything needed for a climate simulation based on TSMP. To keep everything most flexible a modular approach is aimed, with currently three modules distinguished:
