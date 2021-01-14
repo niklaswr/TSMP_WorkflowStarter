@@ -70,9 +70,9 @@ histfile=$new_simres/HISTORY.txt
 /bin/cat <<EOM >$histfile
 This simulation was run with 
 ###############################################################################
-WORKFLOW 'era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3'
+WORKFLOW 'ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3'
 -- REPO:
-https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_scripts_tools_engines/era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3
+https://icg4geo.icg.kfa-juelich.de/ModelSystems/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3.git
 -- COMMIT: 
 EOM
 cd ${BASE_CTRLDIR}
