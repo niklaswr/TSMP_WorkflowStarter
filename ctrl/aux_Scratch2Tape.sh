@@ -17,7 +17,7 @@
 #
 # USAGE:
 # >> ./$0 CTRLDIR PATH/TO/SIMRES/DIR/pattern*
-# >> ./aux_Move2Tape.sh $(pwd) /p/scratch/cjibg35/tsmpforecast/era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3/simres/era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3_1980*
+# >> ./aux_Scratch2Tape.sh $(pwd) /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/simres/era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3_1980*
 #
 
 # take the first argument as initDate ...
@@ -31,6 +31,7 @@ source $CTRLDIR/export_paths.ksh
 
 cd ${BASE_SIMRESDIR}
 for simdir in $simdirs; do
+  echo "$simdir"
   if [[ ! -d $simdir ]]; then continue; fi
   simres_name=${simdir##*/}
   echo "working on: $simres_name"
