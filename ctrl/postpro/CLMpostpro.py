@@ -4,7 +4,7 @@ import glob
 import argparse
 import os
 import sys
-import 	ParFlow_IO as pio
+import ParFlow_IO as pio
 
 """ Converting given ParFlow output to netCDF
 
