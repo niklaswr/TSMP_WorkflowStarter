@@ -14,8 +14,8 @@
 # background and wait until all data are back on spinning disk...
 #
 # USAGE:
-# >> ./$0 CTRLDIR PATH/TO/SIMRES/DIR/TARpattern*
-# >> ./aux_restageTape.sh $(pwd) /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/simres/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3_1980*.tar
+# >> nohup ./$0 CTRLDIR PATH/TO/SIMRES/DIR/TARpattern* &
+# >> nohup /aux_restageTape.sh $(pwd) /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/simres/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3_1980*.tar &
 #
 
 # take the first argument as ctrl ...
