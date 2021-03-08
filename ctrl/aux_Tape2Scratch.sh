@@ -16,7 +16,7 @@
 #
 # USAGE:
 # >> ./$0 CTRLDIR PATH/TO/SIMRES/DIR/TARpattern*
-# >> ./aux_Tape2Scratch.sh $(pwd) /p/scratch/cjibg35/tsmpforecast/era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3/simres/era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3_1980*.tar
+# >> ./aux_Tape2Scratch.sh $(pwd) /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/simres/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3_1980*.tar
 #
 
 # take the first argument as initDate ...
