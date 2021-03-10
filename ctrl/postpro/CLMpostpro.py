@@ -70,9 +70,14 @@ for name in VARs:
     outFile = f'{outDir}/{name}.nc'
     os.system(f'cp {templateFile} {outFile}')
     with nc.Dataset(outFile, 'r+') as dst:
-        x = dst.createVariable('time','f8',('time'))
-        dst['time'][...] = tmp_vars['time']['data'][...]
+        a = dst.createVariable('time','f8',('time'))
+        tmp_time = np.nanmean(tmp_vars['time_bounds']['data'][...], axis=1)
+        dst['time'][...] = tmp_time[...]
         dst['time'].setncatts(tmp_vars['time']['att'])
+        
+        x = dst.createVariable('time_orig','f8',('time'))
+        dst['time_orig'][...] = tmp_vars['time']['data'][...]
+        dst['time_orig'].setncatts(tmp_vars['time']['att'])
 
         y = dst.createVariable('time_bounds','f8',('time', 'bnds'))
         dst['time_bounds'][...] = tmp_vars['time_bounds']['data'][...]
