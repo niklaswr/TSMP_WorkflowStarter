@@ -75,6 +75,10 @@ if [[ $? != 0 ]] ; then exit 1 ; fi
 echo "-- deleting ToPostPro/${y0}_${m0}"
 rm -r ${WORK_DIR}/${WORK_FOLDER}/ToPostPro/${y0}_${m0}
 
+echo "-- calculating checksum for postpro/${y0}_${m0}"
+cd ${BASE_POSTPRODIR}/${y0}_${m0}
+sha512sum ./* > "CheckSum.sha512"
+
 echo "-- taring postpro/${y0}_${m0}"
 cd ${BASE_POSTPRODIR}
 tar -cf "${y0}_${m0}.tar" ${y0}_${m0} 

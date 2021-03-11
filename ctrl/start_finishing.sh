@@ -111,14 +111,18 @@ cp ${WORK_DIR}/${WORK_FOLDER}/restarts/clm/clmoas.clm2.r.${yp1}-${mp1}-01-00000.
 check4error $? "--- ERROR while moving model output to simres-dir"
 wait
 
-echo "--- gzip individual files in simresdir"
+echo "--- gzip and sha512sum individual files in simresdir"
 cd $new_simres
+sha512sum ./cosmo/* > ./cosmo/CheckSum.sha512
 parallelGzip 48 $new_simres/cosmo
 wait
+sha512sum ./parflow/* > ./parflow/CheckSum.sha512
 parallelGzip 48 $new_simres/parflow
 wait
+sha512sum ./clm/* > ./clm/CheckSum.sha512
 parallelGzip 48 $new_simres/clm
 wait
+sha512sum ./restarts/* > ./restarts/CheckSum.sha512
 parallelGzip 48 $new_simres/restarts
 wait
 
