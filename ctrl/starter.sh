@@ -37,7 +37,7 @@ echo "--- HOST:  $(hostname)"
 cd $BASE_CTRLDIR
 # start flat chain jobs
 start_prepro=$(sbatch --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
-	-o "${BASE_LOGDIR}/%x-out.%j" -e "${BASE_LOGDIR}/%x-err.%j" \
+	-o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
 	start_prepro.sh 2>&1 | awk '{print $(NF)}')
 echo "prepro: $start_prepro"
 
@@ -60,19 +60,19 @@ do
   # sinde no jobs in between are executed.
   start_simulation=$(sbatch -d afterok:${start_simulation} \
 	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
-	  -o "${BASE_LOGDIR}/%x-out.%j" -e "${BASE_LOGDIR}/%x-err.%j" \
+	  -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
 	  start_simulation.sh 2>&1 | awk '{print $(NF)}')
   echo "simulation for $startDate: $start_simulation"
 
   start_postpro=$(sbatch -d afterok:${start_simulation} \
 	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
-	  -o "${BASE_LOGDIR}/%x-out.%j" -e "${BASE_LOGDIR}/%x-err.%j" \
+	  -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
 	  start_postpro.sh 2>&1 | awk '{print $(NF)}')
   echo "postpro for $startDate: $start_postpro"
 
   start_finishing=$(sbatch -d afterok:${start_postpro} \
 	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
-	  -o "${BASE_LOGDIR}/%x-out.%j" -e "${BASE_LOGDIR}/%x-err.%j" \
+	  -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
 	  start_finishing.sh 2>&1 | awk '{print $(NF)}')
   echo "finishing for $startDate: $start_finishing"
 
