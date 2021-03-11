@@ -70,9 +70,9 @@ histfile=$new_simres/HISTORY.txt
 /bin/cat <<EOM >$histfile
 This simulation was run with 
 ###############################################################################
-WORKFLOW 'era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3'
+WORKFLOW 'ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3'
 -- REPO:
-https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_scripts_tools_engines/era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3
+https://icg4geo.icg.kfa-juelich.de/ModelSystems/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3.git
 -- COMMIT: 
 EOM
 cd ${BASE_CTRLDIR}
@@ -111,14 +111,18 @@ cp ${WORK_DIR}/${WORK_FOLDER}/restarts/clm/clmoas.clm2.r.${yp1}-${mp1}-01-00000.
 check4error $? "--- ERROR while moving model output to simres-dir"
 wait
 
-echo "--- gzip individual files in simresdir"
+echo "--- gzip and sha512sum individual files in simresdir"
 cd $new_simres
+sha512sum ./cosmo/* > ./cosmo/CheckSum.sha512
 parallelGzip 48 $new_simres/cosmo
 wait
+sha512sum ./parflow/* > ./parflow/CheckSum.sha512
 parallelGzip 48 $new_simres/parflow
 wait
+sha512sum ./clm/* > ./clm/CheckSum.sha512
 parallelGzip 48 $new_simres/clm
 wait
+sha512sum ./restarts/* > ./restarts/CheckSum.sha512
 parallelGzip 48 $new_simres/restarts
 wait
 

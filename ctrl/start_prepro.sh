@@ -15,6 +15,7 @@
 # e-mail: n.wagner@fz-juelich.de
 # last modified: 2020-08-04
 # USAGE: 
+# sbatch --export=ALL,startDate=$startDate,CTRLDIR=$(pwd) -o "./logs/%x-out.%j" -e "./logs/%x-err.%j" start_postpro.sh
 
 # IMPORTANT
 # CTRLDIR and initDate HAVE TO be set via sbatch --export command 
