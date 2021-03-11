@@ -1,4 +1,4 @@
-# Welcome to `ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3`
+# Welcome to `FZJ-IBG3_Climatrun-Template`
 
 This repository is containing (or pointing to) everything needed for a climate 
 simulation based on TSMP. To keep everything most flexible a modular approach is 
@@ -14,11 +14,11 @@ All modules together forming the final climate simulation setup.
 First clone this repository (**Workflow**) to you project-directory:
 ``` bash
 cd $PROJECT_DIR
-git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3.git
+git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_scripts_tools_engines/FZJ-IBG3_Climatrun-Template.git
 ```
 and export the new path to an environment variable for later use:
 ``` bash
-cd $PROJECT_DIR/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3
+cd $PROJECT_DIR/FZJ-IBG3_Climatrun-Template
 export BASE_ROOT=$(pwd)
 ```
 Than clone the **ModelSystem** [TSMP](https://www.terrsysmp.org/) to the `src` 
