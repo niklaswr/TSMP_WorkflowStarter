@@ -54,7 +54,6 @@ export PSP_RENDEZVOUS_OPENIB=-1
 #---------------insert here initial, start and final dates of TSMP simulations----------
 initDate="19800101" #DO NOT TOUCH! start of the whole TSMP simulation
 WORK_DIR="${BASE_RUNDIR_TSMP}"
-WORK_FOLDER="sim_output_heter_geology_improved_with_pfl_sink"
 template_FOLDER="tsmp_era5clima_template"
 
 # calculate the number of leap-days between initDate and startDate/currentDate
@@ -75,23 +74,22 @@ hstop=$((hstart+numHours))
 
 #----------copy temlate dir to new rundir-----------
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
-cp -r ${WORK_DIR}/${WORK_FOLDER}/${template_FOLDER} ${WORK_DIR}/${WORK_FOLDER}/${expID}
+cp -r ${WORK_DIR}/${template_FOLDER} ${WORK_DIR}/${expID}
 
-cd ${WORK_DIR}/${WORK_FOLDER}/${expID}
-mkdir ${WORK_DIR}/${WORK_FOLDER}/${expID}/cosmo_out
+cd ${WORK_DIR}/${expID}
+mkdir ${WORK_DIR}/${expID}/cosmo_out
 
-source ${WORK_DIR}/${WORK_FOLDER}/${expID}/loadenvs
+source ${WORK_DIR}/${expID}/loadenvs
 
 ##############################################################
 # Modifying COSMO namelists
 ##############################################################
 sed -i "s,__hstart__,${hstart},g" INPUT_IO
 sed -i "s,__hstop__,${hstop},g" INPUT_IO
-sed -i "s,__cosmo_ydirini__,${WORK_DIR}/laf_lbfd_int2lm_juwels2019a_ouput/all,g" INPUT_IO
-sed -i "s,__cosmo_ydirbd__,${WORK_DIR}/laf_lbfd_int2lm_juwels2019a_ouput/all,g" INPUT_IO
+sed -i "s,__cosmo_ydirini__,${WORK_DIR}/laf_lbfd/all,g" INPUT_IO
+sed -i "s,__cosmo_ydirbd__,${WORK_DIR}/laf_lbfd/all,g" INPUT_IO
 sed -i "s,__exp_id__,TSMP_3.1.0MCT_cordex11_${y0}_${m0},g" INPUT_IO
 sed -i "s,__work_dir_rep__,${WORK_DIR},g" INPUT_IO
-sed -i "s,__work_folder_rep__,${WORK_FOLDER},g" INPUT_IO
 
 cosmo_ydate_ini=$(date '+%Y%m%d%H' -d "${initDate}")
 sed -i "s,__hstart__,$hstart,g" INPUT_ORG
@@ -110,13 +108,12 @@ clm_restart=$(date '+%Y-%m-%d' -d "${startDate}")
 sed -i "s,__clm_restart__,clmoas.clm2.r.${clm_restart}-00000.nc,g" lnd.stdin
 #sed -i "s,__setup_dir_rep__,${SETUP_DIR}/g" lnd.stdin
 sed -i "s,__work_dir_rep__,${WORK_DIR},g" lnd.stdin
-sed -i "s,__work_folder_rep__,${WORK_FOLDER},g" lnd.stdin
 
 ##############################################################
 # Modifying ParFlow TCL flags
 ##############################################################
 sed -i "s,##numHours##,${numHours},g" coup_oas.tcl
-cp ${WORK_DIR}/${WORK_FOLDER}/restarts/parflow/cordex0.11_${ym1}_${mm1}.out.press.*.pfb .
+cp ${WORK_DIR}/restarts/parflow/cordex0.11_${ym1}_${mm1}.out.press.*.pfb .
 ic_pressure=`ls -1rt cordex0.11_${ym1}_${mm1}.out.press.*.pfb | tail -1`
 sed -i "s,__ICPressure__,${ic_pressure},g" coup_oas.tcl
 sed -i "s,__year__,${y0},g" coup_oas.tcl
@@ -148,9 +145,9 @@ wait
 ##############################################################
 echo "DEBUG: start copying restar files"
 clm_restart=`ls -1rt clmoas.clm2.r.*00000.nc | tail -1`
-cp ${clm_restart} ${WORK_DIR}/${WORK_FOLDER}/restarts/clm
+cp ${clm_restart} ${WORK_DIR}/restarts/clm
 pfl_restart=`ls -1rt cordex0.11_${y0}_${m0}.out.press*.pfb | tail -1`
-cp ${pfl_restart} ${WORK_DIR}/${WORK_FOLDER}/restarts/parflow
+cp ${pfl_restart} ${WORK_DIR}/restarts/parflow
 wait
 echo "ready: TSMP simulation for ${cur_month} is complete!" > ready.txt
 

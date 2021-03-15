@@ -29,19 +29,19 @@ targetdirs=$@
 echo "--- source environment"
 source $CTRLDIR/export_paths.ksh
 
-cd ${BASE_RUNDIR_TSMP}/laf_lbfd_int2lm_juwels2019a_ouput/
+cd ${BASE_RUNDIR_TSMP}/laf_lbfd/
 for targetdir in $targetdirs; do
   # ski if targetdir is not a directory
   if [[ ! -d $targetdir ]]; then continue; fi
   targetdir_name=${targetdir##*/}
   echo "working on: $targetdir_name"
   echo "-- taring"
-  tar -cvf ${BASE_LARGEROOTDIR}/run/lat_lbfd_int2lm_output/${targetdir_name}.tar ${targetdir_name}
+  tar -cvf ${BASE_LARGEROOTDIR}/run/laf_lbfd/${targetdir_name}.tar ${targetdir_name}
   if [[ $? != 0 ]] ; then echo "ERROR" && exit 1 ; fi
   echo "-- remove simresdir"
   #mv ${targetdir_name} REMOVE_${targetdir_name} 
   rm -r ${targetdir_name}
   echo "-- linking"
-  ln -sf ${BASE_LARGEROOTDIR}/run/lat_lbfd_int2lm_output/${targetdir_name}.tar ./
+  ln -sf ${BASE_LARGEROOTDIR}/run/laf_lbfd/${targetdir_name}.tar ./
   echo "-- done"
 done

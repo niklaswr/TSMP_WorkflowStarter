@@ -48,22 +48,21 @@ echo "--- HOST:  $(hostname)"
 #---------------insert here initial, start and final dates of TSMP simulations----------
 initDate="19800101" #DO NOT TOUCH! start of the whole TSMP simulation
 WORK_DIR="${BASE_RUNDIR_TSMP}"
-WORK_FOLDER="sim_output_heter_geology_improved_with_pfl_sink"
 template_FOLDER="tsmp_era5clima_template"
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
-rundir=${WORK_DIR}/${WORK_FOLDER}/${expID}
+rundir=${WORK_DIR}/${expID}
 
 # Create individual subdir in ToPostPro to copy model-output
 # there. I want to seperate modeloutput first, to be 100%
 # sure modelputput is not changed by post-pro scripts (cdo, nco)
-mkdir -p ${WORK_DIR}/${WORK_FOLDER}/ToPostPro/${y0}_${m0}/cosmo_out
-mkdir -p ${WORK_DIR}/${WORK_FOLDER}/ToPostPro/${y0}_${m0}/parflow_out
-mkdir -p ${WORK_DIR}/${WORK_FOLDER}/ToPostPro/${y0}_${m0}/clm_out
+mkdir -p ${WORK_DIR}/ToPostPro/${y0}_${m0}/cosmo_out
+mkdir -p ${WORK_DIR}/ToPostPro/${y0}_${m0}/parflow_out
+mkdir -p ${WORK_DIR}/ToPostPro/${y0}_${m0}/clm_out
 
 # copy model-output to ToPostPro subdir
-cp ${rundir}/cosmo_out/* ${WORK_DIR}/${WORK_FOLDER}/ToPostPro/${y0}_${m0}/cosmo_out/
-cp ${rundir}/cordex0.11_${y0}_${m0}.out.*.pfb ${WORK_DIR}/${WORK_FOLDER}/ToPostPro/${y0}_${m0}/parflow_out/
-cp ${rundir}/clmoas.clm2.h0.${y0}-${m0}*.nc ${WORK_DIR}/${WORK_FOLDER}/ToPostPro/${y0}_${m0}/clm_out/
+cp ${rundir}/cosmo_out/* ${WORK_DIR}/ToPostPro/${y0}_${m0}/cosmo_out/
+cp ${rundir}/cordex0.11_${y0}_${m0}.out.*.pfb ${WORK_DIR}/ToPostPro/${y0}_${m0}/parflow_out/
+cp ${rundir}/clmoas.clm2.h0.${y0}-${m0}*.nc ${WORK_DIR}/ToPostPro/${y0}_${m0}/clm_out/
 
 cd ${BASE_CTRLDIR}
 postpro_initDate=$(date '+%Y%m%d%H' -d "${initDate}")
@@ -73,7 +72,7 @@ postpro_YYYY_MM=$(date '+%Y_%m' -d "${startDate}")
 if [[ $? != 0 ]] ; then exit 1 ; fi
 
 echo "-- deleting ToPostPro/${y0}_${m0}"
-rm -r ${WORK_DIR}/${WORK_FOLDER}/ToPostPro/${y0}_${m0}
+rm -r ${WORK_DIR}/ToPostPro/${y0}_${m0}
 
 echo "-- calculating checksum for postpro/${y0}_${m0}"
 cd ${BASE_POSTPRODIR}/${y0}_${m0}

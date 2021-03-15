@@ -38,7 +38,7 @@ int2lm_hincbound=3
 int2lm_nam_template="INT2LM_template_ERA5"
 
 echo "DEBUG: create INT2LM lm_cat_dir (ex OUTPUT_DIR) dir"
-int2lm_LmCatDir="${BASE_RUNDIR_TSMP}/laf_lbfd_int2lm_juwels2019a_ouput/${cur_year}"
+int2lm_LmCatDir="${BASE_RUNDIR_TSMP}/laf_lbfd/${cur_year}"
 mkdir -p ${int2lm_LmCatDir}
 
 #--------------------------------

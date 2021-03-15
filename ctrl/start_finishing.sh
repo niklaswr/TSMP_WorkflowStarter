@@ -49,10 +49,9 @@ echo "--- HOST:  $(hostname)"
 #---------------insert here initial, start and final dates of TSMP simulations----------
 initDate="19800101" #DO NOT TOUCH! start of the whole TSMP simulation
 WORK_DIR="${BASE_RUNDIR_TSMP}"
-WORK_FOLDER="sim_output_heter_geology_improved_with_pfl_sink"
 template_FOLDER="tsmp_era5clima_template"
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
-rundir=${WORK_DIR}/${WORK_FOLDER}/${expID}
+rundir=${WORK_DIR}/${expID}
 
 echo "--- create SIMRES dir (and sub-dirs) to store simulation results"
 new_simres_name="${expid}_$(date '+%Y%m%d' -d "$startDate")"
@@ -86,7 +85,7 @@ SETUP / CONFIGURATION 'tsmp_era5clima_template'
 https://icg4geo.icg.kfa-juelich.de/Configurations/TSMP/tsmp_era5clima_template
 -- COMMIT:
 EOM
-cd ${BASE_RUNDIR_TSMP}/${WORK_FOLDER}/${template_FOLDER}
+cd ${BASE_RUNDIR_TSMP}/${template_FOLDER}
 git show --oneline -s >> $histfile
 
 # NOTE the difference > and >> here and above!
@@ -105,9 +104,9 @@ echo "--- move modeloutput to individual simresdir"
 cp ${rundir}/cosmo_out/* $new_simres/cosmo
 cp ${rundir}/cordex0.11_${y0}_${m0}.out.*.pfb $new_simres/parflow
 cp ${rundir}/clmoas.clm2.h?.*.nc $new_simres/clm
-cp ${WORK_DIR}/${WORK_FOLDER}/restarts/cosmo/lrfd${yp1}${mp1}0100o $new_simres/restarts
-cp ${WORK_DIR}/${WORK_FOLDER}/restarts/parflow/cordex0.11_${y0}_${m0}.out.press.?????.pfb $new_simres/restarts
-cp ${WORK_DIR}/${WORK_FOLDER}/restarts/clm/clmoas.clm2.r.${yp1}-${mp1}-01-00000.nc $new_simres/restarts
+cp ${WORK_DIR}/restarts/cosmo/lrfd${yp1}${mp1}0100o $new_simres/restarts
+cp ${WORK_DIR}/restarts/parflow/cordex0.11_${y0}_${m0}.out.press.?????.pfb $new_simres/restarts
+cp ${WORK_DIR}/restarts/clm/clmoas.clm2.r.${yp1}-${mp1}-01-00000.nc $new_simres/restarts
 check4error $? "--- ERROR while moving model output to simres-dir"
 wait
 
