@@ -27,9 +27,9 @@ directory:
 cd $BASE_ROOT/src
 git clone https://github.com/HPSCTerrSys/TSMP.git
 ```
-Next get the **ModelSetup** and place at the right subdirectory in `run_TSMP`:
+Next get the **ModelSetup** and place under `run_TSMP`:
 ``` bash
-cd $BASE_ROOT/run_TSMP/sim_output_heter_geology_improved_with_pfl_sink/
+cd $BASE_ROOT/run_TSMP/
 git clone https://icg4geo.icg.kfa-juelich.de/Configurations/TSMP/tsmp_era5clima_template.git
 ```
 
@@ -57,13 +57,13 @@ restart-files are needed.
 
 Link the provided forcing sample to the proper subdirectory in `run_TSMP`:
 ``` bash
-cd $BASE_ROOT/run_TSMP/laf_lbfd_int2lm_juwels2019a_ouput/all
+cd $BASE_ROOT/run_TSMP/laf_lbfd/all
 ln -sf NEED/TO/ADD/PATH ./
 ```
 
-Copy provided restart-files to the proper subdirectory in `run_TSMP`: 
+Copy provided restart-files to the restart-dir under `run_TSMP`: 
 ``` bash
-cd $BASE_ROOT/run_TSMP/sim_output_heter_geology_improved_with_pfl_sink/restarts
+cd $BASE_ROOT/run_TSMP/restarts
 cp -r NEED/TO/ADD/PATH/* ./
 ```
 To start a simulation simply submit `starter.sh` from `ctrl`-directory:
