@@ -12,7 +12,7 @@
 
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2020-08-04
+# last modified: 2021-03-16
 # USAGE: 
 
 # IMPORTANT
@@ -108,6 +108,7 @@ clm_restart=$(date '+%Y-%m-%d' -d "${startDate}")
 sed -i "s,__clm_restart__,clmoas.clm2.r.${clm_restart}-00000.nc,g" lnd.stdin
 #sed -i "s,__setup_dir_rep__,${SETUP_DIR}/g" lnd.stdin
 sed -i "s,__work_dir_rep__,${WORK_DIR},g" lnd.stdin
+sed -i "s,__BASE_GEODIR__,${BASE_GEODIR},g" lnd.stdin
 
 ##############################################################
 # Modifying ParFlow TCL flags
@@ -118,6 +119,7 @@ ic_pressure=`ls -1rt cordex0.11_${ym1}_${mm1}.out.press.*.pfb | tail -1`
 sed -i "s,__ICPressure__,${ic_pressure},g" coup_oas.tcl
 sed -i "s,__year__,${y0},g" coup_oas.tcl
 sed -i "s,__month__,${m0},g" coup_oas.tcl
+sed -i "s,__BASE_GEODIR__,${BASE_GEODIR},g" coup_oas.tcl
 tclsh coup_oas.tcl
 
 sed -i "s,__pfidb__,cordex0.11_${y0}_${m0},g" slm_multiprog_mapping.conf

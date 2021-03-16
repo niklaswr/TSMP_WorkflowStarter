@@ -24,6 +24,8 @@ ctrl/logs/**
 simres/**
 # ignore content of postpro
 postpro/**
+# ignore content of geo
+geo/**
 
 # general keeps:
 ################
