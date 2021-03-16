@@ -69,35 +69,42 @@ histfile=$new_simres/HISTORY.txt
 /bin/cat <<EOM >$histfile
 This simulation was run with 
 ###############################################################################
-WORKFLOW 'ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3'
+WORKFLOW 
 -- REPO:
-https://icg4geo.icg.kfa-juelich.de/ModelSystems/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3.git
--- COMMIT: 
-EOM
-cd ${BASE_CTRLDIR}
-git show --oneline -s >> $histfile
-
-# NOTE the difference > and >> here and above!
-/bin/cat <<EOM >>$histfile
+__URL_WORKFLOW__
+-- LOG: 
+__LOG_WORKFLOW__
 ###############################################################################
-SETUP / CONFIGURATION 'tsmp_era5clima_template'
+SETUP / CONFIGURATION 
 -- REPO:
-https://icg4geo.icg.kfa-juelich.de/Configurations/TSMP/tsmp_era5clima_template
--- COMMIT:
-EOM
-cd ${BASE_RUNDIR_TSMP}/${template_FOLDER}
-git show --oneline -s >> $histfile
-
-# NOTE the difference > and >> here and above!
-/bin/cat <<EOM >>$histfile
+__URL_CONFIGURATION__
+-- LOG:
+__LOG_CONFIGURATION__
 ###############################################################################
 MODEL 'TSMP' (build with: './build_tsmp.ksh -v 3.1.0MCT -c clm-cos-pfl -m JUWELS -O Intel')
 -- REPO:
-https://github.com/HPSCTerrSys/TSMP
--- COMMIT:
+__URL_MODEL__
+-- LOG:
+__LOG_MODEL__
+###############################################################################
 EOM
+cd ${BASE_CTRLDIR}
+LOG_WORKFLOW=$(git log -n 1)
+URL_WORKFLOW=$(git config --get remote.origin.url)
+sed -i "s,__LOG_WORKFLOW__,${LOG_WORKFLOW},g" ${histfile}
+sed -i "s,__URL_WORKFLOW__,${URL_WORKFLOW},g" ${histfile}
+
+cd ${BASE_RUNDIR_TSMP}/${template_FOLDER}
+LOG_CONFIGURATION=$(git log -n 1)
+URL_CONFIGURATION=$(git config --get remote.origin.url)
+sed -i "s,__LOG_CONFIGURATION__,${LOG_CONFIGURATION},g" ${histfile}
+sed -i "s,__URL_CONFIGURATION__,${URL_CONFIGURATION},g" ${histfile}
+
 cd ${BASE_SRCDIR}/TSMP
-git show --oneline -s >> $histfile
+LOG_MODEL=$(git log -n 1)
+URL_MODEL=$(git config --get remote.origin.url)
+sed -i "s,__LOG_MODEL__,${LOG_MODEL},g" ${histfile}
+sed -i "s,__URL_MODEL__,${URL_MODEL},g" ${histfile}
 check4error $? "--- ERROR while creating HISTORY.txt"
 
 echo "--- move modeloutput to individual simresdir"
