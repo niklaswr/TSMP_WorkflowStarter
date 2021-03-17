@@ -47,7 +47,7 @@ echo "--- HOST:  $(hostname)"
 ###############################################################################
 
 #---------------insert here initial, start and final dates of TSMP simulations----------
-initDate="19800101" #DO NOT TOUCH! start of the whole TSMP simulation
+initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
 WORK_DIR="${BASE_RUNDIR_TSMP}"
 template_FOLDER="tsmp_era5clima_template"
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"

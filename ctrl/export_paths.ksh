@@ -30,3 +30,6 @@ export BASE_SRCDIR="${rootdir}/src"
 export BASE_ARCROOTDIR="${ARCHIVE_jibg33}/tsmpforecast/${expid}"
 export BASE_LARGEROOTDIR="${DATA_jibg33}/tsmpforecast/${expid}"
 export PARFLOW_DIR="${rootdir}/src/TSMP/bin/JUWELS_3.1.0MCT_clm-cos-pfl"
+
+# below does accutally not belong her, but I do have no better place.
+export BASE_INITDATE="19800101"
