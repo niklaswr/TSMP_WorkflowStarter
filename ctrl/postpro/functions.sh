@@ -47,7 +47,10 @@ function cdocor {
 function timeseries {
   PARAM=$1
   cd ${INPDIR}/${YYYY_MM}/$2
-  ${NCO_BINDIR}/ncrcat -h -O -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -v $1 lffd*[!cpz].nc ${OUTDIR}/${YYYY_MM}/${PARAM}_ts.nc
+  # NWR 20210317
+  # do only copy cell_method attribute from those vars already containing (--no_cell_methods)
+  ${NCO_BINDIR}/ncrcat --no_cell_methods -h -O -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -v $1 lffd*[!cpz].nc ${OUTDIR}/${YYYY_MM}/${PARAM}_ts.nc
+  #${NCO_BINDIR}/ncrcat -h -O -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -v $1 lffd*[!cpz].nc ${OUTDIR}/${YYYY_MM}/${PARAM}_ts.nc
   ${NCO_BINDIR}/ncks -h -A -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -v lon,lat,rotated_pole lffd${CURRENT_DATE}.nc ${OUTDIR}/${YYYY_MM}/${PARAM}_ts.nc
   # in case cell_methods exists the value of the time variable is replaced by the value of middle of the time interval
   if [ "$(${NC_BINDIR}/ncdump -h ${OUTDIR}/${YYYY_MM}/${PARAM}_ts.nc | grep ${PARAM}:cell_methods | grep time)" != "" ]
@@ -82,9 +85,9 @@ function timeseriesp {
     PASCAL=$(python -c "print(${PLEVS[$NPLEV]} * 100.)")
     PLEV=$(python -c "print(int(${PLEVS[$NPLEV]}))")
     cd ${INPDIR}/${YYYY_MM}/$2
-    # NWR 20201204
-    # do also cut dim srlon and srlat
-    ${NCO_BINDIR}/ncrcat -h -O -d srlon,${NBOUNDCUT},${IESPONGE} -d srlat,${NBOUNDCUT},${JESPONGE} -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -d pressure,${PASCAL},${PASCAL} -v ${PARAM} lffd*p.nc ${OUTDIR}/${YYYY_MM}/${PARAM}${PLEV}p_ts.nc
+    # NWR 20210317
+    # do also cut dim srlon and srlat and copy cell_method only from those vars already containing (--no_cell_methods)
+    ${NCO_BINDIR}/ncrcat --no_cell_methods -h -O -d srlon,${NBOUNDCUT},${IESPONGE} -d srlat,${NBOUNDCUT},${JESPONGE} -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -d pressure,${PASCAL},${PASCAL} -v ${PARAM} lffd*p.nc ${OUTDIR}/${YYYY_MM}/${PARAM}${PLEV}p_ts.nc
     #${NCO_BINDIR}/ncrcat -h -O -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -d pressure,${PASCAL},${PASCAL} -v ${PARAM} lffd*p.nc ${OUTDIR}/${YYYY_MM}/${PARAM}${PLEV}p_ts.nc
     # NWR 20201204
     # do also cut dim srlon and srlat
@@ -139,7 +142,10 @@ function timeseriesz {
   do
     ZLEV=$(python -c "print(int(${ZLEVS[$NZLEV]}))")
     cd ${INPDIR}/${YYYY_MM}/$2
-    ${NCO_BINDIR}/ncrcat -h -O -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -d ${HEIGHT},${ZLEV}.,${ZLEV}. -v ${PARAM} lffd*z.nc ${OUTDIR}/${YYYY_MM}/${PARAM}${ZLEV}z${NN}_ts.nc
+    # NWR 20210317
+    # do only copy cell_method attribute from those vars already containing (--no_cell_methods)
+    ${NCO_BINDIR}/ncrcat --no_cell_methods -h -O -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -d ${HEIGHT},${ZLEV}.,${ZLEV}. -v ${PARAM} lffd*z.nc ${OUTDIR}/${YYYY_MM}/${PARAM}${ZLEV}z${NN}_ts.nc
+    #${NCO_BINDIR}/ncrcat -h -O -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -d ${HEIGHT},${ZLEV}.,${ZLEV}. -v ${PARAM} lffd*z.nc ${OUTDIR}/${YYYY_MM}/${PARAM}${ZLEV}z${NN}_ts.nc
     ${NCO_BINDIR}/ncks -h -A -d rlon,${NBOUNDCUT},${IESPONGE} -d rlat,${NBOUNDCUT},${JESPONGE} -v lon,lat,rotated_pole lffd${CURRENT_DATE}z.nc ${OUTDIR}/${YYYY_MM}/${PARAM}${ZLEV}z${NN}_ts.nc
     # in case cell_methods exists the value of the time variable is replaced by the value of middle of the time interval
    if [ "$(${NC_BINDIR}/ncdump -h ${OUTDIR}/${YYYY_MM}/${PARAM}${ZLEV}z${NN}_ts.nc | grep ${PARAM}:cell_methods | grep time)" != "" ]
