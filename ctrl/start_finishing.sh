@@ -122,12 +122,15 @@ cd $new_simres
 sha512sum ./cosmo/* > ./cosmo/CheckSum.sha512
 parallelGzip 48 $new_simres/cosmo
 wait
+cd $new_simres
 sha512sum ./parflow/* > ./parflow/CheckSum.sha512
 parallelGzip 48 $new_simres/parflow
 wait
+cd $new_simres
 sha512sum ./clm/* > ./clm/CheckSum.sha512
 parallelGzip 48 $new_simres/clm
 wait
+cd $new_simres
 sha512sum ./restarts/* > ./restarts/CheckSum.sha512
 parallelGzip 48 $new_simres/restarts
 wait
