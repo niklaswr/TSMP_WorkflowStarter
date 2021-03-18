@@ -81,7 +81,7 @@ __URL_CONFIGURATION__
 -- LOG:
 __LOG_CONFIGURATION__
 ###############################################################################
-MODEL 'TSMP' (build with: './build_tsmp.ksh -v 3.1.0MCT -c clm-cos-pfl -m JUWELS -O Intel')
+MODEL (build with: './build_tsmp.ksh -v 3.1.0MCT -c clm-cos-pfl -m JUWELS -O Intel')
 -- REPO:
 __URL_MODEL__
 -- LOG:
@@ -89,19 +89,19 @@ __LOG_MODEL__
 ###############################################################################
 EOM
 cd ${BASE_CTRLDIR}
-LOG_WORKFLOW=$(git log -n 1)
+LOG_WORKFLOW=$(git log --pretty=format:'commit: %H; author: %an; date: %ad; subject: %s' -n 1)
 URL_WORKFLOW=$(git config --get remote.origin.url)
 sed -i "s,__LOG_WORKFLOW__,${LOG_WORKFLOW},g" ${histfile}
 sed -i "s,__URL_WORKFLOW__,${URL_WORKFLOW},g" ${histfile}
 
 cd ${BASE_RUNDIR_TSMP}/${template_FOLDER}
-LOG_CONFIGURATION=$(git log -n 1)
+LOG_CONFIGURATION=$(git log --pretty=format:'commit: %H; author: %an; date: %ad; subject: %s' -n 1)
 URL_CONFIGURATION=$(git config --get remote.origin.url)
 sed -i "s,__LOG_CONFIGURATION__,${LOG_CONFIGURATION},g" ${histfile}
 sed -i "s,__URL_CONFIGURATION__,${URL_CONFIGURATION},g" ${histfile}
 
 cd ${BASE_SRCDIR}/TSMP
-LOG_MODEL=$(git log -n 1)
+LOG_MODEL=$(git log --pretty=format:'commit: %H; author: %an; date: %ad; subject: %s' -n 1)
 URL_MODEL=$(git config --get remote.origin.url)
 sed -i "s,__LOG_MODEL__,${LOG_MODEL},g" ${histfile}
 sed -i "s,__URL_MODEL__,${URL_MODEL},g" ${histfile}
