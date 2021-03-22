@@ -75,6 +75,12 @@ hstop=$((hstart+numHours))
 #----------copy temlate dir to new rundir-----------
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
 cp -r ${WORK_DIR}/${template_FOLDER} ${WORK_DIR}/${expID}
+#----------copy geodir (at least parflow) to new rundir----------
+#----------and execute tcl-scripts-------------------------------
+cp ${BASE_GEODIR}/parflow/* ${WORK_DIR}/${expID}/
+cd ${WORK_DIR}/${expID}
+tclsh ascii2pfb_slopes.tcl
+tclsh ascii2pfb_SoilInd.tcl
 
 cd ${WORK_DIR}/${expID}
 mkdir ${WORK_DIR}/${expID}/cosmo_out
