@@ -72,15 +72,29 @@ fi
 hstart=$(( ($(date -u '+%s' -d "${startDate}") - $(date -u '+%s' -d "${initDate}"))/3600 - numLeapDays*24))
 hstop=$((hstart+numHours))
 
-#----------copy temlate dir to new rundir-----------
+#----------create new rundir---------------------------------------------------
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
-cp -r ${WORK_DIR}/${template_FOLDER} ${WORK_DIR}/${expID}
-#----------copy geodir (at least parflow) to new rundir----------
-#----------and execute tcl-scripts-------------------------------
+echo "--- try removing ${expID} in case already exists"
+rm -vr ${WORK_DIR}/${expID}
+echo "--- create and fill ${expID}"
+mkdir ${WORK_DIR}/${expID}
+#----------copy geodir to new rundir and execute tcl-scripts-------------------
+echo "--- -- copying ParFlow geo/ files"
 cp ${BASE_GEODIR}/parflow/* ${WORK_DIR}/${expID}/
+echo "--- -- -- execute tcl-scripts "
 cd ${WORK_DIR}/${expID}
 tclsh ascii2pfb_slopes.tcl
 tclsh ascii2pfb_SoilInd.tcl
+echo "--- -- copying Oasis geo/ files"
+cp ${BASE_GEODIR}/oasis3/* ${WORK_DIR}/${expID}/
+#----------copy namedir to new rundir------------------------------------------
+echo "--- -- copying namelists form ${BASE_NAMEDIR}"
+cp ${BASE_NAMEDIR}/* ${WORK_DIR}/${expID}/
+#----------copy binaries to new rundir-----------------------------------------
+echo "--- -- copying binaries from ${BASE_BINDIR}"
+cp ${BASE_BINDIR}/clm ${WORK_DIR}/${expID}/
+cp ${BASE_BINDIR}/lmparbin_pur ${WORK_DIR}/${expID}/
+cp ${BASE_BINDIR}/parflow ${WORK_DIR}/${expID}/
 
 cd ${WORK_DIR}/${expID}
 mkdir ${WORK_DIR}/${expID}/cosmo_out
