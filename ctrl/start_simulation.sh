@@ -74,17 +74,13 @@ hstop=$((hstart+numHours))
 
 #----------create new rundir---------------------------------------------------
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
-echo "--- try removing ${expID} in case already exists"
+echo "--- try to remove ${expID} in case already exists"
 rm -vr ${WORK_DIR}/${expID}
 echo "--- create and fill ${expID}"
 mkdir ${WORK_DIR}/${expID}
 #----------copy geodir to new rundir and execute tcl-scripts-------------------
 echo "--- -- copying ParFlow geo/ files"
 cp ${BASE_GEODIR}/parflow/* ${WORK_DIR}/${expID}/
-echo "--- -- -- execute tcl-scripts "
-cd ${WORK_DIR}/${expID}
-tclsh ascii2pfb_slopes.tcl
-tclsh ascii2pfb_SoilInd.tcl
 echo "--- -- copying Oasis geo/ files"
 cp ${BASE_GEODIR}/oasis3/* ${WORK_DIR}/${expID}/
 #----------copy namedir to new rundir------------------------------------------
@@ -143,6 +139,10 @@ sed -i "s,__BASE_GEODIR__,${BASE_GEODIR},g" coup_oas.tcl
 tclsh coup_oas.tcl
 
 sed -i "s,__pfidb__,cordex0.11_${y0}_${m0},g" slm_multiprog_mapping.conf
+
+echo "--- execute ParFlow distributeing tcl-scripts "
+tclsh ascii2pfb_slopes.tcl
+tclsh ascii2pfb_SoilInd.tcl
 
 ##############################################################
 # Modifying OASIS3-MCT namelist
