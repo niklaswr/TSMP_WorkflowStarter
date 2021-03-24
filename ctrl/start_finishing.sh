@@ -49,7 +49,6 @@ echo "--- HOST:  $(hostname)"
 #---------------insert here initial, start and final dates of TSMP simulations----------
 initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
 WORK_DIR="${BASE_RUNDIR_TSMP}"
-template_FOLDER="tsmp_era5clima_template"
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
 rundir=${WORK_DIR}/${expID}
 
@@ -73,38 +72,44 @@ WORKFLOW
 -- REPO:
 __URL_WORKFLOW__
 -- LOG: 
-__LOG_WORKFLOW__
-###############################################################################
-SETUP / CONFIGURATION 
--- REPO:
-__URL_CONFIGURATION__
--- LOG:
-__LOG_CONFIGURATION__
+__COMMIT_WORKFLOW__
+__AUTHOR_WORKFLOW__
+__DATE_WORKFLOW__
+__SUBJECT_WORKFLOW__
 ###############################################################################
 MODEL (build with: './build_tsmp.ksh -v 3.1.0MCT -c clm-cos-pfl -m JUWELS -O Intel')
 -- REPO:
 __URL_MODEL__
 -- LOG:
-__LOG_MODEL__
+__COMMIT_MODEL__
+__AUTHOR_MODEL__
+__DATE_MODEL__
+__SUBJECT_MODEL__
 ###############################################################################
 EOM
 cd ${BASE_CTRLDIR}
-LOG_WORKFLOW=$(git log --pretty=format:'commit: %H; author: %an; date: %ad; subject: %s' -n 1)
+COMMIT_WORKFLOW=$(git log --pretty=format:'commit: %H' -n 1)
+AUTHOR_WORKFLOW=$(git log --pretty=format:'author: %an' -n 1)
+DATE_WORKFLOW=$(git log --pretty=format:'date: %ad' -n 1)
+SUBJECT_WORKFLOW=$(git log --pretty=format:'subject: %s' -n 1)
 URL_WORKFLOW=$(git config --get remote.origin.url)
-sed -i "s,__LOG_WORKFLOW__,${LOG_WORKFLOW},g" ${histfile}
-sed -i "s,__URL_WORKFLOW__,${URL_WORKFLOW},g" ${histfile}
-
-cd ${BASE_RUNDIR_TSMP}/${template_FOLDER}
-LOG_CONFIGURATION=$(git log --pretty=format:'commit: %H; author: %an; date: %ad; subject: %s' -n 1)
-URL_CONFIGURATION=$(git config --get remote.origin.url)
-sed -i "s,__LOG_CONFIGURATION__,${LOG_CONFIGURATION},g" ${histfile}
-sed -i "s,__URL_CONFIGURATION__,${URL_CONFIGURATION},g" ${histfile}
+sed -i "s;__COMMIT_WORKFLOW__;${COMMIT_WORKFLOW};g" ${histfile}
+sed -i "s;__AUTHOR_WORKFLOW__;${AUTHOR_WORKFLOW};g" ${histfile}
+sed -i "s;__DATE_WORKFLOW__;${DATE_WORKFLOW};g" ${histfile}
+sed -i "s;__SUBJECT_WORKFLOW__;${SUBJECT_WORKFLOW};g" ${histfile}
+sed -i "s;__URL_WORKFLOW__;${URL_WORKFLOW};g" ${histfile}
 
 cd ${BASE_SRCDIR}/TSMP
-LOG_MODEL=$(git log --pretty=format:'commit: %H; author: %an; date: %ad; subject: %s' -n 1)
+COMMIT_MODEL=$(git log --pretty=format:'commit: %H' -n 1)
+AUTHOR_MODEL=$(git log --pretty=format:'author: %an' -n 1)
+DATE_MODEL=$(git log --pretty=format:'date: %ad' -n 1)
+SUBJECT_MODEL=$(git log --pretty=format:'subject: %s' -n 1)
 URL_MODEL=$(git config --get remote.origin.url)
-sed -i "s,__LOG_MODEL__,${LOG_MODEL},g" ${histfile}
-sed -i "s,__URL_MODEL__,${URL_MODEL},g" ${histfile}
+sed -i "s;__COMMIT_MODEL__;${COMMIT_MODEL};g" ${histfile}
+sed -i "s;__AUTHOR_MODEL__;${AUTHOR_MODEL};g" ${histfile}
+sed -i "s;__DATE_MODEL__;${DATE_MODEL};g" ${histfile}
+sed -i "s;__SUBJECT_MODEL__;${SUBJECT_MODEL};g" ${histfile}
+sed -i "s;__URL_MODEL__;${URL_MODEL};g" ${histfile}
 check4error $? "--- ERROR while creating HISTORY.txt"
 
 echo "--- move modeloutput to individual simresdir"
