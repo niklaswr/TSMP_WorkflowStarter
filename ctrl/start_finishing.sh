@@ -123,20 +123,20 @@ check4error $? "--- ERROR while moving model output to simres-dir"
 wait
 
 echo "--- gzip and sha512sum individual files in simresdir"
-cd $new_simres
-sha512sum ./cosmo/* > ./cosmo/CheckSum.sha512
+cd ${new_simres}/cosmo
+sha512sum ./* > CheckSum.sha512
 parallelGzip 48 $new_simres/cosmo
 wait
-cd $new_simres
-sha512sum ./parflow/* > ./parflow/CheckSum.sha512
+cd ${new_simres}/parflow
+sha512sum ./* > CheckSum.sha512
 parallelGzip 48 $new_simres/parflow
 wait
-cd $new_simres
-sha512sum ./clm/* > ./clm/CheckSum.sha512
+cd ${new_simres}/clm
+sha512sum ./* > ./CheckSum.sha512
 parallelGzip 48 $new_simres/clm
 wait
-cd $new_simres
-sha512sum ./restarts/* > ./restarts/CheckSum.sha512
+cd ${new_simres}/restarts
+sha512sum ./* > CheckSum.sha512
 parallelGzip 48 $new_simres/restarts
 wait
 
