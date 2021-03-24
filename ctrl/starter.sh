@@ -4,8 +4,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --output=ERA5Clima_starter-out.%j
-#SBATCH --error=ERA5Clima_starter-err.%j
+#SBATCH --output=ERA5Clima_starter-out
+#SBATCH --error=ERA5Clima_starter-err
 #SBATCH --time=00:05:00
 #SBATCH --mail-type=NONE
 #SBATCH --partition=devel
