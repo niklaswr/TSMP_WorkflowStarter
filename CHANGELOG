@@ -1,14 +1,47 @@
 This file should contain a small log / documentation of the setu process for ERA5Climat runs.
 
+The version number is used as a tag.
+
+Version numbering:
+MAJOR.Minor.patch
+
+v2.0.0
+======
+
+commit:
+INT2LMv2.0.4
+TSMPv1.2.3
+
+Changes:
+- add `src/parflow/ParFlow_IO.py` needed by postpro
+- add bunch of aux-tools
+- remove JOBID from logfiles
+- dd `missing_value` to Pfb2netCDF.py
+- use CORDEX default for netCDF time-axis (ste time-step in between time-bnds
+  for non-instantanous variables)
+- add sha512sum for postpro/ and simres/
+- add source-code changes needed for TSMP as patchfile to enable the user to 
+  reproduce used TSMP version/setting
+- update generation of HISTORY.txt
+- clean up dir-structuer (e.g. remove very long 'version explaining' dirnames,
+  which are from before using git).
+- remove using template-dir. Static-files are now stored under geo/ and namelist
+  are stored under ctrl/namelist/
+- centralize initDate (very beginning of simulation)
+
+-----
+BELOW IS DEPRICATED as I satrt a new versioning
+-----
+
+This file should contain a small log / documentation of the setu process for ERA5Climat runs.
+
 General:
 Different to 'usual strategy' development is done on the master branch and releases are 'splited' to individual branches.
 This strategy is also used by big companies as Check24 and Trivago.
 I want to test this!
 
 Version numbering:
-directory nomencltur: [...]_vXXX[...]
 branches: vXXX_YYY
-
 
 v001_002
 ========
