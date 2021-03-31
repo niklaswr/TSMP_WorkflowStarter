@@ -72,6 +72,7 @@ WORKFLOW
 -- REPO:
 __URL_WORKFLOW__
 -- LOG: 
+tag: __TAG_WORKFLOW__
 __COMMIT_WORKFLOW__
 __AUTHOR_WORKFLOW__
 __DATE_WORKFLOW__
@@ -81,6 +82,7 @@ MODEL (build with: './build_tsmp.ksh -v 3.1.0MCT -c clm-cos-pfl -m JUWELS -O Int
 -- REPO:
 __URL_MODEL__
 -- LOG:
+tag: __TAG_MODEL__
 __COMMIT_MODEL__
 __AUTHOR_MODEL__
 __DATE_MODEL__
@@ -88,11 +90,13 @@ __SUBJECT_MODEL__
 ###############################################################################
 EOM
 cd ${BASE_CTRLDIR}
+TAG_WORKFLOW=$(git tag --points-at HEAD)
 COMMIT_WORKFLOW=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_WORKFLOW=$(git log --pretty=format:'author: %an' -n 1)
 DATE_WORKFLOW=$(git log --pretty=format:'date: %ad' -n 1)
 SUBJECT_WORKFLOW=$(git log --pretty=format:'subject: %s' -n 1)
 URL_WORKFLOW=$(git config --get remote.origin.url)
+sed -i "s;__TAG_WORKFLOW__;${TAG_WORKFLOW};g" ${histfile}
 sed -i "s;__COMMIT_WORKFLOW__;${COMMIT_WORKFLOW};g" ${histfile}
 sed -i "s;__AUTHOR_WORKFLOW__;${AUTHOR_WORKFLOW};g" ${histfile}
 sed -i "s;__DATE_WORKFLOW__;${DATE_WORKFLOW};g" ${histfile}
@@ -100,11 +104,13 @@ sed -i "s;__SUBJECT_WORKFLOW__;${SUBJECT_WORKFLOW};g" ${histfile}
 sed -i "s;__URL_WORKFLOW__;${URL_WORKFLOW};g" ${histfile}
 
 cd ${BASE_SRCDIR}/TSMP
+TAG_MODEL=$(git tag --points-at HEAD)
 COMMIT_MODEL=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_MODEL=$(git log --pretty=format:'author: %an' -n 1)
 DATE_MODEL=$(git log --pretty=format:'date: %ad' -n 1)
 SUBJECT_MODEL=$(git log --pretty=format:'subject: %s' -n 1)
 URL_MODEL=$(git config --get remote.origin.url)
+sed -i "s;__TAG_MODEL__;${TAG_MODEL};g" ${histfile}
 sed -i "s;__COMMIT_MODEL__;${COMMIT_MODEL};g" ${histfile}
 sed -i "s;__AUTHOR_MODEL__;${AUTHOR_MODEL};g" ${histfile}
 sed -i "s;__DATE_MODEL__;${DATE_MODEL};g" ${histfile}
