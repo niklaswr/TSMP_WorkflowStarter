@@ -9,8 +9,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=48
 #SBATCH --ntasks-per-node=48
-#SBATCH --output=int2lm-out
-#SBATCH --error=int2lm-err
+#SBATCH --output=int2lm.out
+#SBATCH --error=int2lm.err
 #SBATCH --time=03:00:00
 #SBATCH --partition=batch
 ##SBATCH --mail-type=ALL
