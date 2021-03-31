@@ -34,4 +34,4 @@ export BASE_BINDIR="${rootdir}/src/TSMP/bin/JUWELS_3.1.0MCT_clm-cos-pfl"
 export PARFLOW_DIR="${BASE_BINDIR}"
 
 # below does accutally not belong her, but I do have no better place.
-export BASE_INITDATE="19800101"
+export BASE_INITDATE="19790101"
