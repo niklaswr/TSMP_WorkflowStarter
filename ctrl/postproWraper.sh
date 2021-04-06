@@ -222,6 +222,12 @@ python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
         -sn et -ln "evap_trans" -u "-" # --level "-1"
 #ncdump ${template_netCDF} > def.cdl
 #ncgen -o NEWFILE def.cdl
+outVar="mask"
+ncgen -7 -o "${OUTDIR}/${YYYY_MM}/${outVar}.nc" "${cwd}/def.cdl"
+python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
+        -o ${OUTDIR}/${YYYY_MM} --model "ParFlow" --YearMonth ${YYYY_MM} \
+        -nc 0 --dumpinterval 3 \
+        -sn 'mask' -ln "land-sea-mask" -u "-" # --level "-1"
 
 echo "- Start processing CLM variables"
 cd ${cwd}
