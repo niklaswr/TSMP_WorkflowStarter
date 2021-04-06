@@ -1,27 +1,15 @@
 #!/bin/bash
-
-#SBATCH --job-name="ERA5_prepro"
-#SBATCH --nodes=1
-#SBATCH --ntasks=48
-#SBATCH --ntasks-per-node=48
-##SBATCH --output=Prepro_DE05-out.%j
-##SBATCH --error=Prepro_DE05-err.%j
-#SBATCH --time=00:10:00
-#SBATCH --partition=devel
-#SBATCH --mail-type=NONE
-#SBATCH --account=jibg35
-
+#
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2020-08-04
+# last modified: 2021-04-01
 # USAGE: 
-# sbatch --export=ALL,startDate=$startDate,CTRLDIR=$(pwd) -o "./logs/%x-out.%j" -e "./logs/%x-err.%j" start_postpro.sh
+# >> ./$0 CTRLDIR initDate
+# >> ./starter_prepo.sh /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/ctrl 19790101
 
-# IMPORTANT
-# CTRLDIR and initDate HAVE TO be set via sbatch --export command 
-# dates in linux follow ISO8601
-# https://de.wikipedia.org/wiki/ISO_8601
 echo "--- source environment"
+CTRLDIR=$1
+initDate=$2
 source ${CTRLDIR}/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
 

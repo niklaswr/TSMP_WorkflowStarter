@@ -1,22 +1,16 @@
 #!/bin/bash
-
-#SBATCH --job-name="ERA5_postpro"
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --time=02:00:00
-#SBATCH --partition=devel
-#SBATCH --mail-type=NONE
-#SBATCH --account=jibg35
-
+#
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2020-12-11
+# last modified: 2021-04-01
 # USAGE: 
+# >> ./$0 CTRLDIR startDate
+# >> ./starter_postpro.sh $(pwd) 19790101
+# >> ./starter_postpro.sh /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/ctrl 19790101
 
-# IMPORTANT
-# CTRLDIR and startDate HAVE TO be set via sbatch --export command 
 echo "--- source environment"
+CTRLDIR=$1
+startDate=$2
 source $CTRLDIR/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
 source ${BASE_CTRLDIR}/postpro/loadenvs

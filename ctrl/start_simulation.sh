@@ -1,23 +1,16 @@
 #!/bin/bash
-
-#SBATCH --job-name="ERA5_simulation"
-#SBATCH --nodes=12
-#SBATCH --ntasks=576
-#SBATCH --ntasks-per-node=48
-#SBATCH --time=05:00:00
-#SBATCH --partition=batch
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=n.wagner@fz-juelich.de
-#SBATCH --account=jibg35
-
+#
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2021-03-16
-# USAGE: 
+# last modified: 2021-04-01
+# >> ./$0 CTRLDIR startDate
+# >> ./starter_simulation.sh $BASE_CTRLDIR $startDate
+# >> ./starter_simulation.sh $(pwd) 19790101
+# >> ./starter_simulation.sh /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/ctrl 19790101
 
-# IMPORTANT
-# CTRLDIR and startDate HAVE TO be set via sbatch --export command 
 echo "--- source environment"
+CTRLDIR=$1
+startDate=$2
 source $CTRLDIR/export_paths.ksh
 source $BASE_CTRLDIR/start_helper.sh
 
@@ -54,7 +47,6 @@ export PSP_RENDEZVOUS_OPENIB=-1
 #---------------insert here initial, start and final dates of TSMP simulations----------
 initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
 WORK_DIR="${BASE_RUNDIR_TSMP}"
-template_FOLDER="tsmp_era5clima_template"
 
 # calculate the number of leap-days between initDate and startDate/currentDate
 # Those are needed by COSMO to proper calculate start-hours
