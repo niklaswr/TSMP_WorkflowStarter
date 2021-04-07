@@ -8,17 +8,24 @@
 # >> ./start_finishing.sh $(pwd) 19790101
 # >> ./start_finishing.sh /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/ctrl 19790101
 
-echo "--- source environment"
+###############################################################################
+# Prepare
+###############################################################################
 CTRLDIR=$1
 startDate=$2
+echo "###################################################"
+echo "START Logging ($(date)):"
+echo "###################################################"
+echo "--- exe: $0"
+echo "--- pwd: $(pwd)"
+echo "--- Simulation start-date: ${startDate}"
+echo "--- HOST:  $(hostname)"
+
+echo "--- source environment"
 source $CTRLDIR/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
 source ${BASE_CTRLDIR}/postpro/loadenvs
 cd ${BASE_CTRLDIR}
-
-###############################################################################
-# Prepare
-###############################################################################
 
 h0=$(TZ=UTC date '+%H' -d "$startDate")
 d0=$(TZ=UTC date '+%d' -d "$startDate")
@@ -27,14 +34,6 @@ y0=$(TZ=UTC date '+%Y' -d "$startDate")
 dp1=$(TZ=UTC date '+%d' -d "$startDate +1 month")
 mp1=$(TZ=UTC date '+%m' -d "$startDate +1 month")
 yp1=$(TZ=UTC date '+%Y' -d "$startDate +1 month")
-
-# echo for logfile
-echo "###################################################"
-echo "START Logging ($(date)):"
-echo "###################################################"
-echo "--- exe: $0"
-echo "--- Simulation start-date: ${startDate}"
-echo "--- HOST:  $(hostname)"
 
 ###############################################################################
 # finishing

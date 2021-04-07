@@ -22,10 +22,6 @@
 # 1) CTRLDIR (tell the program where the ctrl dir of the workflow sit)
 # 2) startDate (tell the program for which month to start the sim)
 # 3) NoJ (tell the programm how many jobs/simulations/month to start)
-echo "--- source environment"
-source $CTRLDIR/export_paths.ksh
-source $BASE_CTRLDIR/start_helper.sh
-
 ###############################################################################
 # Prepare
 ###############################################################################
@@ -33,9 +29,15 @@ echo "###################################################"
 echo "START Logging ($(date)):"
 echo "###################################################"
 echo "--- exe: $0"
+echo "--- pwd: $(pwd)"
 echo "--- Simulation start-date: ${startDate}"
 echo "---            CTRLDIR:   ${BASE_CTRLDIR}"
 echo "--- HOST:  $(hostname)"
+
+echo "--- source environment"
+source $CTRLDIR/export_paths.ksh
+source $BASE_CTRLDIR/start_helper.sh
+
 
 loop_counter=1
 while [ $loop_counter -le $NoJ ]

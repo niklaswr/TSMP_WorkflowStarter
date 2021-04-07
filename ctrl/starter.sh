@@ -10,8 +10,8 @@
 ###############################################################################
 #### Adjust according to your need BELOW
 ###############################################################################
-NoJ=8              # number of jobs (simulating 24 months -> NoJ=24)
-startDate=19800701  # start date
+NoJ=24              # number of jobs (simulating 24 months -> NoJ=24)
+startDate=19790101  # start date
 dependency=3525642  # JOBID to depend the following jobs at
                     # if set JOBID is below latest JOBID the job starts without
 		    # dependency automatically
@@ -33,6 +33,7 @@ echo "###################################################"
 echo "START Logging ($(date)):"
 echo "###################################################"
 echo "--- exe: $0"
+echo "--- pwd: $(pwd)"
 echo "--- Simulation init-date: ${initDate}"
 echo "---            CTRLDIR:   ${CTRLDIR}"
 echo "--- HOST:  $(hostname)"
@@ -52,7 +53,7 @@ do
   # if there are not enough simmulations left to fill the job
   # reduce $simPerJob to number of jobs left
   if [[ $((loop_counter+simPerJob)) -gt $NoJ ]]; then
-      echo "-- to less simulations left, run last job with less than $simPerJob simulations"
+      echo "-- to less simulations left, run last job with $simPerJob simulations"
       simPerJob=$((NoJ-loop_counter))
   fi
   # Note that $submit_simulation is decoupled from postpro and finishing

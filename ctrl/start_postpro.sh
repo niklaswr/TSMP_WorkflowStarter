@@ -8,33 +8,32 @@
 # >> ./starter_postpro.sh $(pwd) 19790101
 # >> ./starter_postpro.sh /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/ctrl 19790101
 
-echo "--- source environment"
+###############################################################################
+# Prepare
+###############################################################################
 CTRLDIR=$1
 startDate=$2
+echo "###################################################"
+echo "START Logging ($(date)):"
+echo "###################################################"
+echo "--- exe: $0"
+echo "--- pwd: $(pwd)"
+echo "--- Simulation start-date: ${startDate}"
+echo "--- HOST:  $(hostname)"
+
+echo "--- source environment"
 source $CTRLDIR/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
 source ${BASE_CTRLDIR}/postpro/loadenvs
 
-###############################################################################
-# Prepare
-###############################################################################
 h0=$(TZ=UTC date '+%H' -d "$startDate")
 d0=$(TZ=UTC date '+%d' -d "$startDate")
 m0=$(TZ=UTC date '+%m' -d "$startDate")
 y0=$(TZ=UTC date '+%Y' -d "$startDate")
 
-# echo for logfile
-echo "###################################################"
-echo "START Logging ($(date)):"
-echo "###################################################"
-echo "--- exe: $0"
-echo "--- Simulation start-date: ${startDate}"
-echo "--- HOST:  $(hostname)"
-
 ###############################################################################
 # Post-Pro
 ###############################################################################
-
 # Place post-processing steps here
 # NOTE: scripts HAVE to run on compute-nodes.
 # If the script runs in parralel or on single cpu is not important
@@ -42,7 +41,6 @@ echo "--- HOST:  $(hostname)"
 #---------------insert here initial, start and final dates of TSMP simulations----------
 initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
 WORK_DIR="${BASE_RUNDIR_TSMP}"
-template_FOLDER="tsmp_era5clima_template"
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
 rundir=${WORK_DIR}/${expID}
 
@@ -62,19 +60,23 @@ cd ${BASE_CTRLDIR}
 postpro_initDate=$(date '+%Y%m%d%H' -d "${initDate}")
 postpro_startDate=$(date '+%Y%m%d%H' -d "${startDate}")
 postpro_YYYY_MM=$(date '+%Y_%m' -d "${startDate}")
+echo "--- START subscript postproWraper.sh"
 ./postproWraper.sh $postpro_initDate $postpro_startDate $postpro_YYYY_MM
 if [[ $? != 0 ]] ; then exit 1 ; fi
+echo "--- END subscript postproWraper.sh"
 
 echo "-- deleting ToPostPro/${y0}_${m0}"
-rm -r ${WORK_DIR}/ToPostPro/${y0}_${m0}
+rm -vr ${WORK_DIR}/ToPostPro/${y0}_${m0}
 
 echo "-- calculating checksum for postpro/${y0}_${m0}"
 cd ${BASE_POSTPRODIR}/${y0}_${m0}
 sha512sum ./* > "CheckSum.sha512"
+if [[ $? != 0 ]] ; then exit 1 ; fi
 
 echo "-- taring postpro/${y0}_${m0}"
 cd ${BASE_POSTPRODIR}
 tar -cf "${y0}_${m0}.tar" ${y0}_${m0} 
+if [[ $? != 0 ]] ; then exit 1 ; fi
 
 echo "-- deleting postpro/${y0}_${m0}"
 rm -r ${BASE_POSTPRODIR}/${y0}_${m0}

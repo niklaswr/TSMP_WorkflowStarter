@@ -62,7 +62,7 @@ fi
 #exit 0
 ###### END tmp
 
-echo "- Start processing COSMO outpur"
+echo "- Start processing COSMO output"
 echo "--- Starting CCLM default output timeseries"
 timeseries RAIN_CON  cosmo_out
 timeseries RAIN_GSP  cosmo_out
