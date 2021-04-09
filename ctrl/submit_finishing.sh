@@ -41,10 +41,10 @@ source ${BASE_CTRLDIR}/postpro/loadenvs
 ###############################################################################
 # finishing
 ###############################################################################
-cd $BASE_CTRLDIR
-cd $BASE_CTRLDIR
+loop_counter=1
 while [ $loop_counter -le $NoJ ]
 do
+  cd $BASE_CTRLDIR
   ./start_finishing.sh $BASE_CTRLDIR $startDate
   if [[ $? != 0 ]] ; then exit 1 ; fi
   # forward startDate by one month
