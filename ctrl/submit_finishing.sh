@@ -5,7 +5,7 @@
 #SBATCH --ntasks=48
 #SBATCH --ntasks-per-node=48
 #SBATCH --time=23:59:00
-#SBATCH --partition=batch
+#SBATCH --partition=esm
 #SBATCH --mail-type=NONE
 #
 # author: Niklas Wagner
