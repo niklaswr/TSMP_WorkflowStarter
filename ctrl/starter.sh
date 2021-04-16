@@ -19,8 +19,8 @@ simPerJob=6         # number of simulaitons to run within one job (less queuing
                     # time?)
                     # -> 6: run 6 simulaitons within one big job
 pre=false           # Define which substeps (PREprocessing, SIMulation, 
-sim=false           # POStprocessing, FINishing) should be run. Default is to
-pos=false           # set each substep to 'true', if one need to run individual 
+sim=true           # POStprocessing, FINishing) should be run. Default is to
+pos=true           # set each substep to 'true', if one need to run individual 
 fin=true            # steps exclude other substeps by setting to 'false'
 userEmail='n.wagner@fz-juelich.de' 
 computeAcount='esmtst'
