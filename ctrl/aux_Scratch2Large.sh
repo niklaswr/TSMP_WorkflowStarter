@@ -1,21 +1,13 @@
 #!/usr/bin/bash
 #
-#SBATCH --job-name="AUX_gzip"
-#SBATCH --nodes=1
-#SBATCH --ntasks=48
-#SBATCH --ntasks-per-node=48
-#SBATCH --time=00:30:00
-#SBATCH --partition=devel
-#SBATCH --account=jibg35
-#
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2021-03-24
+# last modified: 2021-04-26
 #
-# Description
-# This script do compress files within given dir(s), tars this dir to largdata, 
-# remove the original directory(s), and links the created tar-ball form largdata 
-# to the location of the original directory.
+# Description:
+# This script does tar given sourc-dir(s) to given target-dir, 
+# removes the original directory(s), and links the created tar-ball form 
+# target-dir to the location of the original directory.
 #
 # USAGE:
 # >> ./$0 TARGET/DIR SOURCE/DIR/pattern*
