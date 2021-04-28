@@ -26,6 +26,8 @@ simres/**
 postpro/**
 # ignore content of geo
 geo/**
+# ignore content of monitoring
+monitoring/**
 
 # general keeps:
 ################
