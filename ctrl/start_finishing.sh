@@ -83,7 +83,7 @@ __SUBJECT_MODEL__
 ###############################################################################
 EOM
 cd ${BASE_CTRLDIR}
-TAG_WORKFLOW=$(git tag --points-at HEAD)
+TAG_WORKFLOW=$(git describe --abbrev=0)
 COMMIT_WORKFLOW=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_WORKFLOW=$(git log --pretty=format:'author: %an' -n 1)
 DATE_WORKFLOW=$(git log --pretty=format:'date: %ad' -n 1)
@@ -97,7 +97,7 @@ sed -i "s;__SUBJECT_WORKFLOW__;${SUBJECT_WORKFLOW};g" ${histfile}
 sed -i "s;__URL_WORKFLOW__;${URL_WORKFLOW};g" ${histfile}
 
 cd ${BASE_SRCDIR}/TSMP
-TAG_MODEL=$(git tag --points-at HEAD)
+TAG_MODEL=$(git describe --abbrev=0)
 COMMIT_MODEL=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_MODEL=$(git log --pretty=format:'author: %an' -n 1)
 DATE_MODEL=$(git log --pretty=format:'date: %ad' -n 1)
