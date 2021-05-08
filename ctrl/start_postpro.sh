@@ -52,9 +52,11 @@ mkdir -p ${WORK_DIR}/ToPostPro/${y0}_${m0}/parflow_out
 mkdir -p ${WORK_DIR}/ToPostPro/${y0}_${m0}/clm_out
 
 # copy model-output to ToPostPro subdir
-cp ${rundir}/cosmo_out/* ${WORK_DIR}/ToPostPro/${y0}_${m0}/cosmo_out/
-cp ${rundir}/cordex0.11_${y0}_${m0}.out.*.pfb ${WORK_DIR}/ToPostPro/${y0}_${m0}/parflow_out/
-cp ${rundir}/clmoas.clm2.h0.${y0}-${m0}*.nc ${WORK_DIR}/ToPostPro/${y0}_${m0}/clm_out/
+# Note: $expid is NOT $expID
+# $expid is defined with export_paths.ksh
+cp ${BASE_SIMRESDIR}/${expid}_${y0}${m0}${d0}/cosmo/* ${WORK_DIR}/ToPostPro/${y0}_${m0}/cosmo_out/
+cp ${BASE_SIMRESDIR}/${expid}_${y0}${m0}${d0}/parflow/cordex0.11_${y0}_${m0}.out.*.pfb ${WORK_DIR}/ToPostPro/${y0}_${m0}/parflow_out/
+cp ${BASE_SIMRESDIR}/${expid}_${y0}${m0}${d0}/clm/clmoas.clm2.h0.${y0}-${m0}*.nc ${WORK_DIR}/ToPostPro/${y0}_${m0}/clm_out/
 
 cd ${BASE_CTRLDIR}
 postpro_initDate=$(date '+%Y%m%d%H' -d "${initDate}")
@@ -73,12 +75,12 @@ cd ${BASE_POSTPRODIR}/${y0}_${m0}
 sha512sum ./* > "CheckSum.sha512"
 if [[ $? != 0 ]] ; then exit 1 ; fi
 
-echo "-- taring postpro/${y0}_${m0}"
-cd ${BASE_POSTPRODIR}
-tar -cf "${y0}_${m0}.tar" ${y0}_${m0} 
-if [[ $? != 0 ]] ; then exit 1 ; fi
-
-echo "-- deleting postpro/${y0}_${m0}"
-rm -r ${BASE_POSTPRODIR}/${y0}_${m0}
+#echo "-- taring postpro/${y0}_${m0}"
+#cd ${BASE_POSTPRODIR}
+#tar -cf "${y0}_${m0}.tar" ${y0}_${m0} 
+#if [[ $? != 0 ]] ; then exit 1 ; fi
+#
+#echo "-- deleting postpro/${y0}_${m0}"
+#rm -r ${BASE_POSTPRODIR}/${y0}_${m0}
 
 exit 0
