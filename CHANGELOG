@@ -5,6 +5,24 @@ The version number is used as a tag.
 Version numbering:
 MAJOR.Minor.patch
 
+v2.1.0
+======
+
+commit:b83073516856d30c1ead945d2a7c5820c4fd119d
+INT2LMv2.0.4
+TSMPv1.2.3
+
+Changes:
+- add 'bunch-submission' to run multiple simulations (months) within one slurm submit. This can save many quiueing time.
+- change smaller scripts to run on 'esm' partiotion instead of 'devel'
+- easy implementaiton to control individual sub-steps. E.g. run only postpro and finishing.
+- change loging in HISTORY.txt - tag is now included
+- prepare monitoring, by adding monitoring/ dir, $BASE_MODITORINGDIR, and related git-ignore entry. Monitoring itself is still not availabel
+- add and modif some aux_* tools
+- porper mask ParFlow postpro in netCDF files
+- add 'specific_storage' (ParFlow) to postpro
+- change workflow that start_postpro now takes data from $BASE_SIMRES instead of rundir. Further start_simulation directly moves data to $BASE_SIMRES after simulation.
+
 v2.0.0
 ======
 
