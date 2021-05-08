@@ -85,6 +85,9 @@ for idx, pfbFile in enumerate(pfbFiles):
 
 out = np.asarray(tmp_out)
 print(f'shape of collected ParFlow output: {out.shape}')
+# mask values
+# -3.40282346638529e+38 should be missing values in orig files...
+out = np.ma.masked_less(out, -3.40282346638529e+30)
 
 ncTime = ncfile.createVariable('time','i4',('time',))
 ncTime.standard_name = 'time'
@@ -97,11 +100,13 @@ ncTime[...] = seconds_since
 # This (currently) does not support slicing, but level extraction only. 
 if level is None:
     ncfile.createDimension('lev',nz)
-    ncData = ncfile.createVariable(VAR,'f8',('time','lev','rlat','rlon'), zlib=True)
+    ncData = ncfile.createVariable(VAR,'f8',('time','lev','rlat','rlon'), 
+            fill_value=-9999, zlib=True)
     ncData[...] = out
     #data[:] = np.transpose(var)
 elif not level is None:
-    ncData = ncfile.createVariable(VAR,'f8',('time','rlat','rlon'), zlib=True)
+    ncData = ncfile.createVariable(VAR,'f8',('time','rlat','rlon'), 
+            fill_value=-9999, zlib=True)
     ncData[...] = out[:,level,...]
     #data[:] = np.transpose(var)
 
@@ -111,6 +116,7 @@ ncData.units = f'{units}'
 ncData.grid_mapping = f'rotated_pole'
 ncData.coordinates = f'lon lat'
 ncData.cell_methods = f'time: point'
-ncData.missing_value = -3.40282346638529e+38
+#ncData.missing_value = -3.40282346638529e+38
+
 
 ncfile.close()
