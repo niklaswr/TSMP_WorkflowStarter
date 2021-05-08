@@ -12,11 +12,10 @@
 #SBATCH --output=int2lm.out
 #SBATCH --error=int2lm.err
 #SBATCH --time=03:00:00
-#SBATCH --partition=batch
-##SBATCH --mail-type=ALL
+#SBATCH --partition=esm
+#SBATCH --mail-type=FAIL
 #SBATCH --mail-user=n.wagner@fz-juelich.de
 #SBATCH --account=jibg35
-##SBATCH --reservation=maint-centos8
 
 echo "DEBUG: setup environment"
 source ${CTRLDIR}/export_paths.ksh
