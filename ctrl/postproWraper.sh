@@ -229,6 +229,13 @@ python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
         -nc 0 --dumpinterval 3 \
         -sn 'mask' -ln "land-sea-mask" -u "-" # --level "-1"
 
+outVar="specific_storage"
+ncgen -7 -o "${OUTDIR}/${YYYY_MM}/${outVar}.nc" "${cwd}/def.cdl"
+python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
+        -o ${OUTDIR}/${YYYY_MM} --model "ParFlow" --YearMonth ${YYYY_MM} \
+        -nc 0 --dumpinterval 3 \
+        -sn 'sstorage' -ln "specific_storage" -u "-" # --level "-1"
+
 echo "- Start processing CLM variables"
 cd ${cwd}
 #outVar="WT TSA TBOT QFLX_SNOW_GRND QFLX_RAIN_GRND QFLX_EVAP_TOT H2OSNO FSR FSH FSDS FLDS FIRA FGR FGEV FCTR FCEV time time_bounds"
