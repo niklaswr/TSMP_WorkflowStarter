@@ -1,47 +1,41 @@
 #!/bin/bash
-
-#SBATCH --job-name="ERA5_simulation"
-#SBATCH --nodes=12
-#SBATCH --ntasks=576
-#SBATCH --ntasks-per-node=48
-#SBATCH --time=05:00:00
-#SBATCH --partition=batch
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=n.wagner@fz-juelich.de
-#SBATCH --account=jibg35
-
+#
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2020-08-04
-# USAGE: 
-
-# IMPORTANT
-# CTRLDIR and startDate HAVE TO be set via sbatch --export command 
-echo "--- source environment"
-source $CTRLDIR/export_paths.ksh
-source $BASE_CTRLDIR/start_helper.sh
+# last modified: 2021-04-01
+# >> ./$0 CTRLDIR startDate
+# >> ./starter_simulation.sh $BASE_CTRLDIR $startDate
+# >> ./starter_simulation.sh $(pwd) 19790101
+# >> ./starter_simulation.sh /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/ctrl 19790101
 
 ###############################################################################
 # Prepare
 ###############################################################################
+CTRLDIR=$1
+startDate=$2
+echo "###################################################"
+echo "START Logging ($(date)):"
+echo "###################################################"
+echo "--- exe: $0"
+echo "--- pwd: $(pwd)"
+echo "--- Simulation start-date: ${startDate}"
+echo "---            CTRLDIR:   ${BASE_CTRLDIR}"
+echo "--- HOST:  $(hostname)"
+
+echo "--- source environment"
+source $CTRLDIR/export_paths.ksh
+source $BASE_CTRLDIR/start_helper.sh
 
 h0=$(TZ=UTC date '+%H' -d "$startDate")
 d0=$(TZ=UTC date '+%d' -d "$startDate")
 m0=$(TZ=UTC date '+%m' -d "$startDate")
 y0=$(TZ=UTC date '+%Y' -d "$startDate")
-
 dm1=$(TZ=UTC date '+%d' -d "$startDate - 1 month")
 mm1=$(TZ=UTC date '+%m' -d "$startDate - 1 month")
 ym1=$(TZ=UTC date '+%Y' -d "$startDate - 1 month")
-
-# echo for logfile
-echo "###################################################"
-echo "START Logging ($(date)):"
-echo "###################################################"
-echo "--- exe: $0"
-echo "--- Simulation start-date: ${startDate}"
-echo "---            CTRLDIR:   ${BASE_CTRLDIR}"
-echo "--- HOST:  $(hostname)"
+dp1=$(TZ=UTC date '+%d' -d "$startDate + 1 month")
+mp1=$(TZ=UTC date '+%m' -d "$startDate + 1 month")
+yp1=$(TZ=UTC date '+%Y' -d "$startDate + 1 month")
 
 ###############################################################################
 # Simulation
@@ -52,10 +46,10 @@ echo "--- HOST:  $(hostname)"
 export PSP_RENDEZVOUS_OPENIB=-1
 
 #---------------insert here initial, start and final dates of TSMP simulations----------
-initDate="19800101" #DO NOT TOUCH! start of the whole TSMP simulation
+initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
 WORK_DIR="${BASE_RUNDIR_TSMP}"
-WORK_FOLDER="sim_output_heter_geology_improved_with_pfl_sink"
-template_FOLDER="tsmp_era5clima_template"
+expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
+rundir=${WORK_DIR}/${expID}
 
 # calculate the number of leap-days between initDate and startDate/currentDate
 # Those are needed by COSMO to proper calculate start-hours
@@ -73,25 +67,39 @@ fi
 hstart=$(( ($(date -u '+%s' -d "${startDate}") - $(date -u '+%s' -d "${initDate}"))/3600 - numLeapDays*24))
 hstop=$((hstart+numHours))
 
-#----------copy temlate dir to new rundir-----------
-expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
-cp -r ${WORK_DIR}/${WORK_FOLDER}/${template_FOLDER} ${WORK_DIR}/${WORK_FOLDER}/${expID}
+#----------create new rundir---------------------------------------------------
+echo "--- try to remove ${expID} in case already exists"
+rm -vr ${WORK_DIR}/${expID}
+echo "--- create and fill ${expID}"
+mkdir ${WORK_DIR}/${expID}
+#----------copy geodir to new rundir and execute tcl-scripts-------------------
+echo "--- -- copying ParFlow geo/ files"
+cp ${BASE_GEODIR}/parflow/* ${WORK_DIR}/${expID}/
+echo "--- -- copying Oasis geo/ files"
+cp ${BASE_GEODIR}/oasis3/* ${WORK_DIR}/${expID}/
+#----------copy namedir to new rundir------------------------------------------
+echo "--- -- copying namelists form ${BASE_NAMEDIR}"
+cp ${BASE_NAMEDIR}/* ${WORK_DIR}/${expID}/
+#----------copy binaries to new rundir-----------------------------------------
+echo "--- -- copying binaries from ${BASE_BINDIR}"
+cp ${BASE_BINDIR}/clm ${WORK_DIR}/${expID}/
+cp ${BASE_BINDIR}/lmparbin_pur ${WORK_DIR}/${expID}/
+cp ${BASE_BINDIR}/parflow ${WORK_DIR}/${expID}/
 
-cd ${WORK_DIR}/${WORK_FOLDER}/${expID}
-mkdir ${WORK_DIR}/${WORK_FOLDER}/${expID}/cosmo_out
+cd ${WORK_DIR}/${expID}
+mkdir ${WORK_DIR}/${expID}/cosmo_out
 
-source ${WORK_DIR}/${WORK_FOLDER}/${expID}/loadenvs
+source ${WORK_DIR}/${expID}/loadenvs
 
 ##############################################################
 # Modifying COSMO namelists
 ##############################################################
 sed -i "s,__hstart__,${hstart},g" INPUT_IO
 sed -i "s,__hstop__,${hstop},g" INPUT_IO
-sed -i "s,__cosmo_ydirini__,${WORK_DIR}/laf_lbfd_int2lm_juwels2019a_ouput/all,g" INPUT_IO
-sed -i "s,__cosmo_ydirbd__,${WORK_DIR}/laf_lbfd_int2lm_juwels2019a_ouput/all,g" INPUT_IO
+sed -i "s,__cosmo_ydirini__,${WORK_DIR}/laf_lbfd/all,g" INPUT_IO
+sed -i "s,__cosmo_ydirbd__,${WORK_DIR}/laf_lbfd/all,g" INPUT_IO
 sed -i "s,__exp_id__,TSMP_3.1.0MCT_cordex11_${y0}_${m0},g" INPUT_IO
 sed -i "s,__work_dir_rep__,${WORK_DIR},g" INPUT_IO
-sed -i "s,__work_folder_rep__,${WORK_FOLDER},g" INPUT_IO
 
 cosmo_ydate_ini=$(date '+%Y%m%d%H' -d "${initDate}")
 sed -i "s,__hstart__,$hstart,g" INPUT_ORG
@@ -110,20 +118,25 @@ clm_restart=$(date '+%Y-%m-%d' -d "${startDate}")
 sed -i "s,__clm_restart__,clmoas.clm2.r.${clm_restart}-00000.nc,g" lnd.stdin
 #sed -i "s,__setup_dir_rep__,${SETUP_DIR}/g" lnd.stdin
 sed -i "s,__work_dir_rep__,${WORK_DIR},g" lnd.stdin
-sed -i "s,__work_folder_rep__,${WORK_FOLDER},g" lnd.stdin
+sed -i "s,__BASE_GEODIR__,${BASE_GEODIR},g" lnd.stdin
 
 ##############################################################
 # Modifying ParFlow TCL flags
 ##############################################################
 sed -i "s,##numHours##,${numHours},g" coup_oas.tcl
-cp ${WORK_DIR}/${WORK_FOLDER}/restarts/parflow/cordex0.11_${ym1}_${mm1}.out.press.*.pfb .
+cp ${WORK_DIR}/restarts/parflow/cordex0.11_${ym1}_${mm1}.out.press.*.pfb .
 ic_pressure=`ls -1rt cordex0.11_${ym1}_${mm1}.out.press.*.pfb | tail -1`
 sed -i "s,__ICPressure__,${ic_pressure},g" coup_oas.tcl
 sed -i "s,__year__,${y0},g" coup_oas.tcl
 sed -i "s,__month__,${m0},g" coup_oas.tcl
+sed -i "s,__BASE_GEODIR__,${BASE_GEODIR},g" coup_oas.tcl
 tclsh coup_oas.tcl
 
 sed -i "s,__pfidb__,cordex0.11_${y0}_${m0},g" slm_multiprog_mapping.conf
+
+echo "--- execute ParFlow distributeing tcl-scripts "
+tclsh ascii2pfb_slopes.tcl
+tclsh ascii2pfb_SoilInd.tcl
 
 ##############################################################
 # Modifying OASIS3-MCT namelist
@@ -142,16 +155,103 @@ if [[ $? != 0 ]] ; then exit 1 ; fi
 date
 wait
 
+# Needed for git etc
+source ${BASE_CTRLDIR}/postpro/loadenvs
 ##############################################################
 # Copy CLM and ParFlow restarts to central directory
 # COSMO writes restarts to central directory
 ##############################################################
 echo "DEBUG: start copying restar files"
 clm_restart=`ls -1rt clmoas.clm2.r.*00000.nc | tail -1`
-cp ${clm_restart} ${WORK_DIR}/${WORK_FOLDER}/restarts/clm
+cp ${clm_restart} ${WORK_DIR}/restarts/clm
 pfl_restart=`ls -1rt cordex0.11_${y0}_${m0}.out.press*.pfb | tail -1`
-cp ${pfl_restart} ${WORK_DIR}/${WORK_FOLDER}/restarts/parflow
+cp ${pfl_restart} ${WORK_DIR}/restarts/parflow
 wait
+
+###############################################################################
+# Moving model-output to simres
+###############################################################################
+echo "--- create SIMRES dir (and sub-dirs) to store simulation results"
+new_simres_name="${expid}_$(date '+%Y%m%d' -d "$startDate")"
+new_simres=${BASE_SIMRESDIR}/${new_simres_name}
+echo "--- new_simres: $new_simres"
+mkdir -p "$new_simres/cosmo"
+mkdir -p "$new_simres/parflow"
+mkdir -p "$new_simres/clm"
+mkdir -p "$new_simres/int2lm"
+mkdir -p "$new_simres/restarts"
+check4error $? "--- ERROR while creating simres-dir"
+
+echo "--- move modeloutput to individual simresdir"
+cp ${rundir}/cosmo_out/* $new_simres/cosmo
+cp ${rundir}/cordex0.11_${y0}_${m0}.out.*.pfb $new_simres/parflow
+cp ${rundir}/clmoas.clm2.h?.*.nc $new_simres/clm
+cp ${WORK_DIR}/restarts/cosmo/lrfd${yp1}${mp1}0100o $new_simres/restarts
+cp ${WORK_DIR}/restarts/parflow/cordex0.11_${y0}_${m0}.out.press.?????.pfb $new_simres/restarts
+cp ${WORK_DIR}/restarts/clm/clmoas.clm2.r.${yp1}-${mp1}-01-00000.nc $new_simres/restarts
+check4error $? "--- ERROR while moving model output to simres-dir"
+wait
+
+echo "--- clean/remove rundir"
+rm -r ${rundir}
+
+###############################################################################
+# Creating HISTORY.txt (reusability etc.)
+###############################################################################
+histfile=$new_simres/HISTORY.txt
+/bin/cat <<EOM >$histfile
+This simulation was run with 
+###############################################################################
+WORKFLOW 
+-- REPO:
+__URL_WORKFLOW__
+-- LOG: 
+tag: __TAG_WORKFLOW__
+__COMMIT_WORKFLOW__
+__AUTHOR_WORKFLOW__
+__DATE_WORKFLOW__
+__SUBJECT_WORKFLOW__
+###############################################################################
+MODEL (build with: './build_tsmp.ksh -v 3.1.0MCT -c clm-cos-pfl -m JUWELS -O Intel')
+-- REPO:
+__URL_MODEL__
+-- LOG:
+tag: __TAG_MODEL__
+__COMMIT_MODEL__
+__AUTHOR_MODEL__
+__DATE_MODEL__
+__SUBJECT_MODEL__
+###############################################################################
+EOM
+cd ${BASE_CTRLDIR}
+TAG_WORKFLOW=$(git describe --abbrev=0)
+COMMIT_WORKFLOW=$(git log --pretty=format:'commit: %H' -n 1)
+AUTHOR_WORKFLOW=$(git log --pretty=format:'author: %an' -n 1)
+DATE_WORKFLOW=$(git log --pretty=format:'date: %ad' -n 1)
+SUBJECT_WORKFLOW=$(git log --pretty=format:'subject: %s' -n 1)
+URL_WORKFLOW=$(git config --get remote.origin.url)
+sed -i "s;__TAG_WORKFLOW__;${TAG_WORKFLOW};g" ${histfile}
+sed -i "s;__COMMIT_WORKFLOW__;${COMMIT_WORKFLOW};g" ${histfile}
+sed -i "s;__AUTHOR_WORKFLOW__;${AUTHOR_WORKFLOW};g" ${histfile}
+sed -i "s;__DATE_WORKFLOW__;${DATE_WORKFLOW};g" ${histfile}
+sed -i "s;__SUBJECT_WORKFLOW__;${SUBJECT_WORKFLOW};g" ${histfile}
+sed -i "s;__URL_WORKFLOW__;${URL_WORKFLOW};g" ${histfile}
+
+cd ${BASE_SRCDIR}/TSMP
+TAG_MODEL=$(git describe --abbrev=0)
+COMMIT_MODEL=$(git log --pretty=format:'commit: %H' -n 1)
+AUTHOR_MODEL=$(git log --pretty=format:'author: %an' -n 1)
+DATE_MODEL=$(git log --pretty=format:'date: %ad' -n 1)
+SUBJECT_MODEL=$(git log --pretty=format:'subject: %s' -n 1)
+URL_MODEL=$(git config --get remote.origin.url)
+sed -i "s;__TAG_MODEL__;${TAG_MODEL};g" ${histfile}
+sed -i "s;__COMMIT_MODEL__;${COMMIT_MODEL};g" ${histfile}
+sed -i "s;__AUTHOR_MODEL__;${AUTHOR_MODEL};g" ${histfile}
+sed -i "s;__DATE_MODEL__;${DATE_MODEL};g" ${histfile}
+sed -i "s;__SUBJECT_MODEL__;${SUBJECT_MODEL};g" ${histfile}
+sed -i "s;__URL_MODEL__;${URL_MODEL};g" ${histfile}
+check4error $? "--- ERROR while creating HISTORY.txt"
+
 echo "ready: TSMP simulation for ${cur_month} is complete!" > ready.txt
 
 exit 0

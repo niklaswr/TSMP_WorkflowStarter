@@ -13,11 +13,13 @@
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
 # last modified: 2020-12-12
-# USAGE:
+# USAGE: 
+# >> sbatch ./$0 NCPU TARGET/DIR
+# >> sbatch ./aux_gzip.ksh 48 /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/run_TSMP/laf_lbfd/1980/
 
-cd $1
-DIR=$1
-MAX_PARALLEL=48
+DIR=$2
+cd $DIR
+MAX_PARALLEL=$1
 nroffiles=$(ls $DIR|wc -w)
 (( setsize=nroffiles/MAX_PARALLEL ))
 ls -1 $DIR/* | xargs -n $setsize | while read workset; do

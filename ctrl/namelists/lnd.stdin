@@ -1,0 +1,37 @@
+&clm_inparm
+ caseid         = 'clmoas'
+ ctitle         = 'clmoas'
+ nsrest         =  0
+ nelapse        =  __nelapse__
+ dtime          =  900
+ start_ymd      =  __start_ymd__
+ start_tod      =  0
+ 
+ finidat        = '__work_dir_rep__/restarts/clm/__clm_restart__'
+ flndtopo       = '__BASE_GEODIR__/clm/topodata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
+ fsurdat        = '__BASE_GEODIR__/clm/surfdata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
+ fatmgrid       = '__BASE_GEODIR__/clm/griddata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
+ fatmlndfrc     = '__BASE_GEODIR__/clm/fracdata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
+ fatmtopo       = ''
+ fpftcon        = '__BASE_GEODIR__/clm/inputdata/lnd/clm2/pftdata/pft-physiology.c070207'
+ offline_atmdir = '__BASE_GEODIR__/clm/atm_forcing'
+ frivinp_rtm    = '__BASE_GEODIR__/clm/inputdata/lnd/clm2/rtmdata/rdirc.05.061026'
+
+ hist_empty_htapes = .true.
+ hist_dov2xy    = .true.
+ hist_avgflag_pertape = 'A'
+ hist_nhtfrq    =  -3
+ hist_mfilt     =  8
+ hist_crtinic   = 'NONE'
+ mss_irt        =  0
+ hist_fincl1    = 'H2OSNO','H2OSOI','SOILLIQ','WT','FSH','FSDS','FLDS','FGR','FGEV','FCTR','FCEV','FSR','FIRA','TBOT','TSA','QFLX_RAIN_GRND','QFLX_SNOW_GRND','QFLX_EVAP_TOT','RAIN','SNOW','WIND','THBOT','QBOT','ZBOT'
+ hist_fincl2    = 'ERRSOI','ERRSEB','ERRSOL'
+
+ irad           =  1
+ wrtdia         = .true.
+ archive_dir    = ''
+ rest_flag      = .true. 
+ rpntpath       = '__work_dir_rep__/__exp_id__/lnd.clmoas.rpointer'
+/
+ &prof_inparm
+ /
