@@ -18,10 +18,16 @@ run_TSMP/*
 src/**
 # ignore temp_devel dir in ctrl/
 ctrl/tmp_devel/**
+# ignore stuff in ctrl/logs
+ctrl/logs/**
 # ignore content of simres
 simres/**
 # ignore content of postpro
 postpro/**
+# ignore content of geo
+geo/**
+# ignore content of monitoring
+monitoring/**
 
 # general keeps:
 ################

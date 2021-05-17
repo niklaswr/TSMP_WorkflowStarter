@@ -29,10 +29,12 @@ tarballs=$@
 echo "--- source environment"
 source $CTRLDIR/export_paths.ksh
 
-cd ${BASE_POSTPRODIR}
 for tarball in $tarballs; do
-  # skip if there are equal named directories 
-  if [[ -d $tarball ]]; then continue; fi
+  tarRootDir=${tarball%/*}
+  echo "tarRootDir: $tarRootDir"
+  cd $tarRootDir
+  # skip if $tarball does not contain tarball...
+  if [[ ${tarball##*.} != 'tar' ]]; then continue; fi
   tarball_name=${tarball##*/}
   echo "working on: $tarball_name"
   echo "-- copying"

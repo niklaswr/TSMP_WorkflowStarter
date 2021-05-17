@@ -46,7 +46,7 @@ YDATE_START=$1   # YYYYMMDDHH
 CURRENT_DATE=$2  # YYYYMMDDHH
 YYYY_MM=$3       # YYYY_MM 
 OUTDIR="${BASE_POSTPRODIR}"
-INPDIR="${BASE_RUNDIR_TSMP}/sim_output_heter_geology_improved_with_pfl_sink/ToPostPro"
+INPDIR="${BASE_RUNDIR_TSMP}/ToPostPro"
 mkdir ${OUTDIR}/${YYYY_MM}
 
 export IGNORE_ATT_COORDINATES=0  # setting for better rotated coordinate handling in CDO
@@ -62,7 +62,7 @@ fi
 #exit 0
 ###### END tmp
 
-echo "- Start processing COSMO outpur"
+echo "- Start processing COSMO output"
 echo "--- Starting CCLM default output timeseries"
 timeseries RAIN_CON  cosmo_out
 timeseries RAIN_GSP  cosmo_out
@@ -222,6 +222,19 @@ python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
         -sn et -ln "evap_trans" -u "-" # --level "-1"
 #ncdump ${template_netCDF} > def.cdl
 #ncgen -o NEWFILE def.cdl
+outVar="mask"
+ncgen -7 -o "${OUTDIR}/${YYYY_MM}/${outVar}.nc" "${cwd}/def.cdl"
+python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
+        -o ${OUTDIR}/${YYYY_MM} --model "ParFlow" --YearMonth ${YYYY_MM} \
+        -nc 0 --dumpinterval 3 \
+        -sn 'mask' -ln "land-sea-mask" -u "-" # --level "-1"
+
+outVar="specific_storage"
+ncgen -7 -o "${OUTDIR}/${YYYY_MM}/${outVar}.nc" "${cwd}/def.cdl"
+python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
+        -o ${OUTDIR}/${YYYY_MM} --model "ParFlow" --YearMonth ${YYYY_MM} \
+        -nc 0 --dumpinterval 3 \
+        -sn 'sstorage' -ln "specific_storage" -u "-" # --level "-1"
 
 echo "- Start processing CLM variables"
 cd ${cwd}

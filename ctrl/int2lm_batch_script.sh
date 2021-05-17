@@ -9,14 +9,13 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=48
 #SBATCH --ntasks-per-node=48
-#SBATCH --output=int2lm-out.%j
-#SBATCH --error=int2lm-err.%j
+#SBATCH --output=int2lm.out
+#SBATCH --error=int2lm.err
 #SBATCH --time=03:00:00
-#SBATCH --partition=batch
-##SBATCH --mail-type=ALL
+#SBATCH --partition=esm
+#SBATCH --mail-type=FAIL
 #SBATCH --mail-user=n.wagner@fz-juelich.de
 #SBATCH --account=jibg35
-##SBATCH --reservation=maint-centos8
 
 echo "DEBUG: setup environment"
 source ${CTRLDIR}/export_paths.ksh
@@ -28,17 +27,14 @@ export GRIB_SAMPLES_PATH=${BASE_SRCDIR}/libgrib_api/share/grib_api/samples/:${BA
 
 echo "DEBUG: def individual settings"
 start_date=$(TZ=UTC date --date "$startDate")
-#start_date=$(TZ=UTC date --date "1984-01-01T00:00Z")
 cur_year=$(TZ=UTC date '+%Y' --date="${start_date}")
-#int2lm_init_date=$(TZ=UTC date '+%Y%m%d%H' -d "1980-01-01T00:00Z")
 int2lm_exe="int2lm_204a"
-#int2lm_exe="int2lm_200"
 int2lm_hstop=240
 int2lm_hincbound=3
 int2lm_nam_template="INT2LM_template_ERA5"
 
 echo "DEBUG: create INT2LM lm_cat_dir (ex OUTPUT_DIR) dir"
-int2lm_LmCatDir="${BASE_RUNDIR_TSMP}/laf_lbfd_int2lm_juwels2019a_ouput/${cur_year}"
+int2lm_LmCatDir="${BASE_RUNDIR_TSMP}/laf_lbfd/${cur_year}"
 mkdir -p ${int2lm_LmCatDir}
 
 #--------------------------------

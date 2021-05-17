@@ -1,0 +1,6 @@
+ &DIACTL
+  itype_diag_gusts=4,
+  n0meanval=0, nincmeanval=1,
+  lgplong=.FALSE., lgpshort=.FALSE., lgpspec=.FALSE.,
+  n0gp=0,      hincgp=1.0,
+ /

@@ -1,27 +1,35 @@
 #!/bin/bash
-
-#SBATCH --job-name="ERA5_starter"
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --output=ERA5Clima_starter-out.%j
-#SBATCH --error=ERA5Clima_starter-err.%j
-#SBATCH --time=00:05:00
-#SBATCH --mail-type=NONE
-#SBATCH --partition=devel
-#SBATCH --account=jibg35
-
+#
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2020-12-11
-# USAGE: sbatch --export=ALL,dependency=JOBID,startDate=YYYYMMDD,months=X,CTRLDIR="PATH/TO/CRTL/DIR" starter.sh
+# last modified: 2021-04-01
+# USAGE: 
+# >> ./$0
+# >> ./starter_new.sh
 
-# IMPORTANT
-# initDate HASE TO be set via sbatch --export command
 ###############################################################################
-# Prepare
+#### Adjust according to your need BELOW
 ###############################################################################
-# import/export global paths and variables (e.g. $EXPID)
+NoJ=6              # number of jobs (simulating 24 months -> NoJ=24)
+startDate=19800701  # start date
+dependency=3556111  # JOBID to depend the following jobs at
+                    # if set JOBID is below latest JOBID the job starts without
+		    # dependency automatically
+simPerJob=6         # number of simulaitons to run within one job (less queuing 
+                    # time?)
+                    # -> 6: run 6 simulaitons within one big job
+pre=false           # Define which substeps (PREprocessing, SIMulation, 
+sim=true           # POStprocessing, FINishing) should be run. Default is to
+pos=true           # set each substep to 'true', if one need to run individual 
+fin=true            # steps exclude other substeps by setting to 'false'
+userEmail='n.wagner@fz-juelich.de' 
+computeAcount='esmtst'
+CTRLDIR=$(pwd)      # assuming one is executing this script from the 
+                    # BASE_CTRLDIR, what is the cast most of the time
+###############################################################################
+#### Adjust according to your need ABOVE
+###############################################################################
+
 source ${CTRLDIR}/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
 
@@ -30,54 +38,73 @@ echo "###################################################"
 echo "START Logging ($(date)):"
 echo "###################################################"
 echo "--- exe: $0"
+echo "--- pwd: $(pwd)"
 echo "--- Simulation init-date: ${initDate}"
 echo "---            CTRLDIR:   ${CTRLDIR}"
 echo "--- HOST:  $(hostname)"
 
 cd $BASE_CTRLDIR
 # start flat chain jobs
-start_prepro=$(sbatch --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
-	-o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
-	start_prepro.sh 2>&1 | awk '{print $(NF)}')
-echo "prepro: $start_prepro"
+#submit_prepro=$(sbatch --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
+#	-o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
+#	--mail-user=$userEmail --account=$computeAcount \
+#	submit_prepro.sh 2>&1 | awk '{print $(NF)}')
+#echo "prepro: $submit_prepro"
 
-# If a specific JobID is passed to use as dependency, use that one
-# otherwise use prepro from above.
-# This way one can 'add' additional simulations to a already running chain
-# instead of waiting until a chain is compleated before submit new runs
-if [[ $dependency ]]; then
-    start_simulation=$dependency
-else
-    start_simulation=$start_prepro
-fi
-
-loop_counter=1
-while [ $loop_counter -le $months ]
+submit_simulation=$dependency # fake $start_simulation for the first time
+loop_counter=0
+while [ $loop_counter -lt $NoJ ]
 do
-  # Note that $start_simulation is overwritten with the next lines,
-  # that postpro and finishing are running decoupled from the main-loop
+  # if there are not enough simmulations left to fill the job
+  # reduce $simPerJob to number of jobs left
+  if [[ $((loop_counter+simPerJob)) -gt $NoJ ]]; then
+      echo "-- to less simulations left, run last job with $simPerJob simulations"
+      simPerJob=$((NoJ-loop_counter))
+  fi
+  # Note that $submit_simulation is decoupled from postpro and finishing
   # and therefore the simulaitons are running as fast as possible,
-  # sinde no jobs in between are executed.
-  start_simulation=$(sbatch -d afterok:${start_simulation} \
-	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
+  # since no jobs are executed in between.
+  if [ "$sim" = false ]; then
+    # in case not simulation is not started one need to handle the job 
+    # dependency manualy by setting to JOBID of substep before
+    submit_simulation=$dependency
+  else
+    submit_simulation=$(sbatch -d afterok:${submit_simulation} \
+	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
 	  -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
-	  start_simulation.sh 2>&1 | awk '{print $(NF)}')
-  echo "simulation for $startDate: $start_simulation"
+	  --mail-user=$userEmail --account=$computeAcount \
+	  submit_simulation.sh 2>&1 | awk '{print $(NF)}')
+    echo "simulation for $startDate: $submit_simulation"
+  fi
 
-  start_postpro=$(sbatch -d afterok:${start_simulation} \
-	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
+  if [ "$pos" = false ]; then
+    # in case not postprocessing is not started one need to handle the job 
+    # dependency manualy by setting to JOBID of substep before
+    submit_postpro=$submit_simulation
+  else
+    submit_postpro=$(sbatch -d afterok:${submit_simulation} \
+	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
 	  -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
-	  start_postpro.sh 2>&1 | awk '{print $(NF)}')
-  echo "postpro for $startDate: $start_postpro"
+	  --mail-user=$userEmail --account=$computeAcount \
+	  submit_postpro.sh 2>&1 | awk '{print $(NF)}')
+    echo "postpro for $startDate: $submit_postpro"
+  fi
 
-  start_finishing=$(sbatch -d afterok:${start_postpro} \
-	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
+  if [ "$fin" = false ]; then
+    # in case not postprocessing is not started one need to handle the job 
+    # dependency manualy by setting to JOBID of substep before
+    submit_finishing=$submit_postpro
+  else
+    submit_finishing=$(sbatch -d afterok:${submit_postpro} \
+	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
 	  -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
-	  start_finishing.sh 2>&1 | awk '{print $(NF)}')
-  echo "finishing for $startDate: $start_finishing"
+	  --mail-user=$userEmail --account=$computeAcount \
+	  submit_finishing.sh 2>&1 | awk '{print $(NF)}')
+    echo "finishing for $startDate: $submit_finishing"
+  fi
 
-  loop_counter=$[${loop_counter}+1]
-  echo "-- started: $startDate"
-  startDate=$(date '+%Y%m%d' -d "${startDate} +1 month")
+  loop_counter=$((loop_counter+simPerJob))
+  echo "-- started: $startDate + ${simPerJob}"
+  startDate=$(date '+%Y%m%d' -d "${startDate} +${simPerJob} month")
 done
 exit 0
