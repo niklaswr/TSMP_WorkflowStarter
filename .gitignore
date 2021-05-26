@@ -1,7 +1,5 @@
 # general ignores:
 ##################
-# ignore README.md as this file is different for all forks...
-README.md
 # ignore swap fiels
 *.swp
 # ignore slurm log-files

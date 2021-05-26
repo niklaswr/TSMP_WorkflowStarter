@@ -32,7 +32,11 @@ CTRLDIR=$(pwd)      # assuming one is executing this script from the
 
 source ${CTRLDIR}/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
+# Check git / working tree status:
+# 'checkGitStatus()' is located in 'start_helper.sh'
+checkGitStatus ${SIMSTATUS}
 
+exit 0
 # echo for logfile
 echo "###################################################"
 echo "START Logging ($(date)):"

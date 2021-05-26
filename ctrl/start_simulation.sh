@@ -235,7 +235,15 @@ SUBJECT_MODEL=$(git log --pretty=format:'subject: %s' -n 1)
 URL_MODEL=$(git config --get remote.origin.url)
 
 /bin/cat <<EOM >$histfile
-This simulation was run with 
+###############################################################################
+This simulation was run under
+simStatus=${SIMSTATUS} # "test": test run; "prod": production run
+# The simStatus flag does only control a seperat check right before the 
+# simulation is submitted, checking if the working tree is clean and if the
+# current commit has a tag.
+# This way we make sure below information are correct!
+###############################################################################
+The following setup was used: 
 ###############################################################################
 WORKFLOW 
 -- REPO:
