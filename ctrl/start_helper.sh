@@ -124,9 +124,8 @@ checkGitStatus() {
     else
       echo "Uncommitted changes in tracked files"
       echo $(git status --untracked-files=no --porcelain)
-      echo "This is against production mode --> Exit"
-      echo "###################"
-      exit 1
+      echo "Are you aware of this?"
+      echo "Changes not tracked by git are not part of HISTORY.txt"
     fi
   else
     echo "###################"
