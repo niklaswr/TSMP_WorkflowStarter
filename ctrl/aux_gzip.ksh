@@ -5,9 +5,7 @@
 #SBATCH --ntasks=48
 #SBATCH --ntasks-per-node=48
 #SBATCH --time=01:00:00
-#SBATCH --partition=batch
-##SBATCH --mail-type=ALL
-##SBATCH --mail-user=n.wagner@fz-juelich.de
+#SBATCH --partition=esm
 #SBATCH --account=jibg35
 
 # author: Niklas Wagner
