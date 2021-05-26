@@ -72,7 +72,7 @@ echo "--- try to remove ${expID} in case already exists"
 rm -vr ${WORK_DIR}/${expID}
 echo "--- create and fill ${expID}"
 mkdir ${WORK_DIR}/${expID}
-#----------copy geodir to new rundir and execute tcl-scripts-------------------
+#----------copy geodir to new rundir ------------------------------------------
 echo "--- -- copying ParFlow geo/ files"
 cp ${BASE_GEODIR}/parflow/* ${WORK_DIR}/${expID}/
 echo "--- -- copying Oasis geo/ files"
@@ -105,6 +105,8 @@ cosmo_ydate_ini=$(date '+%Y%m%d%H' -d "${initDate}")
 sed -i "s,__hstart__,$hstart,g" INPUT_ORG
 sed -i "s,__hstop__,$hstop,g" INPUT_ORG
 sed -i "s,__cosmo_ydate_ini__,${cosmo_ydate_ini},g" INPUT_ORG
+sed -i "s,__nprocx_cos_bldsva__,${PROC_COSMO_X},g" INPUT_ORG
+sed -i "s,__nprocy_cos_bldsva__,${PROC_COSMO_Y},g" INPUT_ORG
 
 ##############################################################
 # Modifying CLM namelists
@@ -130,12 +132,16 @@ sed -i "s,__ICPressure__,${ic_pressure},g" coup_oas.tcl
 sed -i "s,__year__,${y0},g" coup_oas.tcl
 sed -i "s,__month__,${m0},g" coup_oas.tcl
 sed -i "s,__BASE_GEODIR__,${BASE_GEODIR},g" coup_oas.tcl
+sed -i "s,__nprocx_pfl_bldsva__,${PROC_PARFLOW_P},g" coup_oas.tcl
+sed -i "s,__nprocy_pfl_bldsva__,${PROC_PARFLOW_Q},g" coup_oas.tcl
 tclsh coup_oas.tcl
 
-sed -i "s,__pfidb__,cordex0.11_${y0}_${m0},g" slm_multiprog_mapping.conf
-
 echo "--- execute ParFlow distributeing tcl-scripts "
+sed -i "s,__nprocx_pfl_bldsva__,${PROC_PARFLOW_P},g" ascii2pfb_slopes.tcl
+sed -i "s,__nprocy_pfl_bldsva__,${PROC_PARFLOW_Q},g" ascii2pfb_slopes.tcl
 tclsh ascii2pfb_slopes.tcl
+sed -i "s,__nprocx_pfl_bldsva__,${PROC_PARFLOW_P},g" ascii2pfb_SoilInd.tcl
+sed -i "s,__nprocy_pfl_bldsva__,${PROC_PARFLOW_Q},g" ascii2pfb_SoilInd.tcl
 tclsh ascii2pfb_SoilInd.tcl
 
 ##############################################################
@@ -143,6 +149,18 @@ tclsh ascii2pfb_SoilInd.tcl
 ##############################################################
 runTime=$((numHours*3600+900))
 sed -i "s,__runTime__,${runTime},g" namcouple
+sed -i "s,__NPROC_COSMO__,$((PROC_COSMO_X*PROC_COSMO_Y)),g" namcouple
+sed -i "s,__NPROC_PARFLOW__,$((PROC_PARFLOW_P*PROC_PARFLOW_Q)),g" namcouple
+sed -i "s,__NPROC_CLM__,${PROC_CLM},g" namcouple
+
+##############################################################
+# Create 'slm_multiprog_mapping.conf'
+##############################################################
+get_mappingConf ${PROC_COSMO_X} ${PROC_COSMO_Y} \
+    ${PROC_PARFLOW_P} ${PROC_PARFLOW_Q} \
+    ${PROC_CLM} \
+    ./slm_multiprog_mapping.conf
+sed -i "s,__pfidb__,cordex0.11_${y0}_${m0},g" slm_multiprog_mapping.conf
 
 ##############################################################
 # Running the simulation
@@ -199,57 +217,47 @@ rm -r ${rundir}
 # Creating HISTORY.txt (reusability etc.)
 ###############################################################################
 histfile=$new_simres/HISTORY.txt
-/bin/cat <<EOM >$histfile
-This simulation was run with 
-###############################################################################
-WORKFLOW 
--- REPO:
-__URL_WORKFLOW__
--- LOG: 
-tag: __TAG_WORKFLOW__
-__COMMIT_WORKFLOW__
-__AUTHOR_WORKFLOW__
-__DATE_WORKFLOW__
-__SUBJECT_WORKFLOW__
-###############################################################################
-MODEL (build with: './build_tsmp.ksh -v 3.1.0MCT -c clm-cos-pfl -m JUWELS -O Intel')
--- REPO:
-__URL_MODEL__
--- LOG:
-tag: __TAG_MODEL__
-__COMMIT_MODEL__
-__AUTHOR_MODEL__
-__DATE_MODEL__
-__SUBJECT_MODEL__
-###############################################################################
-EOM
+
 cd ${BASE_CTRLDIR}
-TAG_WORKFLOW=$(git describe --abbrev=0)
+TAG_WORKFLOW=$(git describe --tags)
 COMMIT_WORKFLOW=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_WORKFLOW=$(git log --pretty=format:'author: %an' -n 1)
 DATE_WORKFLOW=$(git log --pretty=format:'date: %ad' -n 1)
 SUBJECT_WORKFLOW=$(git log --pretty=format:'subject: %s' -n 1)
 URL_WORKFLOW=$(git config --get remote.origin.url)
-sed -i "s;__TAG_WORKFLOW__;${TAG_WORKFLOW};g" ${histfile}
-sed -i "s;__COMMIT_WORKFLOW__;${COMMIT_WORKFLOW};g" ${histfile}
-sed -i "s;__AUTHOR_WORKFLOW__;${AUTHOR_WORKFLOW};g" ${histfile}
-sed -i "s;__DATE_WORKFLOW__;${DATE_WORKFLOW};g" ${histfile}
-sed -i "s;__SUBJECT_WORKFLOW__;${SUBJECT_WORKFLOW};g" ${histfile}
-sed -i "s;__URL_WORKFLOW__;${URL_WORKFLOW};g" ${histfile}
 
 cd ${BASE_SRCDIR}/TSMP
-TAG_MODEL=$(git describe --abbrev=0)
+TAG_MODEL=$(git describe --tags)
 COMMIT_MODEL=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_MODEL=$(git log --pretty=format:'author: %an' -n 1)
 DATE_MODEL=$(git log --pretty=format:'date: %ad' -n 1)
 SUBJECT_MODEL=$(git log --pretty=format:'subject: %s' -n 1)
 URL_MODEL=$(git config --get remote.origin.url)
-sed -i "s;__TAG_MODEL__;${TAG_MODEL};g" ${histfile}
-sed -i "s;__COMMIT_MODEL__;${COMMIT_MODEL};g" ${histfile}
-sed -i "s;__AUTHOR_MODEL__;${AUTHOR_MODEL};g" ${histfile}
-sed -i "s;__DATE_MODEL__;${DATE_MODEL};g" ${histfile}
-sed -i "s;__SUBJECT_MODEL__;${SUBJECT_MODEL};g" ${histfile}
-sed -i "s;__URL_MODEL__;${URL_MODEL};g" ${histfile}
+
+/bin/cat <<EOM >$histfile
+This simulation was run with 
+###############################################################################
+WORKFLOW 
+-- REPO:
+${URL_WORKFLOW}
+-- LOG: 
+tag: ${TAG_WORKFLOW}
+${COMMIT_WORKFLOW}
+${AUTHOR_WORKFLOW}
+${DATE_WORKFLOW}
+${SUBJECT_WORKFLOW}
+###############################################################################
+MODEL
+-- REPO:
+${URL_MODEL}
+-- LOG:
+tag: ${TAG_MODEL}
+${COMMIT_MODEL}
+${AUTHOR_MODEL}
+${DATE_MODEL}
+${SUBJECT_MODEL}
+###############################################################################
+EOM
 check4error $? "--- ERROR while creating HISTORY.txt"
 
 echo "ready: TSMP simulation for ${cur_month} is complete!" > ready.txt

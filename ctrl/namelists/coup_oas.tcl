@@ -6,8 +6,8 @@ namespace import Parflow::*
 #--------------------------------------------------------
 pfset FileVersion 4
 #-------------------------------------------------------
-pfset Process.Topology.P 12
-pfset Process.Topology.Q 12
+pfset Process.Topology.P __nprocx_pfl_bldsva__
+pfset Process.Topology.Q __nprocy_pfl_bldsva__
 pfset Process.Topology.R 1
 
 # THE COMPUTATIONAL GRID IS A (BOX) THT CONTAINS THE MAIN PROBLEM. THIS CAN EITHER BE EXACTLY THE SIZE
