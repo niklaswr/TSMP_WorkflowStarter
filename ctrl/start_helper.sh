@@ -102,30 +102,30 @@ checkGitStatus() {
     # do track everything with the HISTORY.txt
     if [ -z "$(git status --untracked-files=no --porcelain)" ]; then
       echo "Working directory is clean"
-      # Further we want a tag at the current commit (git tag --points-at HEAD)
-      # to make sure we find this commit again, e.g. in case a rebase was
-      # performed which does change the commit-hash
-      if [ -z "$(git tag --points-at HEAD)" ]; then
-        # No tag at current commit found --> set a tag
-
-	# Fetch current version / tag
-	local version=$(git describe --abbrev=0 --tags)
-	# Remove the v in the tag v2.1.0 for example
-	local version=${version:1}
-	# Build array from version string.
-        local a=( ${version//./ } )
-	# Increase pacth numver in vMAJOR.MINOR.PATCH
-	((a[2]++))
-	# Def new version / tag
-	local next_version="${a[0]}.${a[1]}.${a[2]}"
-	# Set new version / tag
-	git tag -a "v$next_version" -m "set by workflow"
-      fi
     else
       echo "Uncommitted changes in tracked files"
       echo $(git status --untracked-files=no --porcelain)
       echo "Are you aware of this?"
       echo "Changes not tracked by git are not part of HISTORY.txt"
+    fi
+    # Further we want a tag at the current commit (git tag --points-at HEAD)
+    # to make sure we find this commit again, e.g. in case a rebase was
+    # performed which does change the commit-hash
+    if [ -z "$(git tag --points-at HEAD)" ]; then
+      # No tag at current commit found --> set a tag
+
+      # Fetch current version / tag
+      local version=$(git describe --abbrev=0 --tags)
+      # Remove the v in the tag v2.1.0 for example
+      local version=${version:1}
+      # Build array from version string.
+      local a=( ${version//./ } )
+      # Increase pacth numver in vMAJOR.MINOR.PATCH
+      ((a[2]++))
+      # Def new version / tag
+      local next_version="${a[0]}.${a[1]}.${a[2]}"
+      # Set new version / tag
+      git tag -a "v$next_version" -m "set by workflow"
     fi
   else
     echo "###################"
