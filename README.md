@@ -1,36 +1,60 @@
-# Welcome to `ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3`
+# Welcome to `FZJ-IBG3_Climatrun-Template` 
 
 This repository is containing (or pointing to) everything needed for a climate 
 simulation based on TSMP. To keep everything most flexible a modular approach is 
 aimed, with currently three modules distinguished:
 
-1. Workflow (this project)
+1. Setup (this project)
 2. ModelSystem (TMSP)
-3. ModelSetup (individual)
+3. Static-files (individual)
 
 All modules together forming the final climate simulation setup.
 
 # Getting started
-First clone this repository (**Workflow**) to you project-directory:
+First clone this repository (**Setup**) to you project-directory:
 ``` bash
 cd $PROJECT_DIR
-git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3.git
+git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_scripts_tools_engines/FZJ-IBG3_Climatrun-Template.git
 ```
 and export the new path to an environment variable for later use:
 ``` bash
-cd $PROJECT_DIR/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3
+cd $PROJECT_DIR/FZJ-IBG3_Climatrun-Template
 export BASE_ROOT=$(pwd)
 ```
-Than clone the **ModelSystem** [TSMP](https://www.terrsysmp.org/) to the `src` 
-directory:
+
+Than get the **ModelSystem** (TSMP), place under `src` directory, and checkout desired version/tag:
 ``` bash
 cd $BASE_ROOT/src
 git clone https://github.com/HPSCTerrSys/TSMP.git
+cd TSMP
+git checkout v1.2.3
+export TSMP_DIR=$(pwd)
 ```
-Next get the **ModelSetup** and place under `run_TSMP`:
+Get TSMP component models (COSMO, ParFlow, CLM, Oasis)
 ``` bash
-cd $BASE_ROOT/run_TSMP/
-git clone https://icg4geo.icg.kfa-juelich.de/Configurations/TSMP/tsmp_era5clima_template.git
+cd ${TSMP_DIR}
+git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_src/cosmo5.01_fresh.git
+git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_src/parflow3.2_fresh.git
+git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_src/clm3.5_fresh.git
+git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_src/oasis3-mct.git
+mv cosmo5.01_fresh cosmo5_1
+mv parflow3.2_fresh parflow3_2
+mv clm3.5_fresh clm3_5
+```
+Patch `ParFlow` to enable writing out `et.pfb` where usually compilation with CLM is needed, but not possible with TSMP:
+``` bash
+patch ${TSMP_DIR}/parflow3_2/pfsimulator/parflow_lib/solver_richards.c ${BASE_ROOT}/ctrl/externals/ParFlowPatches/patch2writeSourceAndSinksWithoutCLM/patch_solver_richards.c
+```
+Compile TSMP
+``` bash
+cd $TSMP_DIR/bldsva
+./build_tsmp.ksh -v 3.1.0MCT -c clm-cos-pfl -m JUWELS -O Intel
+```
+
+Get needed **Static-files** and stoer under geo/ (not final yet...)
+``` bash
+cd ${BASE_ROOT}/geo
+cp -vr [...]/geo/* ./
 ```
 
 Finally you need to adjust `export_paths.ksh` in the `ctrl` directory:
@@ -38,36 +62,31 @@ Finally you need to adjust `export_paths.ksh` in the `ctrl` directory:
 cd $BASE_ROOT/ctrl
 vi export_paths.ksh
 ```
-Within this file change the line `rootdir="/p/scratch/cjibg35/tsmpforecast/${expid}"` 
+Within this file change the line `rootdir="/p/scratch/cjibg35/tsmpforecast/development/${expid}"` 
 according to you `$PROJECT_DIR` from above. To verify `rootdir` is set properly 
-do `cd $rootdir`. You should see the following content:
+do `source $BASE_ROOT/ctrl/export_paths.ksh && echo "$rootdir" && ls -l $rootdir`. You should see the following content:
 ``` console
+PATH/TO/YOUR/PROJECT
+CHANGELOG
 ctrl
 forcing
+geo
 postpro
-README
+README.md
 run_INT2LM
 run_TSMP
 simres
 src
 ```
 
-Now the setup is complete, but to run a simulation proper forcing- and 
-restart-files are needed.
+Now the setup is complete, and can be run after providing proper forcing and restart files. 
+Take a look at the [Wiki](https://icg4geo.icg.kfa-juelich.de/ModelSystems/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/wikis/home) to see how to provide those files.
 
-Link the provided forcing sample to the proper subdirectory in `run_TSMP`:
-``` bash
-cd $BASE_ROOT/run_TSMP/laf_lbfd/all
-ln -sf NEED/TO/ADD/PATH ./
-```
-
-Copy provided restart-files to the restart-dir under `run_TSMP`: 
-``` bash
-cd $BASE_ROOT/run_TSMP/restarts
-cp -r NEED/TO/ADD/PATH/* ./
-```
-To start a simulation simply submit `starter.sh` from `ctrl`-directory:
+To start a simulation simply execute `starter.sh` from `ctrl`-directory:
 ``` bash
 cd $BASE_ROOT/ctrl
-sbatch --export=ALL,startDate=YYYYMMDD,months=X,CTRLDIR=$(pwd) starter.sh 
+# adjust according to you need between l10 and l31
+vi ./starter.sh 
+# start the simulation
+./starter.sh 
 ```

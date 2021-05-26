@@ -33,13 +33,8 @@ monitoring/**
 ################
 # keep .gitkeep files to keep dir-structure
 !**/.gitkeep
-!run_TSMP/laf_lbfd_int2lm_juwels2019a_ouput/all
-# keep template directory wich is located in rundir_TSMP
-#!run_TSMP/sim_output_heter_geology_improved_with_pfl_sink/tsmp_era5clima_template
 
 # special ignores:
 ##################
 # ext-data for INT2LM --> late add to repo!
 **/eafc_*
-# the original dir from LPO
-ctrl/submit_TSMP_hist_rcp_continuous_years_months_sinks
