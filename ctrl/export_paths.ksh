@@ -11,7 +11,7 @@
 # The script will then only use the environment variables provided this way. 
 # In principle, only the 'rootdir' has to be adjusted, all other paths result 
 # from it.
-expid="ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3"
+expid="era5climat_eur-11_ecmwf-era5_analysis_fzj-ibg3"
 rootdir="/p/scratch/cjibg35/tsmpforecast/${expid}"
 export EXPID="${expid}"
 # export needed paths
@@ -36,3 +36,9 @@ export PARFLOW_DIR="${BASE_BINDIR}"
 
 # below does accutally not belong her, but I do have no better place.
 export BASE_INITDATE="19790101"
+# PROC (processor) distribution of individual component models
+export PROC_COSMO_X=16
+export PROC_COSMO_Y=18
+export PROC_PARFLOW_P=9
+export PROC_PARFLOW_Q=8
+export PROC_CLM=24
