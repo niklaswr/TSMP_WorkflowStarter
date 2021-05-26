@@ -5,6 +5,24 @@ The version number is used as a tag.
 Version numbering:
 MAJOR.Minor.patch
 
+v2.1.0
+======
+
+commit:b83073516856d30c1ead945d2a7c5820c4fd119d
+INT2LMv2.0.4
+TSMPv1.2.3
+
+Changes:
+- add 'bunch-submission' to run multiple simulations (months) within one slurm submit. This can save many quiueing time.
+- change smaller scripts to run on 'esm' partiotion instead of 'devel'
+- easy implementaiton to control individual sub-steps. E.g. run only postpro and finishing.
+- change loging in HISTORY.txt - tag is now included
+- prepare monitoring, by adding monitoring/ dir, $BASE_MODITORINGDIR, and related git-ignore entry. Monitoring itself is still not availabel
+- add and modif some aux_* tools
+- porper mask ParFlow postpro in netCDF files
+- add 'specific_storage' (ParFlow) to postpro
+- change workflow that start_postpro now takes data from $BASE_SIMRES instead of rundir. Further start_simulation directly moves data to $BASE_SIMRES after simulation.
+
 v2.0.0
 ======
 
@@ -29,45 +47,3 @@ Changes:
   are stored under ctrl/namelist/
 - centralize initDate (very beginning of simulation)
 
------
-BELOW IS DEPRICATED as I satrt a new versioning
------
-
-This file should contain a small log / documentation of the setu process for ERA5Climat runs.
-
-General:
-Different to 'usual strategy' development is done on the master branch and releases are 'splited' to individual branches.
-This strategy is also used by big companies as Check24 and Trivago.
-I want to test this!
-
-Version numbering:
-branches: vXXX_YYY
-
-v001_002
-========
-
-Setup:
-INT2LMv2.0.4
-Workflow from LPO 14102020
-TSMPv1.2.1
-
-Changes:
-- IC/BC resolution 0.25 --> 0.3
-- project cslts --> cjibg35
-- OS change of compute and login nodes: OS7 --> OS8
-- reworked dir-structure torwards 'final / ideal' structur
-- add post-processing routines
-- add archiving routines
-- add aux-tools to handle moving data to tape and largdata more easily
-
-
-v001_001
-========
-
-Setup:
-INT2LMv2.0.4
-Workflow from LPO 14102020
-TSMPv1.2.1
-
-ERA5 data are downloaded vi MARS retrieves on the same boundary as TSMP-Monitoring IC/BC but on 0.25degree resolution
-The related MARSScript is located (copyed from ECGATE) in: ctrl/MARSScripts/

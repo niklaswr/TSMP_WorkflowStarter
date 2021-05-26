@@ -23,9 +23,9 @@
 # optional launching argument
 #
   MPI1 NOBSEND
-   384 384
-   144 144
-   48 48
+   __NPROC_COSMO__ __NPROC_COSMO__
+   __NPROC_PARFLOW__ __NPROC_PARFLOW__
+   __NPROC_CLM__ __NPROC_CLM__
  $END
 #########################################################################
  $NFIELDS

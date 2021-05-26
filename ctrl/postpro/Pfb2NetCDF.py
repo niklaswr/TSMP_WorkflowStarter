@@ -118,5 +118,4 @@ ncData.coordinates = f'lon lat'
 ncData.cell_methods = f'time: point'
 #ncData.missing_value = -3.40282346638529e+38
 
-
 ncfile.close()
