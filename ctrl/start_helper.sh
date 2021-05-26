@@ -2,7 +2,7 @@
 #
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2020-08-04
+# last modified: 2021-05-26
 # USAGE: 
 
 ###############################################################################
@@ -82,4 +82,58 @@ parallelGunzip() {
         done
         wait
     fi
+}
+
+checkGitStatus() {
+  # The simulation status should indicate if 
+  # test runs are performed --> simStatus="test"
+  # or if 
+  # production runs are performed --> simStatus="prod".
+  local simStatus=$1
+  if [[ $simStatus == "test" ]]; then
+    echo "###################"
+    echo "You are running under test-mode. No special treatment"
+    echo "(--> simStatus is set under export_paths.ksh)"
+  elif [[ $simStatus == "prod" ]]; then
+    echo "###################"
+    echo "You are running under production-mode"
+    echo "(--> simStatus is set under export_paths.ksh)"
+    # In case of production run, we want a clean working tree to make sure we
+    # do track everything with the HISTORY.txt
+    if [ -z "$(git status --untracked-files=no --porcelain)" ]; then
+      echo "Working directory is clean"
+      # Further we want a tag at the current commit (git tag --points-at HEAD)
+      # to make sure we find this commit again, e.g. in case a rebase was
+      # performed which does change the commit-hash
+      if [ -z "$(git tag --points-at HEAD)" ]; then
+        # No tag at current commit found --> set a tag
+
+	# Fetch current version / tag
+	local version=$(git describe --abbrev=0 --tags)
+	# Remove the v in the tag v2.1.0 for example
+	local version=${version:1}
+	# Build array from version string.
+        local a=( ${version//./ } )
+	# Increase pacth numver in vMAJOR.MINOR.PATCH
+	((a[2]++))
+	# Def new version / tag
+	local next_version="${a[0]}.${a[1]}.${a[2]}"
+	# Set new version / tag
+	git tag -a "v$next_version" -m "set by workflow"
+      fi
+    else
+      echo "Uncommitted changes in tracked files"
+      echo $(git status --untracked-files=no --porcelain)
+      echo "This is against production mode --> Exit"
+      echo "###################"
+      exit 1
+    fi
+  else
+    echo "###################"
+    echo "You are running with an unsupported simulation status!"
+    echo "simStatus=$simStatus --> EXIT"
+    echo "(--> simStatus is set under export_paths.ksh)"
+    echo "###################"
+    exit 1
+  fi
 }
