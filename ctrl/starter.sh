@@ -36,7 +36,6 @@ source ${BASE_CTRLDIR}/start_helper.sh
 # 'checkGitStatus()' is located in 'start_helper.sh'
 checkGitStatus ${SIMSTATUS}
 
-exit 0
 # echo for logfile
 echo "###################################################"
 echo "START Logging ($(date)):"
