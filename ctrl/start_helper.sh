@@ -42,6 +42,8 @@ check4error() {
 # load function to calculate the number of leapdays between 
 # initDate and currentDate
 source ${BASE_CTRLDIR}/get_NumLeapDays.sh
+# load function to create 'slm_multiprog_mapper.conf' needed by TSMP
+source ${BASE_CTRLDIR}/get_MappingConf.sh
 
 parallelGzip() {
     # Idea is taken from:

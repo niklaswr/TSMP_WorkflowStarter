@@ -6,10 +6,8 @@
  /
  &RUNCTL
   hstart = __hstart__,   hstop = __hstop__,    dt      = 75,    ydate_ini=__cosmo_ydate_ini__,
-! NWR 20201010
-! small scaling test -- use similar CPU distribution as for TSMPM
-  nprocx = 16,  nprocy = 24,   nprocio = 0,
-!  nprocx = 16,  nprocy = 12,   nprocio = 0,
+!  nprocx = 16,  nprocy = 24,   nprocio = 0,
+  nprocx = __nprocx_cos_bldsva__,  nprocy = __nprocy_cos_bldsva__,   nprocio = 0,
   nboundlines = 4,
   lphys      = .TRUE.,   luse_rttov    = .FALSE.,  luseobs = .FALSE., leps = .FALSE.,
   lreorder   = .FALSE.,  lreproduce    = .TRUE.,   itype_timing = 0,

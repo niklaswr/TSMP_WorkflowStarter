@@ -36,3 +36,9 @@ export PARFLOW_DIR="${BASE_BINDIR}"
 
 # below does accutally not belong her, but I do have no better place.
 export BASE_INITDATE="19790101"
+# PROC (processor) distribution of individual component models
+export PROC_COSMO_X=16
+export PROC_COSMO_Y=18
+export PROC_PARFLOW_P=9
+export PROC_PARFLOW_Q=8
+export PROC_CLM=24
