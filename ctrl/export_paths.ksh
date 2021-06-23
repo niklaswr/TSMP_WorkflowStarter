@@ -29,8 +29,6 @@ export BASE_GEODIR="${rootdir}/geo"
 export BASE_POSTPRODIR="${rootdir}/postpro"
 export BASE_MONITORINGDIR="${rootdir}/monitoring"
 export BASE_SRCDIR="${rootdir}/src"
-export BASE_ARCROOTDIR="${ARCHIVE_jibg33}/tsmpforecast/${expid}"
-export BASE_LARGEROOTDIR="${DATA_jibg33}/tsmpforecast/${expid}"
 export BASE_BINDIR="${rootdir}/src/TSMP/bin/JUWELS_3.1.0MCT_clm-cos-pfl"
 export PARFLOW_DIR="${BASE_BINDIR}"
 
