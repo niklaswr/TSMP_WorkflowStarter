@@ -81,10 +81,10 @@ cp ${BASE_GEODIR}/oasis3/* ${WORK_DIR}/${expID}/
 echo "--- -- copying namelists form ${BASE_NAMEDIR}"
 cp ${BASE_NAMEDIR}/* ${WORK_DIR}/${expID}/
 #----------copy binaries to new rundir-----------------------------------------
-echo "--- -- copying binaries from ${BASE_BINDIR}"
-cp ${BASE_BINDIR}/clm ${WORK_DIR}/${expID}/
-cp ${BASE_BINDIR}/lmparbin_pur ${WORK_DIR}/${expID}/
-cp ${BASE_BINDIR}/parflow ${WORK_DIR}/${expID}/
+echo "--- -- copying binaries from ${BASE_BINDIR_TSMP}"
+cp ${BASE_BINDIR_TSMP}/clm ${WORK_DIR}/${expID}/
+cp ${BASE_BINDIR_TSMP}/lmparbin_pur ${WORK_DIR}/${expID}/
+cp ${BASE_BINDIR_TSMP}/parflow ${WORK_DIR}/${expID}/
 
 cd ${WORK_DIR}/${expID}
 mkdir ${WORK_DIR}/${expID}/cosmo_out
