@@ -51,6 +51,7 @@ parallelGzip() {
     cd $2
     DIR=$2
     MAX_PARALLEL=$1
+    if [[ ! -d $DIR ]]; then echo "START_HELPER.sh parallelGzip: DIR does not exist --> EXIT" && exit 1; fi
     nroffiles=$(ls $DIR|wc -w)
     (( setsize=nroffiles/MAX_PARALLEL ))
     # catch case if setsize / -n is less or equal 1
@@ -70,6 +71,7 @@ parallelGunzip() {
     cd $2
     DIR=$2
     MAX_PARALLEL=$1
+    if [[ ! -d $DIR ]]; then echo "START_HELPER.sh parallelGunzip: DIR does not exist --> EXIT" && exit 1; fi
     nroffiles=$(ls $DIR|wc -w)
     (( setsize=nroffiles/MAX_PARALLEL ))
     # catch case if setsize / -n is less or equal 1
