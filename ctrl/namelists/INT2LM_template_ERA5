@@ -118,6 +118,7 @@
   yinext_form_read = 'apix',
 !  yinext_form_read = 'grb1',
   ylm_cat='__lm_cat_dir__',
+!  ylm_form_write='ncdf',
   ylm_form_write='grb1',
   ytunit_out ='d',
   yin_cat='__in_cat_dir__', 

@@ -17,7 +17,7 @@
 # last modified: 2021-07-06
 # USAGE: 
 # >> sbatch $0 CTRLDIR
-# >> sbatch start_int2lm.sh $(pwd)
+# >> sbatch INT2LM_submit.sh $(pwd)
 # 
 ###############################################################################
 #### Adjust according to your need BELOW
