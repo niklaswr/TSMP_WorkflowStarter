@@ -27,7 +27,7 @@ raisERROR() {
     echo "ERROR:"
     echo "--- -- $message"
 
-    exit
+    exit 9
 }
 
 check4error() {
@@ -35,7 +35,7 @@ check4error() {
     # USAGE: check4error $? MESSAGE
     if [[ $1 != 0 ]] ; then
         echo " check4error: $1"
-        raisERROR $2
+        raisERROR "$2"
     fi
 }
 
@@ -91,10 +91,14 @@ checkGitStatus() {
   # test runs are performed --> simStatus="test"
   # or if 
   # production runs are performed --> simStatus="prod".
+  # colored text output:
+  red=`tput setaf 1`
+  green=`tput setaf 2`
+  reset=`tput sgr0`
   local simStatus=$1
   if [[ $simStatus == "test" ]]; then
     echo "###################"
-    echo "You are running under test-mode. No special treatment"
+    echo "${green}You are running under test-mode. No special treatment${reset}"
     echo "(--> simStatus is set under export_paths.ksh)"
   elif [[ $simStatus == "prod" ]]; then
     echo "###################"
@@ -103,12 +107,12 @@ checkGitStatus() {
     # In case of production run, we want a clean working tree to make sure we
     # do track everything with the HISTORY.txt
     if [ -z "$(git status --untracked-files=no --porcelain)" ]; then
-      echo "Working directory is clean"
+      echo "${green}Working directory is clean${reset}"
     else
-      echo "Uncommitted changes in tracked files"
+      echo "${red}Uncommitted changes in tracked files${reset}"
       echo $(git status --untracked-files=no --porcelain)
-      echo "Are you aware of this?"
-      echo "Changes not tracked by git are not part of HISTORY.txt"
+      echo "${red}Are you aware of this?${reset}"
+      echo "${red}Changes not tracked by git are not part of HISTORY.txt${reset}"
     fi
     # Further we want a tag at the current commit (git tag --points-at HEAD)
     # to make sure we find this commit again, e.g. in case a rebase was
