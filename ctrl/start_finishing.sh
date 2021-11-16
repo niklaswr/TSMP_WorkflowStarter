@@ -28,7 +28,7 @@ source ${BASE_CTRLDIR}/postpro/loadenvs
 cd ${BASE_CTRLDIR}
 
 h0=$(TZ=UTC date '+%H' -d "$startDate")
-d0=$(TZ=UTC date '+%d' -d "$startDate")
+start_finishing.shd0=$(TZ=UTC date '+%d' -d "$startDate")
 m0=$(TZ=UTC date '+%m' -d "$startDate")
 y0=$(TZ=UTC date '+%Y' -d "$startDate")
 dp1=$(TZ=UTC date '+%d' -d "$startDate +1 month")
@@ -42,9 +42,10 @@ initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
 WORK_DIR="${BASE_RUNDIR_TSMP}"
 expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
 rundir=${WORK_DIR}/${expID}
-# Note: $expid is NOT $expID
-# $expid is defined with export_paths.ksh
-new_simres=${BASE_SIMRESDIR}/${expid}_${y0}${m0}${d0}
+
+#echo "--- create SIMRES dir (and sub-dirs) to store simulation results"
+new_simres_name="${expid}_$(date '+%Y%m%d' -d "$startDate")"
+new_simres=${BASE_SIMRESDIR}/${new_simres_name}
 
 echo "--- gzip and sha512sum individual files in simresdir"
 cd ${new_simres}/cosmo

@@ -234,6 +234,14 @@ DATE_MODEL=$(git log --pretty=format:'date: %ad' -n 1)
 SUBJECT_MODEL=$(git log --pretty=format:'subject: %s' -n 1)
 URL_MODEL=$(git config --get remote.origin.url)
 
+cd ${BASE_GEODIR}
+TAG_GEO=$(git describe --tags)
+COMMIT_GEO=$(git log --pretty=format:'commit: %H' -n 1)
+AUTHOR_GEO=$(git log --pretty=format:'author: %an' -n 1)
+DATE_GEO=$(git log --pretty=format:'date: %ad' -n 1)
+SUBJECT_GEO=$(git log --pretty=format:'subject: %s' -n 1)
+URL_GEO=$(git config --get remote.origin.url)
+
 /bin/cat <<EOM >$histfile
 ###############################################################################
 This simulation was run under
@@ -264,6 +272,16 @@ ${COMMIT_MODEL}
 ${AUTHOR_MODEL}
 ${DATE_MODEL}
 ${SUBJECT_MODEL}
+###############################################################################
+GEO
+-- REPO:
+${URL_GEO}
+-- LOG:
+tag: ${TAG_GEO}
+${COMMIT_GEO}
+${AUTHOR_GEO}
+${DATE_GEO}
+${SUBJECT_GEO}
 ###############################################################################
 EOM
 check4error $? "--- ERROR while creating HISTORY.txt"

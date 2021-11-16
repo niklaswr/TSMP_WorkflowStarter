@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#SBATCH --job-name="ERA5_prepro"
+#SBATCH --job-name="WERA5_prepro"
 #SBATCH --nodes=1
 #SBATCH --ntasks=48
 #SBATCH --ntasks-per-node=48
