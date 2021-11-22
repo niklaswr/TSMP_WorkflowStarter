@@ -75,6 +75,20 @@ cd ${BASE_POSTPRODIR}/${y0}_${m0}
 sha512sum ./* > "CheckSum.sha512"
 if [[ $? != 0 ]] ; then exit 1 ; fi
 
+echo "-- START monitoring"
+# clean up -- just to be sure there are no conflicts
+rm -rf ${BASE_MONITORINGDIR}/${y0}_${m0}
+# create saveDir
+mkdir -p ${BASE_MONITORINGDIR}/${y0}_${m0}
+# run monitoring script
+cd ${BASE_CTRLDIR}/monitoring/
+python monitoring.py \
+	--configFile ./CONFIG \
+	--dataRootDir ${BASE_POSTPRODIR}/${y0}_${m0} \
+	--saveDir ${BASE_MONITORINGDIR}/${y0}_${m0}
+if [[ $? != 0 ]] ; then exit 1 ; fi
+echo "--- END monitoring"
+
 #echo "-- taring postpro/${y0}_${m0}"
 #cd ${BASE_POSTPRODIR}
 #tar -cf "${y0}_${m0}.tar" ${y0}_${m0} 

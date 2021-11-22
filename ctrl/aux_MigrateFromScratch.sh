@@ -2,7 +2,7 @@
 #
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2021-04-26
+# last modified: 2021-06-23
 #
 # Description:
 # This script does tar given sourc-dir(s) to given target-dir, 
@@ -10,9 +10,8 @@
 # target-dir to the location of the original directory.
 #
 # USAGE:
-# >> ./$0 TARGET/DIR SOURCE/DIR/pattern*
-# >> ./$0
-#
+# >> bash ./$0 TARGET/DIR SOURCE/DIR/pattern*
+# >> bash ./aux_MigrateFromScratch.sh /p/arch2/jibg33/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/simres/ /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/simres/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3_2005*
 
 TARGET=$1
 # .. and assumes every further argument as SOURCES (there is a plural s!)

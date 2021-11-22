@@ -1,41 +1,66 @@
  ! # IBG3_final_COSMO_clim_grb1 #
- !modified by Poshyvailo L., 2020: interpolates GCM data (from Heimo Truhetz/DKRZ) to TSMP_clim EURO-Cordex domain, and saves output in grib format 
+ !modified by Poshyvailo L., 2020: interpolates GCM data 
+ !(from Heimo Truhetz/DKRZ) to TSMP_clim EURO-Cordex domain, and saves output 
+ !in grib format 
 &CONTRL
+! NWR 20201014
+! force to use ECMWF dataset after27 June 2000
+    lpost_0006=.true.,
 	! Initial time and forecast range
-    ydate_bd='__start_date__', ydate_ini='__start_date__',  !creates output "laf1979020100.nc" based on "ydate_ini" date
-    itype_calendar=0 !0, !2, LPo; (1) changed back to 2, as CLM calendar could not be adjusted to the "leap-years", thus TSMP would crash; (2) changed back to 0, as Heimo's caf-data did not work with calendar 2
-    hstart=0, hstop=240, !change here for .nc output files; for instance, 3600; for .grb keep it as 240 + ii loop in int2lm_batch_script.sh
-    hincbound=6,
+    ydate_bd='__start_date__', ydate_ini='__init_date__',
+! LPO 
+! (1) changed back to 2, as CLM calendar could not be adjusted to the 
+! "leap-years", thus TSMP would crash; 
+! (2) changed back to 0, as Heimo's caf-data did not work with calendar 2
+    itype_calendar=0 
+    hstart=0, hstop=__hstop__,
+    hincbound=__hincbound__,
+!    hincbound=6, ! LPO origin
+! NWR 20201019
+! Manual: 'seconds to wait until next attempt if a readyfile is not available'
+! using higher values here according to CHK ERAI namelist
+!    nincwait = 30, nmaxwait = 4500,  
     nincwait = 5, nmaxwait = 20,  
 	! Domain decomposition and parallelization 
-    nprocx=6, nprocy=4, nprocio=0,
+    nprocx=6, nprocy=8, nprocio=0,
+!    nprocx=6, nprocy=4, nprocio=0, !LPO origin
     lreorder=.false., 
     lasync_io=.false.,
 	! Basic Control
-    yinput_model='CM',
+    yinput_model='IFS',
+!    yinput_model='CM', ! LPO origin
     linitial=.true.,
     lboundaries=.true.,
     lbdclim = .true.,   !LPo
     leps_bc=.false.,
     luvcor=.true.,
-    l_cressman = .FALSE., 
-    l_bicub_spl = .FALSE.,
+!d    l_cressman = .FALSE., 
+!d    l_bicub_spl = .FALSE.,
     idbg_level=100, !LPo
     ltime_mean=.true.,  
     lroutine=.false.,
 	! Controlling use of additional external parameters
     lforest=.true.,
     lsso=.true.,
-    llake=.FALSE.,
+!d    llake=.FALSE.,
 	! Control over variables that have to be written for the COSMO-Mode
     lprog_qi=.true.,
     lprog_qr_qs=.false.,
-    lmulti_layer_in=.true., 
+! NWR 20201019
+! try to finde bug that INT2LM is crashing with 'segmentation fault'
+    lmulti_layer_in=.false., 
+!    lmulti_layer_in=.true., 
     lmulti_layer_lm=.true.,
     lprog_rho_snow=.false.,
     itype_w_so_rel = 0,
+! LPO
+! itype_t_cl selects the source for the deep soil (climatological) temperature; 
+! 0: take t_cl from coarse grid model (default)
+! 1: take t_cl from the external parameters for the COSMO-Model
     !itype_t_cl = 1, !LPo changed for cosmo-clim!!! -- does not work!
-    !itype_t_cl --  selects the source for the deep soil (climatological) temperature; by default it is 0: take t_cl from coarse grid model; 1: take t_cl from the external parameters for the COSMO-Model
+! NWR 20201019
+! just triing
+!!    itype_rootdp = 3, !LPo changed for cosmo-clim!!!
     itype_rootdp = 3, !LPo changed for cosmo-clim!!!
     !itype aerosol = 2, !LPo: not included in Heimo's and Car's setups; needs the additional vertical grid HHL(height of half levels)-file  
     lt_cl_corr=.true.,
@@ -49,24 +74,22 @@
     !ilow_pass_xso=5, !LPo changed for cosmo-clim!!!
     !rxso_mask=625.0, !LPo changed for cosmo-clim!!!
  /
- &GRID_IN !from Heimo -- Poshyvailo 16.01.2020
-  pcontrol_fi = 30000.,
-  ie_in_tot = 192,
-  je_in_tot = 96,
-  ke_in_tot = 47,
-  startlat_in_tot = -88.57217,
-  startlon_in_tot = -180.0,
-  endlat_in_tot = 88.57217,
-  endlon_in_tot = 178.125,
-  pollat_in = 90.0, pollon_in = 180.0,
-  ke_soil_in = 4,
-  czml_soil_in = 0.03, 0.19, 0.78, 2.68, 6.89,
+ &GRID_IN
+ ie_in_tot=434, je_in_tot=233, ke_in_tot=137,
+ pcontrol_fi=20000,nlevskip=0,
+ dlon_in=0.30, dlat_in=0.30,
+ pollat_in=90.0, pollon_in=180.0,
+ startlat_in_tot=10.2, startlon_in_tot=-54.9,
+
 /
  &LMGRID !from Carl -- Poshyvailo 27.01.2020
   startlat_tot=-24.4724, startlon_tot=-29.4713,
   pollat=39.25, pollon=-162.0,
   dlon=0.11, dlat=0.11,
   ielm_tot=444, jelm_tot=432, kelm_tot=50,
+! NWR 20201019
+! CHK is using irefatm=1 --> tring this.
+!  irefatm=1,
   irefatm=2, !13.03.2020
   ivctype=2, vcflat=11357.0,
   vcoord_d=22000.00,21000.00,20028.57,19085.36,18170.00,17282.14,
@@ -86,18 +109,28 @@
  &DATA
   ie_ext=448, je_ext=436,
   ylmext_lfn='lmboden.g1',
-  ylmext_cat='__setup_dir__',
-  yinext_lfn= 'caf__start_date__.nc', 
-  yinext_cat='__work_dir__/forcing_caf/year__cur_year__', !external parameter file's path; for GCM: there is no separate external parameter file, instead it is located at each caf-file LPo
-  yin_cat='__work_dir__/forcing_caf/year__cur_year__', !LPo
-  yinput_type='analysis',
-  ytunit_in = 'd',
-  ytunit_out = 'd',
-  ylm_cat='__work_dir__/laf_lbfd_int2lm_jureca2015b_ouput/__cur_year__',  !the directoy of the int2lm ouput LPo
-  yinext_form_read = 'ncdf',
+  ylmext_cat='__ext_dir__',
   ylmext_form_read='grb1',
-  yin_form_read = 'ncdf',
+  yinext_lfn='eafc_N80W55S10E75_030D', 
+  yinext_cat='__ext_dir__',
+! NWR 20201026
+! maybe 'newer' external files could not be read by 'grib1'
+  yinext_form_read = 'apix',
+!  yinext_form_read = 'grb1',
+  ylm_cat='__lm_cat_dir__',
+!  ylm_form_write='ncdf',
   ylm_form_write='grb1',
+  ytunit_out ='d',
+  yin_cat='__in_cat_dir__', 
+! NWR 20201020
+! Seems there is a bug related to T_S output of INT2LM
+! see: https://redc.clm-community.eu/boards/12/topics/473
+! according to this one needs to read IC/BC as netcdf to write T_S to output
+! T_S is not part of the output if one reads IB/BC as grib
+!  yin_form_read = 'ncdf',
+  yin_form_read = 'apix',
+  ytunit_in = 'd',
+  yinput_type='analysis',
   nprocess_ini = 137, nprocess_bd = 138,
   l_ke_in_gds=.TRUE.,
  /

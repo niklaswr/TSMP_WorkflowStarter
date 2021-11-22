@@ -27,7 +27,7 @@ raisERROR() {
     echo "ERROR:"
     echo "--- -- $message"
 
-    exit
+    exit 9
 }
 
 check4error() {
@@ -35,7 +35,7 @@ check4error() {
     # USAGE: check4error $? MESSAGE
     if [[ $1 != 0 ]] ; then
         echo " check4error: $1"
-        raisERROR $2
+        raisERROR "$2"
     fi
 }
 
@@ -51,6 +51,7 @@ parallelGzip() {
     cd $2
     DIR=$2
     MAX_PARALLEL=$1
+    if [[ ! -d $DIR ]]; then echo "START_HELPER.sh parallelGzip: DIR does not exist --> EXIT" && exit 1; fi
     nroffiles=$(ls $DIR|wc -w)
     (( setsize=nroffiles/MAX_PARALLEL ))
     # catch case if setsize / -n is less or equal 1
@@ -70,6 +71,7 @@ parallelGunzip() {
     cd $2
     DIR=$2
     MAX_PARALLEL=$1
+    if [[ ! -d $DIR ]]; then echo "START_HELPER.sh parallelGunzip: DIR does not exist --> EXIT" && exit 1; fi
     nroffiles=$(ls $DIR|wc -w)
     (( setsize=nroffiles/MAX_PARALLEL ))
     # catch case if setsize / -n is less or equal 1
@@ -89,10 +91,14 @@ checkGitStatus() {
   # test runs are performed --> simStatus="test"
   # or if 
   # production runs are performed --> simStatus="prod".
+  # colored text output:
+  red=`tput setaf 1`
+  green=`tput setaf 2`
+  reset=`tput sgr0`
   local simStatus=$1
   if [[ $simStatus == "test" ]]; then
     echo "###################"
-    echo "You are running under test-mode. No special treatment"
+    echo "${green}You are running under test-mode. No special treatment${reset}"
     echo "(--> simStatus is set under export_paths.ksh)"
   elif [[ $simStatus == "prod" ]]; then
     echo "###################"
@@ -101,32 +107,31 @@ checkGitStatus() {
     # In case of production run, we want a clean working tree to make sure we
     # do track everything with the HISTORY.txt
     if [ -z "$(git status --untracked-files=no --porcelain)" ]; then
-      echo "Working directory is clean"
-      # Further we want a tag at the current commit (git tag --points-at HEAD)
-      # to make sure we find this commit again, e.g. in case a rebase was
-      # performed which does change the commit-hash
-      if [ -z "$(git tag --points-at HEAD)" ]; then
-        # No tag at current commit found --> set a tag
-
-	# Fetch current version / tag
-	local version=$(git describe --abbrev=0 --tags)
-	# Remove the v in the tag v2.1.0 for example
-	local version=${version:1}
-	# Build array from version string.
-        local a=( ${version//./ } )
-	# Increase pacth numver in vMAJOR.MINOR.PATCH
-	((a[2]++))
-	# Def new version / tag
-	local next_version="${a[0]}.${a[1]}.${a[2]}"
-	# Set new version / tag
-	git tag -a "v$next_version" -m "set by workflow"
-      fi
+      echo "${green}Working directory is clean${reset}"
     else
-      echo "Uncommitted changes in tracked files"
+      echo "${red}Uncommitted changes in tracked files${reset}"
       echo $(git status --untracked-files=no --porcelain)
-      echo "This is against production mode --> Exit"
-      echo "###################"
-      exit 1
+      echo "${red}Are you aware of this?${reset}"
+      echo "${red}Changes not tracked by git are not part of HISTORY.txt${reset}"
+    fi
+    # Further we want a tag at the current commit (git tag --points-at HEAD)
+    # to make sure we find this commit again, e.g. in case a rebase was
+    # performed which does change the commit-hash
+    if [ -z "$(git tag --points-at HEAD)" ]; then
+      # No tag at current commit found --> set a tag
+
+      # Fetch current version / tag
+      local version=$(git describe --abbrev=0 --tags)
+      # Remove the v in the tag v2.1.0 for example
+      local version=${version:1}
+      # Build array from version string.
+      local a=( ${version//./ } )
+      # Increase pacth numver in vMAJOR.MINOR.PATCH
+      ((a[2]++))
+      # Def new version / tag
+      local next_version="${a[0]}.${a[1]}.${a[2]}"
+      # Set new version / tag
+      git tag -a "v$next_version" -m "set by workflow"
     fi
   else
     echo "###################"
