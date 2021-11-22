@@ -1,0 +1,87 @@
+[template]
+varName:    None
+fileName:   None
+unitsOrig:  None
+unitsPlot:  None
+unitCoef:   None
+unitOffset: None
+Slices:     None
+SanityKind: None
+
+[DEFAULT]
+cmapName:   Spectral   
+
+# ParFlow
+[pfl_pressurehead]
+varName:    press
+fileName:   press.nc
+unitsOrig:  [m]
+unitsPlot:  [m] 
+unitCoef:   None
+unitOffset: None
+Slices:     None, 8
+SanityKind: mean
+
+# CLM
+[clm_RAIN]
+varName:    RAIN
+fileName:   RAIN.nc
+unitsOrig:  [mm/s]
+unitsPlot:  [mm/h]
+unitCoef:   3600
+unitOffset: None
+Slices:     None
+SanityKind: mean
+
+[clm_SNOW]
+varName:    SNOW
+fileName:   SNOW.nc
+unitsOrig:  [mm/s]
+unitsPlot:  [mm/h]
+unitCoef:   3600
+unitOffset: None
+Slices:     None
+SanityKind: mean
+
+[clm_TSA]
+varName:    TSA
+fileName:   TSA.nc
+unitsOrig:  [K]
+unitsPlot:  [°C]
+unitCoef:   None
+unitOffset: -275.15
+Slices:     None
+SanityKind: mean
+cmapName:   Spectral_r
+
+# CSOMO
+[cos_T2M]
+varName:    T_2M
+fileName:   T_2M_ts.nc
+unitsOrig:  [K]
+unitsPlot:  [°C]
+unitCoef:   None
+unitOffset: -275.15
+Slices:     None
+SanityKind: mean
+cmapName:   Spectral_r
+
+[cos_V200p]
+varName:    V
+fileName:   V200p_ts.nc
+unitsOrig:  [m/s]
+unitsPlot:  [m/s]
+unitCoef:   None
+unitOffset: None
+Slices:     None
+SanityKind: mean
+
+[cos_U200p]
+varName:    U
+fileName:   U200p_ts.nc
+unitsOrig:  [m/s]
+unitsPlot:  [m/s]
+unitCoef:   None
+unitOffset: None
+Slices:     None
+SanityKind: mean

@@ -11,4 +11,7 @@ module load netcdf4-python/1.5.4-Python-3.8.5
 
 module load git/2.28.0
 
+source /p/project/cslts/local/juwels/HeAT/PythonHeAT_Stage2020_20210308_1febcfcd/bin/activate
+
 export PYTHONPATH=$PYTHONPATH:${BASE_SRCDIR}/parflow
+export PYTHONPATH=$PYTHONPATH:${BASE_SRCDIR}/SLOTH

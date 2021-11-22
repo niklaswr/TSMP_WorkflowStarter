@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#SBATCH --job-name="ERA5_postpro"
+#SBATCH --job-name="WERA5_postpro"
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1

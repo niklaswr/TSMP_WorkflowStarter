@@ -81,10 +81,10 @@ cp ${BASE_GEODIR}/oasis3/* ${WORK_DIR}/${expID}/
 echo "--- -- copying namelists form ${BASE_NAMEDIR}"
 cp ${BASE_NAMEDIR}/* ${WORK_DIR}/${expID}/
 #----------copy binaries to new rundir-----------------------------------------
-echo "--- -- copying binaries from ${BASE_BINDIR}"
-cp ${BASE_BINDIR}/clm ${WORK_DIR}/${expID}/
-cp ${BASE_BINDIR}/lmparbin_pur ${WORK_DIR}/${expID}/
-cp ${BASE_BINDIR}/parflow ${WORK_DIR}/${expID}/
+echo "--- -- copying binaries from ${BASE_BINDIR_TSMP}"
+cp ${BASE_BINDIR_TSMP}/clm ${WORK_DIR}/${expID}/
+cp ${BASE_BINDIR_TSMP}/lmparbin_pur ${WORK_DIR}/${expID}/
+cp ${BASE_BINDIR_TSMP}/parflow ${WORK_DIR}/${expID}/
 
 cd ${WORK_DIR}/${expID}
 mkdir ${WORK_DIR}/${expID}/cosmo_out
@@ -234,6 +234,14 @@ DATE_MODEL=$(git log --pretty=format:'date: %ad' -n 1)
 SUBJECT_MODEL=$(git log --pretty=format:'subject: %s' -n 1)
 URL_MODEL=$(git config --get remote.origin.url)
 
+cd ${BASE_GEODIR}
+TAG_GEO=$(git describe --tags)
+COMMIT_GEO=$(git log --pretty=format:'commit: %H' -n 1)
+AUTHOR_GEO=$(git log --pretty=format:'author: %an' -n 1)
+DATE_GEO=$(git log --pretty=format:'date: %ad' -n 1)
+SUBJECT_GEO=$(git log --pretty=format:'subject: %s' -n 1)
+URL_GEO=$(git config --get remote.origin.url)
+
 /bin/cat <<EOM >$histfile
 ###############################################################################
 This simulation was run under
@@ -264,6 +272,16 @@ ${COMMIT_MODEL}
 ${AUTHOR_MODEL}
 ${DATE_MODEL}
 ${SUBJECT_MODEL}
+###############################################################################
+GEO
+-- REPO:
+${URL_GEO}
+-- LOG:
+tag: ${TAG_GEO}
+${COMMIT_GEO}
+${AUTHOR_GEO}
+${DATE_GEO}
+${SUBJECT_GEO}
 ###############################################################################
 EOM
 check4error $? "--- ERROR while creating HISTORY.txt"
