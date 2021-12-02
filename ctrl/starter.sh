@@ -22,7 +22,7 @@ pre=false           # Define which substeps (PREprocessing, SIMulation,
 sim=true           # POStprocessing, FINishing) should be run. Default is to
 pos=true           # set each substep to 'true', if one need to run individual 
 fin=true            # steps exclude other substeps by setting to 'false'
-userEmail='n.wagner@fz-juelich.de' 
+userEmail=${AUTHOR_MAIL}
 computeAcount='esmtst'
 CTRLDIR=$(pwd)      # assuming one is executing this script from the 
                     # BASE_CTRLDIR, what is the cast most of the time

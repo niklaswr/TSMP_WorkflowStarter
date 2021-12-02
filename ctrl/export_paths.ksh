@@ -13,6 +13,9 @@
 # from it.
 expid="ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3"
 rootdir="/p/scratch/cjibg35/tsmpforecast/${expid}"
+export AUTHOR_NAME="Niklas WAGNER"
+export AUTHOR_MAIL="n.wagner@fz-juelich.de"
+export AUTHOR_INSTITUTE="FZJ-IBG3"
 export EXPID="${expid}"
 # export needed paths
 export BASE_ROOTDIR="${rootdir}"

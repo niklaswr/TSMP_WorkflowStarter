@@ -244,6 +244,10 @@ URL_GEO=$(git config --get remote.origin.url)
 
 /bin/cat <<EOM >$histfile
 ###############################################################################
+author: ${AUTHOR_NAME}
+e-mail: ${AUTHOR_MAIL}
+version: $(date)
+
 This simulation was run under
 simStatus=${SIMSTATUS} # "test": test run; "prod": production run
 # The simStatus flag does only control a seperat check right before the 
