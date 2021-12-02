@@ -246,4 +246,13 @@ python ${cwd}/CLMpostpro.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/clm_out \
 	-o ${OUTDIR}/${YYYY_MM} \
 	--templateFile ${OUTDIR}/${YYYY_MM}/CLM_Template.nc -nc 0 
 
+echo "- add some global attributes to all created netCDF files"
+nPattern="${OUTDIR}/${YYYY_MM}/*.nc"
+for file in $(ls $nPattern)
+do
+   ncatted -h -a "author",global,o,c,"$AUTHOR_NAME" $file
+   ncatted -h -a "e-mail",global,o,c,"$AUTHOR_MAIL" $file
+   ncatted -h -a "institute",global,o,c,"$AUTHOR_INSTITUTE" $file
+done
+
 exit 0
