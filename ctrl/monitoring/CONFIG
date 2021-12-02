@@ -22,6 +22,16 @@ unitOffset: None
 Slices:     None, 8
 SanityKind: mean
 
+[pfl_pressurehead_surf]
+varName:    press
+fileName:   press.nc
+unitsOrig:  [m]
+unitsPlot:  [m] 
+unitCoef:   None
+unitOffset: None
+Slices:     None, -1
+SanityKind: mean
+
 # CLM
 [clm_RAIN]
 varName:    RAIN
