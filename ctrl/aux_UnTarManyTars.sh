@@ -31,7 +31,12 @@ for tarball in $tarballs; do
   tarName=${tarball##*/}
   echo "working on: $tarName"
   echo "-- untaring"
-  tar -xvf ./${tarName} --directory ./
+
+  tarNameNoExtention=${tarName%.tar} 
+  # the order of the -C flag is important!
+  # ref: https://stackoverflow.com/questions/9249603/how-to-extract-a-single-file-from-tar-to-a-different-directory
+  #tar --exclude=${tarNameNoExtention}/pressure.nc -xvf ./${tarName} -C /p/scratch/cslts/tsmpforecast/WADKlim/OBSrun/postpro ${tarNameNoExtention}/gwr.nc
+  tar -xvf ./${tarName} -C ./
   if [[ $? != 0 ]] ; then echo "ERROR" && exit 1 ; fi
   echo "-- done"
 done
