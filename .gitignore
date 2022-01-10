@@ -8,16 +8,11 @@
 *.out
 *.err
 # ignore forcing files
-forcing/ERA5/**
-forcing/INT2LM/**
-# ignore rundir for INT2LM
-run_INT2LM/**
-# ignore rundirs for TSMP
-run_TSMP/*
+forcing/**
+# ignore stuf within rundir
+rundir/**
 # ignore stuf in src directory
 src/**
-# ignore temp_devel dir in ctrl/
-ctrl/tmp_devel/**
 # ignore stuff in ctrl/logs
 ctrl/logs/**
 # ignore content of simres
@@ -36,5 +31,4 @@ monitoring/**
 
 # special ignores:
 ##################
-# ext-data for INT2LM --> late add to repo!
-**/eafc_*
+# TO BE ADDED
