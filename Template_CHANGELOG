@@ -1,0 +1,19 @@
+This file should contain a small log / documentation of the setu process for
+FZJ-IBG3_Climatrun-Template.
+
+Description: This repository (FZJ-IBG3_Climatrun-Template) does contain a kind
+of template used to setup new TSMP simulation workflows. The idea is that main
+features as for example the directory structure, auxiliary tools,
+post-processing tools, monitoring scripts, etc. are usually the same for all
+TSMP workflows. So collecting the main features within this template enables
+us to quickly setup new simulations with all the features developed in the past.
+
+The version number is used as a tag.
+Version numbering:
+MAJOR.Minor.patch
+
+v1.0.0
+======
+Commit:b83073516856d30c1ead945d2a7c5820c4fd119d
+
+Changes: First real version!
