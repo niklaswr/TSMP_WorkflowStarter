@@ -2,7 +2,7 @@
 
 # author: Niklas WAGNER
 # email: n.wagner@fz-juelich.de
-# version: 2020-11-16
+# version: 2022-01-10
 # USAGE:
 # >> source export_paths.ksh
 
@@ -11,7 +11,7 @@
 # The script will then only use the environment variables provided this way. 
 # In principle, only the 'rootdir' has to be adjusted, all other paths result 
 # from it.
-expid="ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3"
+expid="FZJ-IBG3_Climatrun-Template"
 rootdir="/p/scratch/cjibg35/tsmpforecast/${expid}"
 export AUTHOR_NAME="Niklas WAGNER"
 export AUTHOR_MAIL="n.wagner@fz-juelich.de"
@@ -31,8 +31,6 @@ export BASE_GEODIR="${rootdir}/geo/TSMP_EU11/static"
 export BASE_POSTPRODIR="${rootdir}/postpro"
 export BASE_MONITORINGDIR="${rootdir}/monitoring"
 export BASE_SRCDIR="${rootdir}/src"
-export BASE_ARCROOTDIR="${ARCHIVE_jibg33}/tsmpforecast/${expid}"
-export BASE_LARGEROOTDIR="${DATA_jibg33}/tsmpforecast/${expid}"
 export BASE_BINDIR_TSMP="${rootdir}/src/TSMP/bin/JUWELS_3.1.0MCT_clm-cos-pfl"
 export PARFLOW_DIR="${BASE_BINDIR_TSMP}"
 export BASE_BINDIR_INT2LM="${rootdir}/src/int2lm2.04a"
