@@ -10,18 +10,24 @@
 
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2020-12-12
+# last modified: 2022-01-10
 # USAGE: 
-# >> sbatch ./$0 NCPU TARGET/DIR
-# >> sbatch ./aux_gzip.ksh 48 /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/run_TSMP/laf_lbfd/1980/
+# >> sbatch ./$0 NCPU TARGET/FILES/WILDCARDS/ARE/POSSIBL*
+# >> sbatch ./aux_gzip_general.ksh 48 /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/run_TSMP/laf_lbfd/201[8,9]
 
-DIR=$2
-if [[ ! -d $DIR ]]; then echo "passed DIR does not exist --> EXIT" && exit 1; fi
-cd $DIR
 MAX_PARALLEL=$1
-nroffiles=$(ls $DIR|wc -w)
-(( setsize=nroffiles/MAX_PARALLEL ))
-ls -1 $DIR/* | xargs -n $setsize | while read workset; do
-  gzip $workset&
+echo "MAX_PARALLEL: $MAX_PARALLEL"
+shift 1
+FILES=($@)
+echo "${FILES[@]}"
+nroffiles=${#FILES[@]}
+echo "nroffiles: $nroffiles"
+(( setsize=nroffiles/MAX_PARALLEL +1))
+echo "setsize: $setsize"
+for (( n=0; n<=$nroffiles; n=n+$setsize ))
+do
+  subsetFILES=${FILES[@]:$n:$setsize}
+  gzip $subsetFILES &
 done
 wait
+
