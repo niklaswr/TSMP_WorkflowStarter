@@ -1,34 +1,28 @@
- ! # IBG3_final_COSMO_clim_grb1 #
- !modified by Poshyvailo L., 2020: interpolates GCM data 
- !(from Heimo Truhetz/DKRZ) to TSMP_clim EURO-Cordex domain, and saves output 
- !in grib format 
 &CONTRL
 ! NWR 20201014
 ! force to use ECMWF dataset after27 June 2000
     lpost_0006=.true.,
-	! Initial time and forecast range
+! Initial time and forecast range
     ydate_bd='__start_date__', ydate_ini='__init_date__',
 ! LPO 
 ! (1) changed back to 2, as CLM calendar could not be adjusted to the 
 ! "leap-years", thus TSMP would crash; 
 ! (2) changed back to 0, as Heimo's caf-data did not work with calendar 2
-    itype_calendar=0 
+    !itype_calendar=0 ! orig LPO
+    itype_calendar=2
     hstart=0, hstop=__hstop__,
     hincbound=__hincbound__,
-!    hincbound=6, ! LPO origin
 ! NWR 20201019
 ! Manual: 'seconds to wait until next attempt if a readyfile is not available'
 ! using higher values here according to CHK ERAI namelist
 !    nincwait = 30, nmaxwait = 4500,  
     nincwait = 5, nmaxwait = 20,  
-	! Domain decomposition and parallelization 
+! Domain decomposition and parallelization 
     nprocx=6, nprocy=8, nprocio=0,
-!    nprocx=6, nprocy=4, nprocio=0, !LPO origin
     lreorder=.false., 
     lasync_io=.false.,
-	! Basic Control
+! Basic Control
     yinput_model='IFS',
-!    yinput_model='CM', ! LPO origin
     linitial=.true.,
     lboundaries=.true.,
     lbdclim = .true.,   !LPo
@@ -39,15 +33,13 @@
     idbg_level=100, !LPo
     ltime_mean=.true.,  
     lroutine=.false.,
-	! Controlling use of additional external parameters
+! Controlling use of additional external parameters
     lforest=.true.,
     lsso=.true.,
 !d    llake=.FALSE.,
-	! Control over variables that have to be written for the COSMO-Mode
+! Control over variables that have to be written for the COSMO-Mode
     lprog_qi=.true.,
     lprog_qr_qs=.false.,
-! NWR 20201019
-! try to finde bug that INT2LM is crashing with 'segmentation fault'
     lmulti_layer_in=.false., 
 !    lmulti_layer_in=.true., 
     lmulti_layer_lm=.true.,
@@ -58,14 +50,10 @@
 ! 0: take t_cl from coarse grid model (default)
 ! 1: take t_cl from the external parameters for the COSMO-Model
     !itype_t_cl = 1, !LPo changed for cosmo-clim!!! -- does not work!
-! NWR 20201019
-! just triing
-!!    itype_rootdp = 3, !LPo changed for cosmo-clim!!!
     itype_rootdp = 3, !LPo changed for cosmo-clim!!!
-    !itype aerosol = 2, !LPo: not included in Heimo's and Car's setups; needs the additional vertical grid HHL(height of half levels)-file  
     lt_cl_corr=.true.,
     luse_t_skin = .FALSE.,
-    	! Treatment of orography and filtering
+! Treatment of orography and filtering
     lfilter_oro=.true.,
     lfilter_pp=.false., !.true.,changed for cosmo-clim!!!
     !eps_filter=0.1, !LPo changed for cosmo-clim!!!
@@ -88,9 +76,9 @@
   dlon=0.11, dlat=0.11,
   ielm_tot=444, jelm_tot=432, kelm_tot=50,
 ! NWR 20201019
-! CHK is using irefatm=1 --> tring this.
+! CHK is using irefatm=1
 !  irefatm=1,
-  irefatm=2, !13.03.2020
+  irefatm=2,
   ivctype=2, vcflat=11357.0,
   vcoord_d=22000.00,21000.00,20028.57,19085.36,18170.00,17282.14,
            16421.43,15587.50,14780.00,13998.57,13242.86,12512.50,
@@ -108,18 +96,15 @@
  /
  &DATA
   ie_ext=448, je_ext=436,
-  ylmext_lfn='lmboden.g1',
-  ylmext_cat='__ext_dir__',
+  ylmext_lfn='lmboden_eur11_444x432.g1', ! naming is strange, but correct (regarding the ???x???)
+  ylmext_cat='__lm_ext_dir__',
   ylmext_form_read='grb1',
   yinext_lfn='eafc_N80W55S10E75_030D', 
-  yinext_cat='__ext_dir__',
-! NWR 20201026
-! maybe 'newer' external files could not be read by 'grib1'
+  yinext_cat='__in_ext_dir__',
   yinext_form_read = 'apix',
-!  yinext_form_read = 'grb1',
   ylm_cat='__lm_cat_dir__',
-!  ylm_form_write='ncdf',
-  ylm_form_write='grb1',
+  ylm_form_write='ncdf',
+!  ylm_form_write='grb1',
   ytunit_out ='d',
   yin_cat='__in_cat_dir__', 
 ! NWR 20201020
