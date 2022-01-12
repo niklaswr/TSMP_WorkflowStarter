@@ -7,7 +7,7 @@
  start_ymd      =  __start_ymd__
  start_tod      =  0
  
- finidat        = '__work_dir_rep__/restarts/clm/__clm_restart__'
+ finidat        = '__BASE_FORCINGDIR__/restarts/clm/__clm_restart__'
  flndtopo       = '__BASE_GEODIR__/clm/topodata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
  fsurdat        = '__BASE_GEODIR__/clm/surfdata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
  fatmgrid       = '__BASE_GEODIR__/clm/griddata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
@@ -31,7 +31,7 @@
  wrtdia         = .true.
  archive_dir    = ''
  rest_flag      = .true. 
- rpntpath       = '__work_dir_rep__/__exp_id__/lnd.clmoas.rpointer'
+ rpntpath       = '__sim_rundir__/lnd.clmoas.rpointer'
 /
  &prof_inparm
  /

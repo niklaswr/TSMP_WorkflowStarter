@@ -2,8 +2,8 @@
   lasync_io=.FALSE., ngribout=1,
    nhour_restart=__hstop__,__hstop__,1,
    ytunit_restart='d',
-   ydir_restart_in='__work_dir_rep__/restarts/cosmo',
-   ydir_restart_out='__work_dir_rep__/restarts/cosmo',
+   ydir_restart_in='__cosmo_ydir_restart_in__',
+   ydir_restart_out='__cosmo_ydir_restart_out__',
    lbdclim = .TRUE.,
    yform_read = 'apix'
 /
@@ -65,5 +65,5 @@
 	   'ATHB_S    ','ASOB_S    ','ASWDIFU_S ','TQG       ',
            'FRESHSNW  ',
 
-    ydir = '__work_dir_rep__/__exp_id__/cosmo_out',
+    ydir = '__cosmo_ydir__',
 /

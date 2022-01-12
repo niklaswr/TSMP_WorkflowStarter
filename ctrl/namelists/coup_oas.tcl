@@ -135,7 +135,7 @@ pfset GeomInput.B40.Value 40
 pfset TimingInfo.BaseUnit                0.0025
 pfset TimingInfo.StartCount              0.0
 pfset TimingInfo.StartTime               0.0
-pfset TimingInfo.StopTime                ##numHours##.0025
+pfset TimingInfo.StopTime                __numHours__.0025
 pfset TimeStep.Type                      Constant
 pfset TimeStep.Value                     0.25
 pfset TimingInfo.DumpInterval            3

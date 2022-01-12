@@ -46,7 +46,7 @@ YDATE_START=$1   # YYYYMMDDHH
 CURRENT_DATE=$2  # YYYYMMDDHH
 YYYY_MM=$3       # YYYY_MM 
 OUTDIR="${BASE_POSTPRODIR}"
-INPDIR="${BASE_RUNDIR_TSMP}/ToPostPro"
+INPDIR="${BASE_RUNDIR}/ToPostPro"
 mkdir ${OUTDIR}/${YYYY_MM}
 
 export IGNORE_ATT_COORDINATES=0  # setting for better rotated coordinate handling in CDO

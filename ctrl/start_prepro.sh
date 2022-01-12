@@ -16,10 +16,10 @@ source ${BASE_CTRLDIR}/start_helper.sh
 ###############################################################################
 # Prepare
 ###############################################################################
-h0=$(TZ=UTC date '+%H' -d "$initDate")
-d0=$(TZ=UTC date '+%d' -d "$initDate")
-m0=$(TZ=UTC date '+%m' -d "$initDate")
-y0=$(TZ=UTC date '+%Y' -d "$initDate")
+h0=$(date '+%H' -d "$initDate")
+d0=$(date '+%d' -d "$initDate")
+m0=$(date '+%m' -d "$initDate")
+y0=$(date '+%Y' -d "$initDate")
 
 # echo for logfile
 tmp_filename=$0

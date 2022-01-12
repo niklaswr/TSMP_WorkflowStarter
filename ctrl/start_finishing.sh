@@ -27,56 +27,36 @@ source ${BASE_CTRLDIR}/start_helper.sh
 source ${BASE_CTRLDIR}/postpro/loadenvs
 cd ${BASE_CTRLDIR}
 
-h0=$(TZ=UTC date '+%H' -d "$startDate")
-start_finishing.shd0=$(TZ=UTC date '+%d' -d "$startDate")
-m0=$(TZ=UTC date '+%m' -d "$startDate")
-y0=$(TZ=UTC date '+%Y' -d "$startDate")
-dp1=$(TZ=UTC date '+%d' -d "$startDate +1 month")
-mp1=$(TZ=UTC date '+%m' -d "$startDate +1 month")
-yp1=$(TZ=UTC date '+%Y' -d "$startDate +1 month")
+h0=$(date '+%H' -d "$startDate")
+d0=$(date '+%d' -d "$startDate")
+m0=$(date '+%m' -d "$startDate")
+y0=$(date '+%Y' -d "$startDate")
+dp1=$(date '+%d' -d "$startDate +1 month")
+mp1=$(date '+%m' -d "$startDate +1 month")
+yp1=$(date '+%Y' -d "$startDate +1 month")
 
 ###############################################################################
 # finishing
 ###############################################################################
-initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
-WORK_DIR="${BASE_RUNDIR_TSMP}"
-expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
-rundir=${WORK_DIR}/${expID}
-
-#echo "--- create SIMRES dir (and sub-dirs) to store simulation results"
-new_simres_name="${expid}_$(date '+%Y%m%d' -d "$startDate")"
-new_simres=${BASE_SIMRESDIR}/${new_simres_name}
+SimresDir=${BASE_SIMRESDIR}/${y0}_$[m0}
 
 echo "--- gzip and sha512sum individual files in simresdir"
-cd ${new_simres}/cosmo
+cd ${SimresDir}/cosmo
 sha512sum ./* > CheckSum.sha512
-parallelGzip 48 $new_simres/cosmo
+parallelGzip 48 ${SimresDir}/cosmo
 wait
-cd ${new_simres}/parflow
+cd ${SimresDir}/parflow
 sha512sum ./* > CheckSum.sha512
-parallelGzip 48 $new_simres/parflow
+parallelGzip 48 ${SimresDir}/parflow
 wait
-cd ${new_simres}/clm
+cd ${SimresDir}/clm
 sha512sum ./* > ./CheckSum.sha512
-parallelGzip 48 $new_simres/clm
+parallelGzip 48 ${SimresDir}/clm
 wait
-cd ${new_simres}/restarts
+cd ${SimresDir}/restarts
 sha512sum ./* > CheckSum.sha512
-parallelGzip 48 $new_simres/restarts
+parallelGzip 48 ${SimresDir}/restarts
 wait
-
-# NWR 20201215
-# ARCHIVE is not accessable from computenode, wherefore I need to rethink
-# the archiving routine
-# write an extra script for tar -cf (direkt to archive) and ln -sf
-#echo "-- tar simres/${y0}_${m0}"
-#cd ${BASE_SIMRESDIR}
-#tar cf ${new_simres_name}.tar -C ${BASE_SIMRESDIR} ${new_simres_name}
-#if [[ $? != 0 ]] ; then exit 1 ; fi
-#rm -rf ${new_simres}
-#
-#echo "--- clean/remove rundir"
-#rm -r ${rundir}
 
 exit 0
 

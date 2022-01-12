@@ -26,10 +26,10 @@ source $CTRLDIR/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
 source ${BASE_CTRLDIR}/postpro/loadenvs
 
-h0=$(TZ=UTC date '+%H' -d "$startDate")
-d0=$(TZ=UTC date '+%d' -d "$startDate")
-m0=$(TZ=UTC date '+%m' -d "$startDate")
-y0=$(TZ=UTC date '+%Y' -d "$startDate")
+h0=$(date '+%H' -d "$startDate")
+d0=$(date '+%d' -d "$startDate")
+m0=$(date '+%m' -d "$startDate")
+y0=$(date '+%Y' -d "$startDate")
 
 ###############################################################################
 # Post-Pro
@@ -37,26 +37,22 @@ y0=$(TZ=UTC date '+%Y' -d "$startDate")
 # Place post-processing steps here
 # NOTE: scripts HAVE to run on compute-nodes.
 # If the script runs in parralel or on single cpu is not important
-
-#---------------insert here initial, start and final dates of TSMP simulations----------
 initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
-WORK_DIR="${BASE_RUNDIR_TSMP}"
-expID="TSMP_3.1.0MCT_cordex11_${y0}_${m0}"
-rundir=${WORK_DIR}/${expID}
+SimresDir="${BASE_SIMRESDIR}/${y0}_${m0}"
+ToPostProDir="${BASE_RUNDIR}/ToPostPro/${y0}_${m0}"
+PostProStoreDir="${BASE_POSTPRODIR}/${y0}_${m0}"
 
 # Create individual subdir in ToPostPro to copy model-output
 # there. I want to seperate modeloutput first, to be 100%
 # sure modelputput is not changed by post-pro scripts (cdo, nco)
-mkdir -p ${WORK_DIR}/ToPostPro/${y0}_${m0}/cosmo_out
-mkdir -p ${WORK_DIR}/ToPostPro/${y0}_${m0}/parflow_out
-mkdir -p ${WORK_DIR}/ToPostPro/${y0}_${m0}/clm_out
+mkdir -p ${ToPostProDir}/cosmo_out
+mkdir -p ${ToPostProDir}/parflow_out
+mkdir -p ${ToPostProDir}/clm_out
 
 # copy model-output to ToPostPro subdir
-# Note: $expid is NOT $expID
-# $expid is defined with export_paths.ksh
-cp ${BASE_SIMRESDIR}/${expid}_${y0}${m0}${d0}/cosmo/* ${WORK_DIR}/ToPostPro/${y0}_${m0}/cosmo_out/
-cp ${BASE_SIMRESDIR}/${expid}_${y0}${m0}${d0}/parflow/cordex0.11_${y0}_${m0}.out.*.pfb ${WORK_DIR}/ToPostPro/${y0}_${m0}/parflow_out/
-cp ${BASE_SIMRESDIR}/${expid}_${y0}${m0}${d0}/clm/clmoas.clm2.h0.${y0}-${m0}*.nc ${WORK_DIR}/ToPostPro/${y0}_${m0}/clm_out/
+cp ${SimresDir}/cosmo/* ${ToPostProDir}/cosmo_out/
+cp ${SimresDir}/parflow/cordex0.11_${y0}_${m0}.out.*.pfb ${ToPostProDir}/parflow_out/
+cp ${SimresDir}/clm/clmoas.clm2.h0.${y0}-${m0}*.nc ${ToPostProDir}/clm_out/
 
 cd ${BASE_CTRLDIR}
 postpro_initDate=$(date '+%Y%m%d%H' -d "${initDate}")
@@ -67,8 +63,8 @@ echo "--- START subscript postproWraper.sh"
 if [[ $? != 0 ]] ; then exit 1 ; fi
 echo "--- END subscript postproWraper.sh"
 
-echo "-- deleting ToPostPro/${y0}_${m0}"
-rm -vr ${WORK_DIR}/ToPostPro/${y0}_${m0}
+echo "-- deleting ${ToPostProDir}"
+rm -vr ${ToPostProDir}
 
 echo "-- calculating checksum for postpro/${y0}_${m0}"
 cd ${BASE_POSTPRODIR}/${y0}_${m0}
@@ -88,13 +84,5 @@ python monitoring.py \
 	--saveDir ${BASE_MONITORINGDIR}/${y0}_${m0}
 if [[ $? != 0 ]] ; then exit 1 ; fi
 echo "--- END monitoring"
-
-#echo "-- taring postpro/${y0}_${m0}"
-#cd ${BASE_POSTPRODIR}
-#tar -cf "${y0}_${m0}.tar" ${y0}_${m0} 
-#if [[ $? != 0 ]] ; then exit 1 ; fi
-#
-#echo "-- deleting postpro/${y0}_${m0}"
-#rm -r ${BASE_POSTPRODIR}/${y0}_${m0}
 
 exit 0
