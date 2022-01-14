@@ -2,7 +2,7 @@
 
 # author: Niklas WAGNER
 # email: n.wagner@fz-juelich.de
-# version: 2022-01-10
+# version: 2022-01-11
 # USAGE:
 # >> source export_paths.ksh
 
@@ -12,7 +12,7 @@
 # In principle, only the 'rootdir' has to be adjusted, all other paths result 
 # from it.
 expid="FZJ-IBG3_Climatrun-Template"
-rootdir="/p/scratch/cjibg35/tsmpforecast/${expid}"
+rootdir="/p/scratch/cjibg35/tsmpforecast/development/${expid}"
 export AUTHOR_NAME="Niklas WAGNER"
 export AUTHOR_MAIL="n.wagner@fz-juelich.de"
 export AUTHOR_INSTITUTE="FZJ-IBG3"
@@ -40,7 +40,7 @@ export BASE_INITDATE="19790101"
 export SIMSTATUS="test" # supported are "test" and "prod"
 # PROC (processor) distribution of individual component models
 export PROC_COSMO_X=16
-export PROC_COSMO_Y=18
-export PROC_PARFLOW_P=9
-export PROC_PARFLOW_Q=8
-export PROC_CLM=24
+export PROC_COSMO_Y=24
+export PROC_PARFLOW_P=12
+export PROC_PARFLOW_Q=12
+export PROC_CLM=48

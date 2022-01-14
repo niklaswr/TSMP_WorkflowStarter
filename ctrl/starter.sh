@@ -10,8 +10,8 @@
 ###############################################################################
 #### Adjust according to your need BELOW
 ###############################################################################
-NoJ=6              # number of jobs (simulating 24 months -> NoJ=24)
-startDate=19800701  # start date
+NoJ=1              # number of jobs (simulating 24 months -> NoJ=24)
+startDate=20090101  # start date
 dependency=3556111  # JOBID to depend the following jobs at
                     # if set JOBID is below latest JOBID the job starts without
 		    # dependency automatically
