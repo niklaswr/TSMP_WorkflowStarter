@@ -38,7 +38,7 @@ yp1=$(date '+%Y' -d "$startDate +1 month")
 ###############################################################################
 # finishing
 ###############################################################################
-SimresDir=${BASE_SIMRESDIR}/${y0}_$[m0}
+SimresDir=${BASE_SIMRESDIR}/${y0}_${m0}
 
 echo "--- gzip and sha512sum individual files in simresdir"
 cd ${SimresDir}/cosmo
