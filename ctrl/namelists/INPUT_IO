@@ -5,7 +5,8 @@
    ydir_restart_in='__cosmo_ydir_restart_in__',
    ydir_restart_out='__cosmo_ydir_restart_out__',
    lbdclim = .TRUE.,
-   yform_read = 'apix'
+   yform_read = 'ncdf',
+   !yform_read = 'apix'
 /
  &DATABASE
  /
