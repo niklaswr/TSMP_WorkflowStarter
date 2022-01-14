@@ -45,28 +45,30 @@ PostProStoreDir="${BASE_POSTPRODIR}/${y0}_${m0}"
 # Create individual subdir in ToPostPro to copy model-output
 # there. I want to seperate modeloutput first, to be 100%
 # sure modelputput is not changed by post-pro scripts (cdo, nco)
-mkdir -p ${ToPostProDir}/cosmo_out
-mkdir -p ${ToPostProDir}/parflow_out
-mkdir -p ${ToPostProDir}/clm_out
+echo "DEBUG: Create subdirs within ToPostPro"
+mkdir -vp ${ToPostProDir}/cosmo_out
+mkdir -vp ${ToPostProDir}/parflow_out
+mkdir -vp ${ToPostProDir}/clm_out
 
 # copy model-output to ToPostPro subdir
-cp ${SimresDir}/cosmo/* ${ToPostProDir}/cosmo_out/
-cp ${SimresDir}/parflow/cordex0.11_${y0}_${m0}.out.*.pfb ${ToPostProDir}/parflow_out/
-cp ${SimresDir}/clm/clmoas.clm2.h0.${y0}-${m0}*.nc ${ToPostProDir}/clm_out/
+echo "DEBUG: copy modeloutput to subdirs within ToPostPro"
+cp -v ${SimresDir}/cosmo/* ${ToPostProDir}/cosmo_out/
+cp -v ${SimresDir}/parflow/cordex0.11_${y0}_${m0}.out.*.pfb ${ToPostProDir}/parflow_out/
+cp -v ${SimresDir}/clm/clmoas.clm2.h0.${y0}-${m0}*.nc ${ToPostProDir}/clm_out/
 
 cd ${BASE_CTRLDIR}
 postpro_initDate=$(date '+%Y%m%d%H' -d "${initDate}")
 postpro_startDate=$(date '+%Y%m%d%H' -d "${startDate}")
 postpro_YYYY_MM=$(date '+%Y_%m' -d "${startDate}")
-echo "--- START subscript postproWraper.sh"
+echo "DEBUG: START subscript postproWraper.sh"
 ./postproWraper.sh $postpro_initDate $postpro_startDate $postpro_YYYY_MM
 if [[ $? != 0 ]] ; then exit 1 ; fi
 echo "--- END subscript postproWraper.sh"
 
-echo "-- deleting ${ToPostProDir}"
+echo "DEBUG: deleting ${ToPostProDir}"
 rm -vr ${ToPostProDir}
 
-echo "-- calculating checksum for postpro/${y0}_${m0}"
+echo "DEBUG: calculating checksum for postpro/${y0}_${m0}"
 cd ${BASE_POSTPRODIR}/${y0}_${m0}
 sha512sum ./* > "CheckSum.sha512"
 if [[ $? != 0 ]] ; then exit 1 ; fi
