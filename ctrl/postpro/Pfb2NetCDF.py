@@ -4,7 +4,7 @@ import glob
 import argparse
 import sys
 import datetime as dt
-import 	ParFlow_IO as pio
+import sloth.ParFlow_IO as pio
 
 """ Converting given ParFlow output to netCDF
 

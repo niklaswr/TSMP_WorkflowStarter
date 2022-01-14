@@ -1,20 +1,10 @@
 # Welcome to `FZJ-IBG3_Climatrun-Template` 
 
-This repository is containing (or pointing to) everything needed for a climate 
-simulation based on TSMP. To keep everything most flexible a modular approach is 
-aimed, with currently three modules distinguished:
-
-1. Setup (this project)
-2. ModelSystem (TMSP)
-3. Static-files (individual)
-
-All modules together forming the final climate simulation setup.
-
 # Getting started
 First clone this repository (**Setup**) to you project-directory:
 ``` bash
 cd $PROJECT_DIR
-git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_scripts_tools_engines/FZJ-IBG3_Climatrun-Template.git
+git clone --recurse-submodules https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_scripts_tools_engines/FZJ-IBG3_Climatrun-Template.git
 ```
 and export the new path to an environment variable for later use:
 ``` bash
@@ -54,7 +44,7 @@ cd $TSMP_DIR/bldsva
 Get needed **Static-files** and stoer under geo/ (not final yet...)
 ``` bash
 cd ${BASE_ROOT}/geo
-cp -vr [...]/geo/* ./
+git clone [...]
 ```
 
 Finally you need to adjust `export_paths.ksh` in the `ctrl` directory:
