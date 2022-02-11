@@ -1,16 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name="WERA5_prepro"
-#SBATCH --nodes=1
-#SBATCH --ntasks=48
-#SBATCH --ntasks-per-node=48
-#SBATCH --time=00:10:00
-#SBATCH --partition=devel
-#SBATCH --mail-type=NONE
-#
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2021-04-01
+# last modified: 2022-02-11
 # USAGE: 
 # >> sbatch --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
 #           -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \

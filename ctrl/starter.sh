@@ -22,15 +22,45 @@ pre=false           # Define which substeps (PREprocessing, SIMulation,
 sim=true           # POStprocessing, FINishing) should be run. Default is to
 pos=true           # set each substep to 'true', if one need to run individual 
 fin=true            # steps exclude other substeps by setting to 'false'
-userEmail=${AUTHOR_MAIL}
 computeAcount='esmtst'
 CTRLDIR=$(pwd)      # assuming one is executing this script from the 
                     # BASE_CTRLDIR, what is the cast most of the time
+export CaseID=""    # already implemented for alter use -- currently NOT used.
+                    # This will be needed if I implement the 'CaseMode'
+# def SBATCH for prepro
+pre_NODES=1
+pre_NTASKS=1
+pre_NTASKSPERNODE=1
+pre_WALLCLOCK=01:59:00
+pre_PARTITION=esm
+pre_MAILTYPE=NONE
+# def SBATCH for simulation
+sim_NODES=8
+sim_NTASKS=384
+sim_NTASKSPERNODE=48
+sim_WALLCLOCK=01:59:00
+sim_PARTITION=devel
+sim_MAILTYPE=ALL
+# def SBATCH for postpro
+pos_NODES=1
+pos_NTASKS=1
+pos_NTASKSPERNODE=1
+pos_WALLCLOCK=23:59:00
+pos_PARTITION=esm
+pos_MAILTYPE=NONE
+# def SBATCH for finishing
+fin_NODES=1
+fin_NTASKS=48
+fin_NTASKSPERNODE=48
+fin_WALLCLOCK=23:59:00
+fin_PARTITION=esm
+fin_MAILTYPE=NONE
 ###############################################################################
 #### Adjust according to your need ABOVE
 ###############################################################################
 
 source ${CTRLDIR}/export_paths.ksh
+userEmail=${AUTHOR_MAIL}
 source ${BASE_CTRLDIR}/start_helper.sh
 # Check git / working tree status:
 # 'checkGitStatus()' is located in 'start_helper.sh'
@@ -48,61 +78,89 @@ echo "--- HOST:  $(hostname)"
 
 cd $BASE_CTRLDIR
 # start flat chain jobs
-#submit_prepro=$(sbatch --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR \
-#	-o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
-#	--mail-user=$userEmail --account=$computeAcount \
-#	submit_prepro.sh 2>&1 | awk '{print $(NF)}')
-#echo "prepro: $submit_prepro"
 
 submit_simulation=$dependency # fake $start_simulation for the first time
+submit_prepro=$dependency # fake $start_simulation for the first time
 loop_counter=0
 while [ $loop_counter -lt $NoJ ]
 do
   # if there are not enough simmulations left to fill the job
   # reduce $simPerJob to number of jobs left
   if [[ $((loop_counter+simPerJob)) -gt $NoJ ]]; then
-      echo "-- to less simulations left, run last job with $simPerJob simulations"
+      echo "-- to less simulations left, to run last job with $simPerJob simulations"
       simPerJob=$((NoJ-loop_counter))
   fi
-  # Note that $submit_simulation is decoupled from postpro and finishing
-  # and therefore the simulaitons are running as fast as possible,
-  # since no jobs are executed in between.
-  if [ "$sim" = false ]; then
-    # in case not simulation is not started one need to handle the job 
+
+  if [ "$pre" = false ]; then
+    # in case not simulation is not started one need to handle the job
     # dependency manualy by setting to JOBID of substep before
-    submit_simulation=$dependency
+    submit_prepro=$dependency
   else
-    submit_simulation=$(sbatch -d afterok:${submit_simulation} \
-	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
-	  -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
-	  --mail-user=$userEmail --account=$computeAcount \
-	  submit_simulation.sh 2>&1 | awk '{print $(NF)}')
+    submit_prepro=$(sbatch -d afterok:${submit_prepro} \
+          --job-name="${CaseID}_prepro" \
+          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
+          -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
+          --mail-user=$userEmail --account=$computeAcount \
+          --nodes=${pre_NODES} --ntasks=${pre_NTASKS} \
+          --ntasks-per-node=${pre_NTASKSPERNODE} --mail-type=${pre_MAILTYPE} \
+          --time=${pre_WALLCLOCK} --partition=${pre_PARTITION} \
+          submit_prepro.sh 2>&1 | awk 'END{print $(NF)}')
+          #submit_prepro.sh 2>&1 | awk '{print $(NF)}')
+    echo "prepro for $startDate: $submit_prepro"
+  fi
+
+  # Note that $submit_simulation is decoupled from postpro and finishing.
+  # The simulation therby depends on the prepro and itself only, aiming to
+  # runn the individual simulations as fast as possible, since no jobs are
+  # executed in between.
+  if [ "$sim" = false ]; then
+    # in case not simulation is not started one need to handle the job
+    # dependency manualy by setting to JOBID of substep before
+    submit_simulation=$submit_prepro
+  else
+    submit_simulation=$(sbatch -d afterok:${submit_prepro}:${submit_simulation} \
+          --job-name="${CaseID}_simulation" \
+          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
+          -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
+          --mail-user=$userEmail --account=$computeAcount \
+          --nodes=${sim_NODES} --ntasks=${sim_NTASKS} \
+          --ntasks-per-node=${sim_NTASKSPERNODE} --mail-type=${sim_MAILTYPE} \
+          --time=${sim_WALLCLOCK} --partition=${sim_PARTITION} \
+          submit_simulation.sh 2>&1 | awk 'END{print $(NF)}')
     echo "simulation for $startDate: $submit_simulation"
   fi
 
   if [ "$pos" = false ]; then
-    # in case not postprocessing is not started one need to handle the job 
+    # in case not postprocessing is not started one need to handle the job
     # dependency manualy by setting to JOBID of substep before
     submit_postpro=$submit_simulation
   else
     submit_postpro=$(sbatch -d afterok:${submit_simulation} \
-	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
-	  -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
-	  --mail-user=$userEmail --account=$computeAcount \
-	  submit_postpro.sh 2>&1 | awk '{print $(NF)}')
+          --job-name="${CaseID}_postpro" \
+          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
+          -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
+          --mail-user=$userEmail --account=$computeAcount \
+          --nodes=${pos_NODES} --ntasks=${pos_NTASKS} \
+          --ntasks-per-node=${pos_NTASKSPERNODE} --mail-type=${pos_MAILTYPE} \
+          --time=${pos_WALLCLOCK} --partition=${pos_PARTITION} \
+          submit_postpro.sh 2>&1 | awk 'END{print $(NF)}')
     echo "postpro for $startDate: $submit_postpro"
   fi
 
   if [ "$fin" = false ]; then
-    # in case not postprocessing is not started one need to handle the job 
+    # in case not postprocessing is not started one need to handle the job
     # dependency manualy by setting to JOBID of substep before
     submit_finishing=$submit_postpro
   else
     submit_finishing=$(sbatch -d afterok:${submit_postpro} \
-	  --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
-	  -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
-	  --mail-user=$userEmail --account=$computeAcount \
-	  submit_finishing.sh 2>&1 | awk '{print $(NF)}')
+          --job-name="${CaseID}_finishing" \
+          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
+          -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
+          --mail-user=$userEmail --account=$computeAcount \
+          --nodes=${fin_NODES} --ntasks=${fin_NTASKS} \
+          --ntasks-per-node=${fin_NTASKSPERNODE} --mail-type=${fin_MAILTYPE} \
+          --time=${fin_WALLCLOCK} --partition=${fin_PARTITION} \
+          submit_finishing.sh 2>&1 | awk 'END{print $(NF)}')
     echo "finishing for $startDate: $submit_finishing"
   fi
 
@@ -111,3 +169,4 @@ do
   startDate=$(date '+%Y%m%d' -d "${startDate} +${simPerJob} month")
 done
 exit 0
+

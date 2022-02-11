@@ -1,16 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name="WERA5_simulation"
-#SBATCH --nodes=12
-#SBATCH --ntasks=576
-#SBATCH --ntasks-per-node=48
-#SBATCH --time=23:59:00
-#SBATCH --partition=batch
-#SBATCH --mail-type=ALL
-#
 # author: Niklas Wagner
 # e-mail: n.wagner@fz-juelich.de
-# last modified: 2021-04-01
+# last modified: 2022-02-11
 # USAGE: 
 # >> sbatch --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=6 \
 #           -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
