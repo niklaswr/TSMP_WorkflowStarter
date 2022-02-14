@@ -522,4 +522,4 @@ pfset Geom.domain.ICPressure.RefPatch    top
 #-----------------------------------------------------------------------------
 # Run and Unload the ParFlow output files
 #-----------------------------------------------------------------------------
-pfwritedb cordex0.11___year_____month__
+pfwritedb cordex0.11___startDate__

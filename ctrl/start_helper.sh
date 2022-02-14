@@ -15,7 +15,7 @@ resubmit() {
     echo "RESUBMIT: going to resubmit!"
     echo "--- -- $message"
 
-    ndate=$(date '+%Y-%m-%dT%H:%M' -d "900 seconds")
+    ndate=$(date -u -d "900 seconds" '+%Y-%m-%dT%H:%M')
     #sbatch --begin=${ndate} cron_starter.ksh ${initDate}
     exit
 }

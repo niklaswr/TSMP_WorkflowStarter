@@ -5,8 +5,7 @@
 # last modified: 2022-01-11
 # >> ./$0 CTRLDIR startDate
 # >> ./starter_simulation.sh $BASE_CTRLDIR $startDate
-# >> ./starter_simulation.sh $(pwd) 19790101
-# >> ./starter_simulation.sh /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/ctrl 19790101
+# >> ./starter_simulation.sh $(pwd) 1979-01-01T00:00Z
 
 ###############################################################################
 # Prepare
@@ -26,28 +25,26 @@ echo "--- source environment"
 source $CTRLDIR/export_paths.ksh
 source $BASE_CTRLDIR/start_helper.sh
 
-h0=$(date '+%H' -d "$startDate")
-d0=$(date '+%d' -d "$startDate")
-m0=$(date '+%m' -d "$startDate")
-y0=$(date '+%Y' -d "$startDate")
-dm1=$(date '+%d' -d "$startDate - 1 month")
-mm1=$(date '+%m' -d "$startDate - 1 month")
-ym1=$(date '+%Y' -d "$startDate - 1 month")
-dp1=$(date '+%d' -d "$startDate + 1 month")
-mp1=$(date '+%m' -d "$startDate + 1 month")
-yp1=$(date '+%Y' -d "$startDate + 1 month")
-
 ###############################################################################
 # Simulation
 ###############################################################################
-
 # Something TSMP related
 # --> aks Abouzar if still needed
 export PSP_RENDEZVOUS_OPENIB=-1
 
 #---------------insert here initial, start and final dates of TSMP simulations----------
 initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
-rundir=${BASE_RUNDIR}/${y0}_${m0}
+formattedStartDate=$(date -u -d "${startDate}" ${dateString})
+echo "DEBUG NOW: formattedStartDate: $formattedStartDate"
+formattedStartDate_m1=$(date -u -d "${startDate} - ${simLength}" ${dateString})
+echo "DEBUG NOW: formattedStartDate_m1: $formattedStartDate_m1"
+formattedStartDate_p1=$(date -u -d "${startDate} + ${simLength}" ${dateString})
+echo "DEBUG NOW: formattedStartDate_p1: $formattedStartDate_p1"
+m0=$(date -u -d "${startDate}" '+%m')
+mp1=$(date -u -d "${startDate} + ${simLength}" '+%m')
+yp1=$(date -u -d "${startDate} + ${simLength}" '+%Y')
+rundir=${BASE_RUNDIR}/${formattedStartDate}
+pfidb="cordex0.11_${formattedStartDate}"
 
 # calculate the number of leap-days between initDate and startDate/currentDate
 # Those are needed by COSMO to proper calculate start-hours
@@ -100,7 +97,7 @@ sed -i "s,__cosmo_ydirini__,${BASE_FORCINGDIR}/laf_lbfd/all,g" INPUT_IO
 sed -i "s,__cosmo_ydirbd__,${BASE_FORCINGDIR}/laf_lbfd/all,g" INPUT_IO
 sed -i "s,__cosmo_ydir__,${rundir}/cosmo_out,g" INPUT_IO
 
-cosmo_ydate_ini=$(date '+%Y%m%d%H' -d "${initDate}")
+cosmo_ydate_ini=$(date -u -d "${initDate}" '+%Y%m%d%H')
 sed -i "s,__hstart__,$hstart,g" INPUT_ORG
 sed -i "s,__hstop__,$hstop,g" INPUT_ORG
 sed -i "s,__cosmo_ydate_ini__,${cosmo_ydate_ini},g" INPUT_ORG
@@ -112,9 +109,9 @@ sed -i "s,__nprocy_cos_bldsva__,${PROC_COSMO_Y},g" INPUT_ORG
 ##############################################################
 nelapse=$((numHours*3600/900+1))
 sed -i "s,__nelapse__,${nelapse},g" lnd.stdin
-start_ymd=$(date '+%Y%m%d' -d "${startDate}")
+start_ymd=$(date -u -d "${startDate}" '+%Y%m%d')
 sed -i "s,__start_ymd__,${start_ymd},g" lnd.stdin
-clm_restart=$(date '+%Y-%m-%d' -d "${startDate}")
+clm_restart=$(date -u -d "${startDate}" '+%Y-%m-%d')
 sed -i "s,__clm_restart__,clmoas.clm2.r.${clm_restart}-00000.nc,g" lnd.stdin
 sed -i "s,__BASE_FORCINGDIR__,${BASE_FORCINGDIR},g" lnd.stdin
 sed -i "s,__BASE_GEODIR__,${BASE_GEODIR},g" lnd.stdin
@@ -124,11 +121,10 @@ sed -i "s,__sim_rundir__,${rundir},g" lnd.stdin
 # Modifying ParFlow TCL flags
 ##############################################################
 sed -i "s,__numHours__,${numHours},g" coup_oas.tcl
-cp ${BASE_FORCINGDIR}/restarts/parflow/cordex0.11_${ym1}_${mm1}.out.press.*.pfb .
-ic_pressure=`ls -1rt cordex0.11_${ym1}_${mm1}.out.press.*.pfb | tail -1`
+cp ${BASE_FORCINGDIR}/restarts/parflow/cordex0.11_${formattedStartDate_m1}.out.press.*.pfb .
+ic_pressure=`ls -1rt cordex0.11_${formattedStartDate_m1}.out.press.*.pfb | tail -1`
 sed -i "s,__ICPressure__,${ic_pressure},g" coup_oas.tcl
-sed -i "s,__year__,${y0},g" coup_oas.tcl
-sed -i "s,__month__,${m0},g" coup_oas.tcl
+sed -i "s,__startDate__,${formattedStartDate},g" coup_oas.tcl
 sed -i "s,__BASE_GEODIR__,${BASE_GEODIR},g" coup_oas.tcl
 sed -i "s,__nprocx_pfl_bldsva__,${PROC_PARFLOW_P},g" coup_oas.tcl
 sed -i "s,__nprocy_pfl_bldsva__,${PROC_PARFLOW_Q},g" coup_oas.tcl
@@ -158,7 +154,7 @@ get_mappingConf ${PROC_COSMO_X} ${PROC_COSMO_Y} \
     ${PROC_PARFLOW_P} ${PROC_PARFLOW_Q} \
     ${PROC_CLM} \
     ./slm_multiprog_mapping.conf
-sed -i "s,__pfidb__,cordex0.11_${y0}_${m0},g" slm_multiprog_mapping.conf
+sed -i "s,__pfidb__,${pfidb},g" slm_multiprog_mapping.conf
 
 ##############################################################
 # Running the simulation
@@ -180,7 +176,7 @@ source ${BASE_CTRLDIR}/postpro/loadenvs
 echo "DEBUG: start copying restar files"
 clm_restart=`ls -1rt clmoas.clm2.r.*00000.nc | tail -1`
 cp ${clm_restart} ${BASE_FORCINGDIR}/restarts/clm/
-pfl_restart=`ls -1rt cordex0.11_${y0}_${m0}.out.press*.pfb | tail -1`
+pfl_restart=`ls -1rt ${pfidb}.out.press*.pfb | tail -1`
 cp ${pfl_restart} ${BASE_FORCINGDIR}/restarts/parflow/
 wait
 
@@ -188,7 +184,7 @@ wait
 # Moving model-output to simres
 ###############################################################################
 echo "--- create SIMRES dir (and sub-dirs) to store simulation results"
-new_simres=${BASE_SIMRESDIR}/${y0}_${m0}
+new_simres=${BASE_SIMRESDIR}/${formattedStartDate}
 echo "--- new_simres: $new_simres"
 mkdir -p "$new_simres/cosmo"
 mkdir -p "$new_simres/parflow"
@@ -199,10 +195,10 @@ check4error $? "--- ERROR while creating simres-dir"
 
 echo "--- move modeloutput to individual simresdir"
 cp ${rundir}/cosmo_out/* $new_simres/cosmo
-cp ${rundir}/cordex0.11_${y0}_${m0}.out.*.pfb $new_simres/parflow
+cp ${rundir}/${pfidb}.out.*.pfb $new_simres/parflow
 cp ${rundir}/clmoas.clm2.h?.*.nc $new_simres/clm
 cp ${BASE_FORCINGDIR}/restarts/cosmo/lrfd${yp1}${mp1}0100o $new_simres/restarts
-cp ${BASE_FORCINGDIR}/restarts/parflow/cordex0.11_${y0}_${m0}.out.press.?????.pfb $new_simres/restarts
+cp ${BASE_FORCINGDIR}/restarts/parflow/${pfidb}.out.press.?????.pfb $new_simres/restarts
 cp ${BASE_FORCINGDIR}/restarts/clm/clmoas.clm2.r.${yp1}-${mp1}-01-00000.nc $new_simres/restarts
 check4error $? "--- ERROR while moving model output to simres-dir"
 wait
@@ -287,6 +283,6 @@ ${SUBJECT_GEO}
 EOM
 check4error $? "--- ERROR while creating HISTORY.txt"
 
-echo "ready: TSMP simulation for ${cur_month} is complete!" > ready.txt
+echo "ready: TSMP simulation for ${formattedStartDate} is complete!" > ready.txt
 
 exit 0

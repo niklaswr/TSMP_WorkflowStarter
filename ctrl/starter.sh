@@ -10,17 +10,25 @@
 ###############################################################################
 #### Adjust according to your need BELOW
 ###############################################################################
-NoJ=1              # number of jobs (simulating 24 months -> NoJ=24)
-startDate=20090101  # start date
+export simLength='1 month' # length of one simulaiton. Has to be a valid `date` 
+                    # option like '1 month', '10 days', etc. (number is 
+                    # IMPORTANT!)
+NoS=2               # number of simulations 
+startDate="2009-01-01T00:00Z" # start date
+                    # The format of `startDate` hast to follow ISO norm 8601
+		    # --> https://de.wikipedia.org/wiki/ISO_8601
+		    # This is importat to ensure `date` is working properly!
+export dateString='+%Y%m%d%H' # The date string used to name simulation results etc.
+                    # Again, this has to be a valid `date` option
 dependency=3556111  # JOBID to depend the following jobs at
                     # if set JOBID is below latest JOBID the job starts without
 		    # dependency automatically
-simPerJob=6         # number of simulaitons to run within one job (less queuing 
+simPerJob=1         # number of simulaitons to run within one job (less queuing 
                     # time?)
                     # -> 6: run 6 simulaitons within one big job
 pre=false           # Define which substeps (PREprocessing, SIMulation, 
-sim=true           # POStprocessing, FINishing) should be run. Default is to
-pos=true           # set each substep to 'true', if one need to run individual 
+sim=true            # POStprocessing, FINishing) should be run. Default is to
+pos=true            # set each substep to 'true', if one need to run individual 
 fin=true            # steps exclude other substeps by setting to 'false'
 computeAcount='esmtst'
 CTRLDIR=$(pwd)      # assuming one is executing this script from the 
@@ -82,13 +90,13 @@ cd $BASE_CTRLDIR
 submit_simulation=$dependency # fake $start_simulation for the first time
 submit_prepro=$dependency # fake $start_simulation for the first time
 loop_counter=0
-while [ $loop_counter -lt $NoJ ]
+while [ $loop_counter -lt $NoS ]
 do
   # if there are not enough simmulations left to fill the job
   # reduce $simPerJob to number of jobs left
-  if [[ $((loop_counter+simPerJob)) -gt $NoJ ]]; then
+  if [[ $((loop_counter+simPerJob)) -gt $NoS ]]; then
       echo "-- to less simulations left, to run last job with $simPerJob simulations"
-      simPerJob=$((NoJ-loop_counter))
+      simPerJob=$((NoS-loop_counter))
   fi
 
   if [ "$pre" = false ]; then
@@ -98,7 +106,7 @@ do
   else
     submit_prepro=$(sbatch -d afterok:${submit_prepro} \
           --job-name="${CaseID}_prepro" \
-          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
+          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoS=$simPerJob \
           -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
           --mail-user=$userEmail --account=$computeAcount \
           --nodes=${pre_NODES} --ntasks=${pre_NTASKS} \
@@ -120,7 +128,7 @@ do
   else
     submit_simulation=$(sbatch -d afterok:${submit_prepro}:${submit_simulation} \
           --job-name="${CaseID}_simulation" \
-          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
+          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoS=$simPerJob \
           -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
           --mail-user=$userEmail --account=$computeAcount \
           --nodes=${sim_NODES} --ntasks=${sim_NTASKS} \
@@ -137,7 +145,7 @@ do
   else
     submit_postpro=$(sbatch -d afterok:${submit_simulation} \
           --job-name="${CaseID}_postpro" \
-          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
+          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoS=$simPerJob \
           -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
           --mail-user=$userEmail --account=$computeAcount \
           --nodes=${pos_NODES} --ntasks=${pos_NTASKS} \
@@ -154,7 +162,7 @@ do
   else
     submit_finishing=$(sbatch -d afterok:${submit_postpro} \
           --job-name="${CaseID}_finishing" \
-          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoJ=$simPerJob \
+          --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoS=$simPerJob \
           -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
           --mail-user=$userEmail --account=$computeAcount \
           --nodes=${fin_NODES} --ntasks=${fin_NTASKS} \
@@ -163,10 +171,17 @@ do
           submit_finishing.sh 2>&1 | awk 'END{print $(NF)}')
     echo "finishing for $startDate: $submit_finishing"
   fi
+  
+  # UPDATE INCREMENTS
+  # Itterate 'simPerJob' times and increment `startDate` to calculate the 
+  # new startDate of the next job. This loops to me seems the easyest solution
+  # to make use of native `date` increments like ''1 month', '10 days', etc.  
+  # And increment `loop_counter` as well...
+  for i in {1..simPerJob}; do
+    startDate=$(date -u -d "${startDate} +${simLength}" "+%Y-%m-%dT%H:%MZ")
+    ((loop_counter++))
+  done
 
-  loop_counter=$((loop_counter+simPerJob))
-  echo "-- started: $startDate + ${simPerJob}"
-  startDate=$(date '+%Y%m%d' -d "${startDate} +${simPerJob} month")
 done
 exit 0
 

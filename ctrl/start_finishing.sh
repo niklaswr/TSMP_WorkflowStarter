@@ -27,18 +27,11 @@ source ${BASE_CTRLDIR}/start_helper.sh
 source ${BASE_CTRLDIR}/postpro/loadenvs
 cd ${BASE_CTRLDIR}
 
-h0=$(date '+%H' -d "$startDate")
-d0=$(date '+%d' -d "$startDate")
-m0=$(date '+%m' -d "$startDate")
-y0=$(date '+%Y' -d "$startDate")
-dp1=$(date '+%d' -d "$startDate +1 month")
-mp1=$(date '+%m' -d "$startDate +1 month")
-yp1=$(date '+%Y' -d "$startDate +1 month")
-
 ###############################################################################
 # finishing
 ###############################################################################
-SimresDir=${BASE_SIMRESDIR}/${y0}_${m0}
+formattedStartDate=$(date -u -d "${startDate}" ${dateString})
+SimresDir=${BASE_SIMRESDIR}/${formattedStartDate}
 
 echo "--- gzip and sha512sum individual files in simresdir"
 cd ${SimresDir}/cosmo

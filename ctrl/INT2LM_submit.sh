@@ -39,10 +39,10 @@ source ${CTRLDIR}/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
 source ${BASE_NAMEDIR}/loadenv_int2lm
 
-h0=$(date '+%H' -d "$startDate")
-d0=$(date '+%d' -d "$startDate")
-m0=$(date '+%m' -d "$startDate")
-y0=$(date '+%Y' -d "$startDate")
+h0=$(date -u -d "$startDate" '+%H')
+d0=$(date -u -d "$startDate" '+%d')
+m0=$(date -u -d "$startDate" '+%m')
+y0=$(date -u -d "$startDate" '+%Y')
 
 echo "DEBUG: def. individual settings"
 int2lm_nam_template="INT2LM_template_ERA5"

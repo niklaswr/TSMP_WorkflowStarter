@@ -212,14 +212,16 @@ python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
 	-o ${OUTDIR}/${YYYY_MM} --model "ParFlow" --YearMonth ${YYYY_MM} \
 	-nc 0 --dumpinterval 3 \
 	-sn sgw -ln "Groundwater Saturation" -u "-"
-outVar="et"
-ncgen -7 -o "${OUTDIR}/${YYYY_MM}/${outVar}.nc" "${cwd}/def.cdl"
-#python ${cwd}/netCDF_select.py -i ${OUTDIR}/${YYYY_MM}/T_S_ts.nc \
-#        -o ${OUTDIR}/${YYYY_MM}/${outVar}.nc --blacklist T_S time time_bnds
-python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
-        -o ${OUTDIR}/${YYYY_MM} --model "CLM" --YearMonth ${YYYY_MM} \
-        -nc 0 --dumpinterval 3 \
-        -sn et -ln "evap_trans" -u "-" # --level "-1"
+# NWR 2022-02-14 
+# 'et' not available with unpatched ParFlow version.
+#outVar="et"
+#ncgen -7 -o "${OUTDIR}/${YYYY_MM}/${outVar}.nc" "${cwd}/def.cdl"
+##python ${cwd}/netCDF_select.py -i ${OUTDIR}/${YYYY_MM}/T_S_ts.nc \
+##        -o ${OUTDIR}/${YYYY_MM}/${outVar}.nc --blacklist T_S time time_bnds
+#python ${cwd}/Pfb2NetCDF.py -v ${outVar} -i ${INPDIR}/${YYYY_MM}/parflow_out \
+#        -o ${OUTDIR}/${YYYY_MM} --model "CLM" --YearMonth ${YYYY_MM} \
+#        -nc 0 --dumpinterval 3 \
+#        -sn et -ln "evap_trans" -u "-" # --level "-1"
 #ncdump ${template_netCDF} > def.cdl
 #ncgen -o NEWFILE def.cdl
 outVar="mask"

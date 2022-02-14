@@ -7,7 +7,7 @@
 # >> get_numLeapDays "$initDate" "$currDate"
 # >> numLeapDays=$?
 
-isleap() { date -d $1-02-29 &>/dev/null && echo "yes" || echo "no"; }
+isleap() { date -u -d $1-02-29 &>/dev/null && echo "yes" || echo "no"; }
 
 get_numLeapDays() {
   #----------------------------------------------------------------------------
@@ -23,16 +23,16 @@ get_numLeapDays() {
   echo "initDate: ${initDate}"
   echo "currDate: ${currDate}"
   # get the year of the init current date
-  initYear=$(date '+%Y' -d "$initDate")
-  currYear=$(date '+%Y' -d "$currDate")
+  initYear=$(date -u -d "$initDate" '+%Y')
+  currYear=$(date -u -d "$currDate" '+%Y')
 
   # date operators in bash are based on the representation of a date in 
   # "seconds since"
   # resulting integer variables can be added /substracted etc.
-  initDate_sec=$(date '+%s' -d "${initDate}")
-  initYear_sec=$(date '+%s' -d "${initYear}-01-01 00")
-  currDate_sec=$(date '+%s' -d "${currDate}")
-  currYear_sec=$(date '+%s' -d "${currYear}-01-01 00")
+  initDate_sec=$(date -u -d "${initDate}" '+%s')
+  initYear_sec=$(date -u -d "${initYear}-01-01 00" '+%s')
+  currDate_sec=$(date -u -d "${currDate}" '+%s')
+  currYear_sec=$(date -u -d "${currYear}-01-01 00" '+%s')
   diff_day=$(( (currDate_sec - initYear_sec) / (60*60*24) ))
   echo "days between initYear and currDate: ${diff_day} (diff_day)"
   day_currYear=$(( (currDate_sec - currYear_sec) / (60*60*24) ))
@@ -55,11 +55,11 @@ get_numLeapDays() {
   # (the current leap-day)
   tmp_correct=0
   curr_leap=$(isleap ${currYear})
-  if [[ ${curr_leap} == "yes" ]] && [[ $(date '+%Y%m%d' -d "$currDate") -ge $(date '+%Y%m%d' -d "${currYear}-03-01 00") ]]; then
+  if [[ ${curr_leap} == "yes" ]] && [[ $(date -u -d "$currDate" '+%Y%m%d') -ge $(date -u -d "${currYear}-03-01 00" '+%Y%m%d') ]]; then
     echo "-- jumped 1"
     tmp_correct=$((tmp_correct + 1))
   fi
-  if [[ ${init_leap} == "yes" ]] && [[ $(date '+%Y%m%d' -d "$initDate") -ge $(date '+%Y%m%d' -d "${initYear}-03-01 00") ]]; then
+  if [[ ${init_leap} == "yes" ]] && [[ $(date -u -d "$initDate" '+%Y%m%d') -ge $(date -u -d "${initYear}-03-01 00" '+%Y%m%d') ]]; then
     echo "-- jumped 2"
     tmp_correct=$((tmp_correct - 1))
   else
@@ -71,8 +71,8 @@ get_numLeapDays() {
   return $numLeapDays_printed
 }
 
-#initDate="19800101"
-#startDate="19810301"
+#initDate="1980-01-01T00:00Z"
+#startDate="1981-03-01T00:00Z"
 #get_numLeapDays "$initDate" "$startDate"
 #numLeapDays=$?
 #echo "numLeapDays: ${numLeapDays}"

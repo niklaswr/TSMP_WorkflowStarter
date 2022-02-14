@@ -26,10 +26,10 @@ source $CTRLDIR/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
 source ${BASE_CTRLDIR}/postpro/loadenvs
 
-h0=$(date '+%H' -d "$startDate")
-d0=$(date '+%d' -d "$startDate")
-m0=$(date '+%m' -d "$startDate")
-y0=$(date '+%Y' -d "$startDate")
+h0=$(date -u -d "$startDate" '+%H')
+d0=$(date -u -d "$startDate" '+%d')
+m0=$(date -u -d "$startDate" '+%m')
+y0=$(date -u -d "$startDate" '+%Y')
 
 ###############################################################################
 # Post-Pro
@@ -38,9 +38,12 @@ y0=$(date '+%Y' -d "$startDate")
 # NOTE: scripts HAVE to run on compute-nodes.
 # If the script runs in parralel or on single cpu is not important
 initDate=${BASE_INITDATE} #DO NOT TOUCH! start of the whole TSMP simulation
-SimresDir="${BASE_SIMRESDIR}/${y0}_${m0}"
+formattedStartDate=$(date -u -d "${startDate}" ${dateString})
+pfidb="cordex0.11_${formattedStartDate}"
+SimresDir="${BASE_SIMRESDIR}/${formattedStartDate}"
 ToPostProDir="${BASE_RUNDIR}/ToPostPro/${y0}_${m0}"
-PostProStoreDir="${BASE_POSTPRODIR}/${y0}_${m0}"
+PostProStoreDir="${BASE_POSTPRODIR}/${formattedStartDate}"
+mkdir -vp ${PostProStoreDir} 
 
 # Create individual subdir in ToPostPro to copy model-output
 # there. I want to seperate modeloutput first, to be 100%
@@ -53,37 +56,45 @@ mkdir -vp ${ToPostProDir}/clm_out
 # copy model-output to ToPostPro subdir
 echo "DEBUG: copy modeloutput to subdirs within ToPostPro"
 cp -v ${SimresDir}/cosmo/* ${ToPostProDir}/cosmo_out/
-cp -v ${SimresDir}/parflow/cordex0.11_${y0}_${m0}.out.*.pfb ${ToPostProDir}/parflow_out/
+cp -v ${SimresDir}/parflow/${pfidb}.out.*.pfb ${ToPostProDir}/parflow_out/
 cp -v ${SimresDir}/clm/clmoas.clm2.h0.${y0}-${m0}*.nc ${ToPostProDir}/clm_out/
 
 cd ${BASE_CTRLDIR}
-postpro_initDate=$(date '+%Y%m%d%H' -d "${initDate}")
-postpro_startDate=$(date '+%Y%m%d%H' -d "${startDate}")
-postpro_YYYY_MM=$(date '+%Y_%m' -d "${startDate}")
+postpro_initDate=$(date -u '+%Y%m%d%H' -d "${initDate}")
+postpro_startDate=$(date -u '+%Y%m%d%H' -d "${startDate}")
+postpro_YYYY_MM=$(date -u '+%Y_%m' -d "${startDate}")
 echo "DEBUG: START subscript postproWraper.sh"
 ./postproWraper.sh $postpro_initDate $postpro_startDate $postpro_YYYY_MM
 if [[ $? != 0 ]] ; then exit 1 ; fi
 echo "--- END subscript postproWraper.sh"
 
+# Bewlo is a workaround, to not touch `postproWrapper.sh` as this is kind of 
+# messy and I dont want to interfere.
+# So `postrpoWrapper.sh` is storing the output to `${BASE_POSTPRODIR}/YYYY_MM`
+# But I want to store under `${BASE_POSTPRODIR}/${formattedStartDate}` aka
+# `PostProStoreDir`
+cp -r ${BASE_POSTPRODIR}/${postpro_YYYY_MM}/* ${PostProStoreDir}/
+check4error $? "--- ERROR ctrl/start_postpro.sh while workaround. Search this line within the code for explanation"
+rm -r ${BASE_POSTPRODIR}/${postpro_YYYY_MM}/
 echo "DEBUG: deleting ${ToPostProDir}"
 rm -vr ${ToPostProDir}
 
-echo "DEBUG: calculating checksum for postpro/${y0}_${m0}"
-cd ${BASE_POSTPRODIR}/${y0}_${m0}
+echo "DEBUG: calculating checksum for postpro/${formattedStartDate}"
+cd ${PostProStoreDir} 
 sha512sum ./* > "CheckSum.sha512"
 if [[ $? != 0 ]] ; then exit 1 ; fi
 
 echo "-- START monitoring"
 # clean up -- just to be sure there are no conflicts
-rm -rf ${BASE_MONITORINGDIR}/${y0}_${m0}
+rm -rf ${BASE_MONITORINGDIR}/${formattedStartDate}
 # create saveDir
-mkdir -p ${BASE_MONITORINGDIR}/${y0}_${m0}
+mkdir -p ${BASE_MONITORINGDIR}/${formattedStartDate}
 # run monitoring script
 cd ${BASE_CTRLDIR}/monitoring/
 python monitoring.py \
 	--configFile ./CONFIG \
-	--dataRootDir ${BASE_POSTPRODIR}/${y0}_${m0} \
-	--saveDir ${BASE_MONITORINGDIR}/${y0}_${m0}
+	--dataRootDir ${BASE_POSTPRODIR}/${formattedStartDate} \
+	--saveDir ${BASE_MONITORINGDIR}/${formattedStartDate}
 if [[ $? != 0 ]] ; then exit 1 ; fi
 echo "--- END monitoring"
 
