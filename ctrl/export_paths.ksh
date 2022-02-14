@@ -40,7 +40,9 @@ export BASE_INITDATE="19790101"
 export SIMSTATUS="test" # supported are "test" and "prod"
 # PROC (processor) distribution of individual component models
 export PROC_COSMO_X=16
-export PROC_COSMO_Y=24
+export PROC_COSMO_Y=12
+#export PROC_COSMO_X=16
+#export PROC_COSMO_Y=24
 export PROC_PARFLOW_P=12
 export PROC_PARFLOW_Q=12
 export PROC_CLM=48

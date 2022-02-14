@@ -489,7 +489,7 @@ pfset Solver.PrintPressure                              True
 #pfset Solver.PrintSubsurf                               False
 #pfset Solver.Nonlinear.PrintFlag                        LowVerbosity
 #pfset Solver.PrintCLM True
-pfset Solver.PrintLSMSink                               True
+#pfset Solver.PrintLSMSink                               True
 #LSMSInk added 3.08.2020
 
 pfset Solver.WriteSiloSubsurfData		        False
