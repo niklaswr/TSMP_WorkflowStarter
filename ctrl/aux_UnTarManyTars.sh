@@ -1,8 +1,6 @@
 #!/usr/bin/bash
 #
-# author: Niklas Wagner
-# e-mail: n.wagner@fz-juelich.de
-# last modified: 2021-04-20
+# Owner / author: Niklas WAGNER, n.wagner@fz-juelich.de
 #
 # Description
 # This script tars a given directory to tape, remove the original directory, 

@@ -5,12 +5,10 @@
 #SBATCH --ntasks=48
 #SBATCH --ntasks-per-node=48
 #SBATCH --time=01:00:00
-#SBATCH --partition=esm
-#SBATCH --account=jibg35
-
-# author: Niklas Wagner
-# e-mail: n.wagner@fz-juelich.de
-# last modified: 2022-01-10
+#SBATCH --partition=dc-cpu-devel
+#SBATCH --account=slts
+#
+# Owner / author: Niklas WAGNER, n.wagner@fz-juelich.de
 # USAGE: 
 # >> sbatch ./$0 NCPU TARGET/FILES/WILDCARDS/ARE/POSSIBL*
 # >> sbatch ./aux_gzip_general.ksh 48 /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/run_TSMP/laf_lbfd/201[8,9]

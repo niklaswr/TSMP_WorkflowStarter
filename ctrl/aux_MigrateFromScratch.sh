@@ -1,8 +1,6 @@
 #!/usr/bin/bash
 #
-# author: Niklas Wagner
-# e-mail: n.wagner@fz-juelich.de
-# last modified: 2021-06-23
+# Owner / author: Niklas WAGNER, n.wagner@fz-juelich.de
 #
 # Description:
 # This script does tar given sourc-dir(s) to given target-dir, 

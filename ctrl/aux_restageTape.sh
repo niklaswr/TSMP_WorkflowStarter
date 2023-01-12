@@ -1,8 +1,6 @@
 #!/usr/bin/bash
 #
-# author: Niklas Wagner
-# e-mail: n.wagner@fz-juelich.de
-# last modified: 2021-03-17
+# Owner / author: Niklas WAGNER, n.wagner@fz-juelich.de
 #
 # Description
 # This script is intened to get data on $ARCHIVE back to spinning disk 
@@ -14,26 +12,24 @@
 # background and wait until all data are back on spinning disk...
 #
 # USAGE:
-# >> nohup ./$0 CTRLDIR PATH/TO/SIMRES/DIR/TARpattern* &
-# >> nohup /aux_restageTape.sh $(pwd) /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/simres/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3_1980*.tar &
+# >> nohup ./$0 PATH/TO/SIMRES/DIR/TARpattern* &
+# >> nohup /aux_restageTape.sh /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/simres/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3_1980*.tar &
 #
 
-# take the first argument as ctrl ...
-CTRLDIR=$1
-# .. and assumes every further argument as DATASET
-shift 1
+# Assumes every argument as DATASET
 tarfiles=$@
+cwd=$(pwd)
 
-echo "--- source environment"
-source $CTRLDIR/export_paths.ksh
-
-cd ${BASE_SIMRESDIR}
 for tarfile in $tarfiles; do
+  # come back to cwd after each loop
+  cd ${cwd}
   # skip if $tarfile is not a file (or link to file)
   if [[ ! -f $tarfile ]]; then continue; fi
   tarfile_name=${tarfile##*/}
-  echo "working on: $tarfile_name"
-  echo "-- inentoring"
+  tarfile_dir=${tarfile%/*}
+  cd ${tarfile_dir}
+  echo "working on: $tarfile"
+  echo "-- inventoring"
   tar -tvf ${tarfile_name}
   if [[ $? != 0 ]] ; then echo "ERROR" && exit 1 ; fi
   echo "-- done"
