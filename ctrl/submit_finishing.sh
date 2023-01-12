@@ -1,17 +1,15 @@
 #!/bin/bash
 #
-# author: Niklas Wagner
-# e-mail: n.wagner@fz-juelich.de
-# last modified: 2022-02-11
+# Owner / author: Niklas WAGNER, n.wagner@fz-juelich.de
 # USAGE: 
-# >> sbatch --export=ALL,startDate=$startDate,CTRLDIR=$BASE_CTRLDIR,NoS=6 \
+# >> sbatch --export=ALL,startDate=$startDate,NoS=6 \
 #           -o "${BASE_LOGDIR}/%x-out" -e "${BASE_LOGDIR}/%x-err" \
 #           --mail-user=$userEmail --account=$computeAcount \
 #           start_finishing.sh
 
 # IMPORTANT the following variables HAVE TO be set via the
 # sbatch --export command 
-# 1) CTRLDIR (tell the program where the ctrl dir of the workflow sit)
+# 1) ALL (ensure exported variables are passed to each subse. called script)
 # 2) startDate (tell the program for which date to start the sim)
 # 3) NoS (tell the programm how many simulations to start)
 ###############################################################################
@@ -21,14 +19,11 @@ echo "###################################################"
 echo "START Logging ($(date)):"
 echo "###################################################"
 echo "--- exe: $0"
-echo "--- pwd: $(pwd)"
-echo "--- Simulation start-date: ${startDate}"
+echo "--- Simulation    init-date: ${initDate}"
+echo "---              start-data: ${startDate}"
+echo "---                  CaseID: ${CaseID}"
+echo "---            CaseCalendar: ${CaseCalendar}"
 echo "--- HOST:  $(hostname)"
-
-echo "--- source environment"
-source $CTRLDIR/export_paths.ksh
-source ${BASE_CTRLDIR}/start_helper.sh
-source ${BASE_CTRLDIR}/postpro/loadenvs
 
 ###############################################################################
 # finishing
@@ -37,7 +32,7 @@ loop_counter=1
 while [ $loop_counter -le $NoS ]
 do
   cd $BASE_CTRLDIR
-  ./start_finishing.sh $BASE_CTRLDIR $startDate
+  ./start_finishing.sh $startDate
   if [[ $? != 0 ]] ; then exit 1 ; fi
   # forward startDate by one month
   startDate=$(date -u -d "${startDate} + ${simLength}" "+%Y-%m-%dT%H:%MZ")

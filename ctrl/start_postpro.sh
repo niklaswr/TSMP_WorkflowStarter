@@ -1,30 +1,27 @@
 #!/bin/bash
 #
-# author: Niklas Wagner
-# e-mail: n.wagner@fz-juelich.de
-# last modified: 2021-04-01
+# Owner / author: Niklas WAGNER, n.wagner@fz-juelich.de
 # USAGE: 
-# >> ./$0 CTRLDIR startDate
-# >> ./starter_postpro.sh $(pwd) 19790101
-# >> ./starter_postpro.sh /p/scratch/cjibg35/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/ctrl 19790101
+# >> ./$0 $startDate
+# >> ./starter_postpro.sh $startDate
 
 ###############################################################################
 # Prepare
 ###############################################################################
-CTRLDIR=$1
-startDate=$2
+startDate=$1
 echo "###################################################"
 echo "START Logging ($(date)):"
 echo "###################################################"
 echo "--- exe: $0"
-echo "--- pwd: $(pwd)"
-echo "--- Simulation start-date: ${startDate}"
+echo "--- Simulation    init-date: ${initDate}"
+echo "---              start-data: ${startDate}"
+echo "---                  CaseID: ${CaseID}"
+echo "---            CaseCalendar: ${CaseCalendar}"
 echo "--- HOST:  $(hostname)"
 
-echo "--- source environment"
-source $CTRLDIR/export_paths.ksh
+echo "--- source helper scripts"
 source ${BASE_CTRLDIR}/start_helper.sh
-source ${BASE_CTRLDIR}/postpro/loadenvs
+source ${BASE_CTRLDIR}/envs/env_postpro
 
 h0=$(date -u -d "$startDate" '+%H')
 d0=$(date -u -d "$startDate" '+%d')
