@@ -5,31 +5,36 @@
  nelapse        =  __nelapse__
  dtime          =  900
  start_ymd      =  __start_ymd__
- start_tod      =  0
+ start_tod      =  __start_tod__
  
- finidat        = '__BASE_FORCINGDIR__/restarts/clm/__clm_restart__'
- flndtopo       = '__BASE_GEODIR__/clm/topodata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
- fsurdat        = '__BASE_GEODIR__/clm/surfdata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
- fatmgrid       = '__BASE_GEODIR__/clm/griddata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
- fatmlndfrc     = '__BASE_GEODIR__/clm/fracdata_CLM_cordex0.11_436x424_cosmomask_varpft_noice.nc'
+ !finidat        = '__BASE_FORCINGDIR__/restarts/clm/__clm_restart__'
+ finidat        = ''
+ flndtopo       = '__BASE_GEODIR__/clm/topodata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
+ fsurdat        = '__BASE_GEODIR__/clm/surfdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
+ fatmgrid       = '__BASE_GEODIR__/clm/griddata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
+ fatmlndfrc     = '__BASE_GEODIR__/clm/fracdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
  fatmtopo       = ''
- fpftcon        = '__BASE_GEODIR__/clm/inputdata/lnd/clm2/pftdata/pft-physiology.c070207'
+ fpftcon        = '__BASE_GEODIR__/clm/inputdata/lnd/clm2/pftdata/pft-physiology.c110504'
  offline_atmdir = '__BASE_GEODIR__/clm/atm_forcing'
- frivinp_rtm    = '__BASE_GEODIR__/clm/inputdata/lnd/clm2/rtmdata/rdirc.05.061026'
+ frivinp_rtm    = 'DUMMY'
 
- hist_empty_htapes = .true.
- hist_dov2xy    = .true.
- hist_avgflag_pertape = 'A'
- hist_nhtfrq    =  -3
- hist_mfilt     =  8
  hist_crtinic   = 'NONE'
+ hist_nhtfrq    =  1, 1
+ hist_mfilt     =  96, 96
+ hist_dov2xy    = .true.
+ hist_avgflag_pertape = 'A', 'A'
+ hist_empty_htapes = .true.
+! hist_fincl1 valid for all combinations
+ hist_fincl1    = 'H2OSNO','H2OSOI','SOILLIQ','FSH','FSDS','FLDS','FGR','FGEV','FCTR','FCEV','FSR','FIRA','TBOT','TSA','QFLX_RAIN_GRND','QFLX_SNOW_GRND','QFLX_EVAP_TOT','RAIN','SNOW','WIND','THBOT','QBOT', 'ZBOT'
+! hist_fincl2 valid without PLF only
+ hist_fincl2    = 'WT'
+!
+ hist_fincl3    = 'ERRSOI','ERRSEB','ERRSOL'
  mss_irt        =  0
- hist_fincl1    = 'H2OSNO','H2OSOI','SOILLIQ','WT','FSH','FSDS','FLDS','FGR','FGEV','FCTR','FCEV','FSR','FIRA','TBOT','TSA','QFLX_RAIN_GRND','QFLX_SNOW_GRND','QFLX_EVAP_TOT','RAIN','SNOW','WIND','THBOT','QBOT','ZBOT'
- hist_fincl2    = 'ERRSOI','ERRSEB','ERRSOL'
-
+ archive_dir    = ''
+ 
  irad           =  1
  wrtdia         = .true.
- archive_dir    = ''
  rest_flag      = .true. 
  rpntpath       = '__sim_rundir__/lnd.clmoas.rpointer'
 /

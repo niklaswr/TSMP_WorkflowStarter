@@ -21,11 +21,11 @@ pfset ComputationalGrid.Lower.Y			 0.0
 pfset ComputationalGrid.Lower.Z			 0.0
 
 pfset ComputationalGrid.DX			 12500.
-pfset ComputationalGrid.DY		         12500. 
+pfset ComputationalGrid.DY		   12500. 
 pfset ComputationalGrid.DZ			 2.00
 
-pfset ComputationalGrid.NX			 436
-pfset ComputationalGrid.NY			 424
+pfset ComputationalGrid.NX			 440
+pfset ComputationalGrid.NY			 428
 pfset ComputationalGrid.NZ			 15 
 
 # DOMAIN GEOMETRY IS THE (EXACTLY) OUTER DOMAIN OR BOUNDARY OF THE MODEL PROBLEM. IT HAS TO BE CONTAINED WITHIN THE COMPUTATIONAL GRID (i.e.
@@ -45,7 +45,7 @@ pfset Domain.GeomName                            domain
  pfset GeomInput.Names                 "solidinput indi_input"
  pfset GeomInput.solidinput.InputType  SolidFile
  pfset GeomInput.solidinput.GeomNames  domain
- pfset GeomInput.solidinput.FileName   __BASE_GEODIR__/parflow/geom_cordex0.11_436x424.pfsol
+ pfset GeomInput.solidinput.FileName   __BASE_GEODIR__/parflow/PfbMask4SolidFile.pfsol
  pfset Geom.domain.Patches             "top bottom perimeter"
 
 #-----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ pfset dzScale.Type                   nzList
 
 # NOTE each cell depth is dz*dzScale!!!!!!
 pfset dzScale.nzListNumber           15
-pfset Cell.0.dzScale.Value           7.50
+pfset Cell.0.dzScale.Value           9.00
 pfset Cell.1.dzScale.Value           7.50
 pfset Cell.2.dzScale.Value           5.0
 pfset Cell.3.dzScale.Value           5.0
@@ -79,54 +79,52 @@ pfset Cell.14.dzScale.Value          0.01
 #----------------------------------------------------------------
 
 pfset GeomInput.indi_input.InputType IndicatorField
-pfset GeomInput.indi_input.GeomNames "F1 F2 F3 F4 F5 F6 water W1 W2 W3 W4 W6 W7 W8 W9 W11 W12 W13 W15 W16 W14 B40"
-pfset Geom.indi_input.FileName ParFlow_SOIL_INDICATOR3_from_EUR03_x1592y1544z15_on_EUR11_x436y424z15.pfb
+pfset GeomInput.indi_input.GeomNames "TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12 Allv BGR1 BGR2 BGR3 BGR4 BGR5 BGR6 Lake Sea"
+pfset Geom.indi_input.FileName EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_INDICATOR_regridded_rescaled_SoilGrids250-v2017_BGR3_alv.pfb
 
-## Subsurface database 1-6 where 1 is highly productive aquifer and 6 is virtually no groundwater
-pfset GeomInput.F1.Value 1
-pfset GeomInput.F2.Value 2
-pfset GeomInput.F3.Value 3
-pfset GeomInput.F4.Value 4
-pfset GeomInput.F5.Value 5
-pfset GeomInput.F6.Value 6
-pfset GeomInput.water.Value 9999
-
-## FAO soil database
+# USDA classes calculated based on SoilGrids
+# 12 soil classes TC01-TC12 
 # sand
-pfset GeomInput.W1.Value 18
+pfset GeomInput.TC01.Value 1
 # loamy sand
-pfset GeomInput.W2.Value 19
+pfset GeomInput.TC02.Value 2
 # sandy loam
-pfset GeomInput.W3.Value 20
-# silt loam
-pfset GeomInput.W4.Value 21
-# silt
-#pfset GeomInput.W5.Value 22
+pfset GeomInput.TC03.Value 3
 # loam
-pfset GeomInput.W6.Value 23
+pfset GeomInput.TC04.Value 4
+# silt loam
+pfset GeomInput.TC05.Value 5
+# silt
+pfset GeomInput.TC06.Value 6
 # sandy clay loam
-pfset GeomInput.W7.Value 24
-# silty clay loam
-pfset GeomInput.W8.Value 25
+pfset GeomInput.TC07.Value 7
 # clay loam
-pfset GeomInput.W9.Value 26
+pfset GeomInput.TC08.Value 8
+# silty clay loam
+pfset GeomInput.TC09.Value 9
 # sandy clay
-#pfset GeomInput.W10.Value 27
+pfset GeomInput.TC10.Value 10
 # silty clay
-pfset GeomInput.W11.Value 28
+pfset GeomInput.TC11.Value 11
 # clay
-pfset GeomInput.W12.Value 29
-# organic material
-pfset GeomInput.W13.Value 30
-# water
-pfset GeomInput.W14.Value 31
-# bedrock
-pfset GeomInput.W15.Value 32
-# others
-pfset GeomInput.W16.Value 33
+pfset GeomInput.TC12.Value 12
 
-## additional layer at the bottom with increased conductivity
-pfset GeomInput.B40.Value 40
+# Alluvium burned in soil
+pfset GeomInput.Allv.Value 13
+
+# IHME plus GLHYMPS dataset
+# Geology BGR1-BGR6 from 'highe' permeabilities to 'low' permabilities
+pfset GeomInput.BGR1.Value 14
+pfset GeomInput.BGR2.Value 15
+pfset GeomInput.BGR3.Value 16
+pfset GeomInput.BGR4.Value 17
+pfset GeomInput.BGR5.Value 18
+pfset GeomInput.BGR6.Value 19
+
+# Lake
+pfset GeomInput.Lake.Value 21
+# Sea
+pfset GeomInput.Sea.Value 22
 
 #TIME SETUP
 #-----------------------------------------------------------------------------
@@ -135,10 +133,10 @@ pfset GeomInput.B40.Value 40
 pfset TimingInfo.BaseUnit                0.0025
 pfset TimingInfo.StartCount              0.0
 pfset TimingInfo.StartTime               0.0
-pfset TimingInfo.StopTime                __numHours__.0025
+pfset TimingInfo.StopTime                __TimingInfo.StopTime__.0025
 pfset TimeStep.Type                      Constant
 pfset TimeStep.Value                     0.25
-pfset TimingInfo.DumpInterval            3
+pfset TimingInfo.DumpInterval            0.25
 
 # Time Cycles
 #-----------------------------------------------------------------------------
@@ -153,60 +151,80 @@ pfset Cycle.constant.Repeat             -1
 #-----------------------------------------------------------------------------
 # Perm
 #-----------------------------------------------------------------------------
-pfset Geom.Perm.Names              "domain F1 F2 F3 F4 F5 F6 water W1 W2 W3 W4 W6 W7 W8 W9 W11 W12 W13 W15 W16 W14 B40"
+pfset Geom.Perm.Names              "domain TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12 Allv BGR1 BGR2 BGR3 BGR4 BGR5 BGR6 Lake Sea"
 
 pfset Geom.domain.Perm.Type        Constant
 pfset Geom.domain.Perm.Value       0.1
 
-## IHME plus Rivers as aquifers where permeability ranges are set according to the general ranges of soil permeability (FAO) and T. GLEESON data
-pfset Geom.F1.Perm.Type            Constant
-pfset Geom.F1.Perm.Value           0.1
-pfset Geom.F2.Perm.Type            Constant
-pfset Geom.F2.Perm.Value           0.05
-pfset Geom.F3.Perm.Type            Constant
-pfset Geom.F3.Perm.Value           0.001
-pfset Geom.F4.Perm.Type            Constant
-pfset Geom.F4.Perm.Value           0.0005
-pfset Geom.F5.Perm.Type            Constant
-pfset Geom.F5.Perm.Value           0.00001
-pfset Geom.F6.Perm.Type            Constant
-pfset Geom.F6.Perm.Value           0.000005
-pfset Geom.water.Perm.Type         Constant
-pfset Geom.water.Perm.Value        0.000000001
+# USDA classes calculated based on SoilGrids
+# Values from ROSATTA project:
+# https://www.ars.usda.gov/pacific-west-area/riverside-ca/agricultural-water-efficiency-and-salinity-reSearch-unit/docs/model/rosetta-class-average-hydraulic-parameters/
+pfset Geom.TC01.Perm.Type           Constant
+pfset Geom.TC01.Perm.Value          0.267787
 
-## FAO
-pfset Geom.W1.Perm.Type           Constant
-pfset Geom.W1.Perm.Value          0.269022595
-pfset Geom.W2.Perm.Type           Constant
-pfset Geom.W2.Perm.Value          0.043630356
-pfset Geom.W3.Perm.Type           Constant
-pfset Geom.W3.Perm.Value          0.015841225
-pfset Geom.W4.Perm.Type           Constant
-pfset Geom.W4.Perm.Value          0.007582087
-pfset Geom.W6.Perm.Type           Constant
-pfset Geom.W6.Perm.Value          0.026289889
-pfset Geom.W7.Perm.Type           Constant
-pfset Geom.W7.Perm.Value          0.005492736
-pfset Geom.W8.Perm.Type           Constant
-pfset Geom.W8.Perm.Value          0.004675077
-pfset Geom.W9.Perm.Type           Constant
-pfset Geom.W9.Perm.Value          0.003386794
-pfset Geom.W11.Perm.Type          Constant
-pfset Geom.W11.Perm.Value         0.003979136
-pfset Geom.W12.Perm.Type          Constant
-pfset Geom.W12.Perm.Value         0.006162952
-pfset Geom.W13.Perm.Type          Constant
-pfset Geom.W13.Perm.Value         0.01
-pfset Geom.W15.Perm.Type          Constant
-pfset Geom.W15.Perm.Value         0.5
-pfset Geom.W16.Perm.Type          Constant
-pfset Geom.W16.Perm.Value         0.1
-pfset Geom.W14.Perm.Type          Constant
-pfset Geom.W14.Perm.Value         0.1
+pfset Geom.TC02.Perm.Type           Constant
+pfset Geom.TC02.Perm.Value          0.043832
 
-## Additional highly conductive layer at the bottom
-pfset Geom.B40.Perm.Type          Constant
-pfset Geom.B40.Perm.Value         0.1
+pfset Geom.TC03.Perm.Type           Constant
+pfset Geom.TC03.Perm.Value          0.015951
+
+pfset Geom.TC04.Perm.Type           Constant
+pfset Geom.TC04.Perm.Value          0.005021
+
+pfset Geom.TC05.Perm.Type           Constant
+pfset Geom.TC05.Perm.Value          0.0076
+
+pfset Geom.TC06.Perm.Type           Constant
+pfset Geom.TC06.Perm.Value          0.01823
+
+pfset Geom.TC07.Perm.Type           Constant
+pfset Geom.TC07.Perm.Value          0.005493
+
+pfset Geom.TC08.Perm.Type           Constant
+pfset Geom.TC08.Perm.Value          0.00341
+
+pfset Geom.TC09.Perm.Type           Constant
+pfset Geom.TC09.Perm.Value          0.004632
+
+pfset Geom.TC10.Perm.Type           Constant
+pfset Geom.TC10.Perm.Value          0.004729
+
+pfset Geom.TC11.Perm.Type           Constant
+pfset Geom.TC11.Perm.Value          0.004007
+
+pfset Geom.TC12.Perm.Type           Constant
+pfset Geom.TC12.Perm.Value          0.006149
+
+# Alluvium burned in soil
+pfset Geom.Allv.Perm.Type          Constant
+pfset Geom.Allv.Perm.Value         0.1
+
+# IHME plus GLHYMPS geology where permeability ranges are set according to
+# ABE setting (from Wendy)
+pfset Geom.BGR1.Perm.Type            Constant
+pfset Geom.BGR1.Perm.Value           0.1
+
+pfset Geom.BGR2.Perm.Type            Constant
+pfset Geom.BGR2.Perm.Value           0.05
+
+pfset Geom.BGR3.Perm.Type            Constant
+pfset Geom.BGR3.Perm.Value           0.01
+
+pfset Geom.BGR4.Perm.Type            Constant
+pfset Geom.BGR4.Perm.Value           0.005
+
+pfset Geom.BGR5.Perm.Type            Constant
+pfset Geom.BGR5.Perm.Value           0.001
+
+pfset Geom.BGR6.Perm.Type            Constant
+pfset Geom.BGR6.Perm.Value           0.0005
+
+# Lake
+pfset Geom.Lake.Perm.Type          Constant
+pfset Geom.Lake.Perm.Value         1.0e-5
+# Sea
+pfset Geom.Sea.Perm.Type           Constant
+pfset Geom.Sea.Perm.Value          1.0e-5
 
 pfset Perm.TensorType			 TensorByGeom
 pfset Geom.Perm.TensorByGeom.Names	 "domain"
@@ -248,145 +266,162 @@ pfset Geom.Retardation.GeomNames	 ""
 #-----------------------------------------------------------------------------
 # Porosity
 #-----------------------------------------------------------------------------
-pfset Geom.Porosity.GeomNames          "domain W1 W2 W3 W4 W6 W7 W8 W9 W11 W12 W13 W15 W16 W14"
+pfset Geom.Porosity.GeomNames          "domain TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12"
 
 pfset Geom.domain.Porosity.Type        Constant
 pfset Geom.domain.Porosity.Value       0.4
 
-pfset Geom.W1.Porosity.Type            Constant
-pfset Geom.W1.Porosity.Value           0.3693
-pfset Geom.W2.Porosity.Type            Constant
-pfset Geom.W2.Porosity.Value           0.3819
-pfset Geom.W3.Porosity.Type            Constant
-pfset Geom.W3.Porosity.Value           0.4071
-pfset Geom.W4.Porosity.Type            Constant
-pfset Geom.W4.Porosity.Value           0.4760
-pfset Geom.W6.Porosity.Type            Constant
-pfset Geom.W6.Porosity.Value           0.4390
-pfset Geom.W7.Porosity.Type            Constant
-pfset Geom.W7.Porosity.Value           0.4040
-pfset Geom.W8.Porosity.Type            Constant
-pfset Geom.W8.Porosity.Value           0.4640
-pfset Geom.W9.Porosity.Type            Constant
-pfset Geom.W9.Porosity.Value           0.4386
-pfset Geom.W11.Porosity.Type           Constant
-pfset Geom.W11.Porosity.Value          0.4789
-pfset Geom.W12.Porosity.Type           Constant
-pfset Geom.W12.Porosity.Value          0.4680
-pfset Geom.W13.Porosity.Type           Constant
-pfset Geom.W13.Porosity.Value          0.4
-pfset Geom.W15.Porosity.Type           Constant
-pfset Geom.W15.Porosity.Value          0.1
-pfset Geom.W16.Porosity.Type           Constant
-pfset Geom.W16.Porosity.Value          0.1
-pfset Geom.W14.Porosity.Type           Constant
-pfset Geom.W14.Porosity.Value          0.1
+pfset Geom.TC01.Porosity.Type            Constant
+pfset Geom.TC01.Porosity.Value           0.375
+
+pfset Geom.TC02.Porosity.Type            Constant
+pfset Geom.TC02.Porosity.Value           0.39
+
+pfset Geom.TC03.Porosity.Type            Constant
+pfset Geom.TC03.Porosity.Value           0.387
+
+pfset Geom.TC04.Porosity.Type            Constant
+pfset Geom.TC04.Porosity.Value           0.399
+
+pfset Geom.TC05.Porosity.Type            Constant
+pfset Geom.TC05.Porosity.Value           0.439
+
+pfset Geom.TC06.Porosity.Type            Constant
+pfset Geom.TC06.Porosity.Value           0.489
+
+pfset Geom.TC07.Porosity.Type            Constant
+pfset Geom.TC07.Porosity.Value           0.384
+
+pfset Geom.TC08.Porosity.Type            Constant
+pfset Geom.TC08.Porosity.Value           0.442
+
+pfset Geom.TC09.Porosity.Type            Constant
+pfset Geom.TC09.Porosity.Value           0.482
+
+pfset Geom.TC10.Porosity.Type            Constant
+pfset Geom.TC10.Porosity.Value           0.385
+
+pfset Geom.TC11.Porosity.Type            Constant
+pfset Geom.TC11.Porosity.Value           0.481
+
+pfset Geom.TC12.Porosity.Type            Constant
+pfset Geom.TC12.Porosity.Value           0.459
 
 #-----------------------------------------------------------------------------
 # Relative Permeability
 #-----------------------------------------------------------------------------
 pfset Phase.RelPerm.Type               VanGenuchten
-pfset Phase.RelPerm.GeomNames          "domain W1 W2 W3 W4 W6 W7 W8 W9 W11 W12 W13 W15 W16 W14"
+pfset Phase.RelPerm.GeomNames          "domain TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12"
 
 pfset Geom.domain.RelPerm.Alpha        2.0
-pfset Geom.domain.RelPerm.N            3.
+pfset Geom.domain.RelPerm.N            4.
 
-pfset Geom.W1.RelPerm.Alpha            3.548134
-pfset Geom.W1.RelPerm.N                3.162278
-pfset Geom.W2.RelPerm.Alpha            3.467369
-pfset Geom.W2.RelPerm.N                2.01
-pfset Geom.W3.RelPerm.Alpha            2.691535
-pfset Geom.W3.RelPerm.N                2.01
-pfset Geom.W4.RelPerm.Alpha            0.501187
-pfset Geom.W4.RelPerm.N                2.01
-pfset Geom.W6.RelPerm.Alpha            1.122018
-pfset Geom.W6.RelPerm.N                2.01
-pfset Geom.W7.RelPerm.Alpha            2.089296
-pfset Geom.W7.RelPerm.N                2.01
-pfset Geom.W8.RelPerm.Alpha            0.831764
-pfset Geom.W8.RelPerm.N                2.01
-pfset Geom.W9.RelPerm.Alpha            1.584893
-pfset Geom.W9.RelPerm.N                2.01
-pfset Geom.W11.RelPerm.Alpha           1.621810
-pfset Geom.W11.RelPerm.N               2.01
-pfset Geom.W12.RelPerm.Alpha            1.513561
-pfset Geom.W12.RelPerm.N                2.01
-pfset Geom.W13.RelPerm.Alpha            2.0
-pfset Geom.W13.RelPerm.N                3.
-pfset Geom.W15.RelPerm.Alpha            2.0
-pfset Geom.W15.RelPerm.N                3.
-pfset Geom.W16.RelPerm.Alpha            2.0
-pfset Geom.W16.RelPerm.N                3.
-pfset Geom.W14.RelPerm.Alpha            2.0
-pfset Geom.W14.RelPerm.N                3.
+pfset Geom.TC01.RelPerm.Alpha          3.523709
+pfset Geom.TC01.RelPerm.N              4.176874
+
+pfset Geom.TC02.RelPerm.Alpha          3.475362
+pfset Geom.TC02.RelPerm.N              2.745822
+
+pfset Geom.TC03.RelPerm.Alpha          2.666859
+pfset Geom.TC03.RelPerm.N              2.448772
+
+pfset Geom.TC04.RelPerm.Alpha          1.111732
+pfset Geom.TC04.RelPerm.N              2.472313
+
+pfset Geom.TC05.RelPerm.Alpha          0.505825
+pfset Geom.TC05.RelPerm.N              2.663413
+
+pfset Geom.TC06.RelPerm.Alpha          0.657658
+pfset Geom.TC06.RelPerm.N              2.678804
+
+pfset Geom.TC07.RelPerm.Alpha          2.108628
+pfset Geom.TC07.RelPerm.N              2.330454
+
+pfset Geom.TC08.RelPerm.Alpha          1.581248
+pfset Geom.TC08.RelPerm.N              2.415794
+
+pfset Geom.TC09.RelPerm.Alpha          0.83946
+pfset Geom.TC09.RelPerm.N              2.520548
+
+pfset Geom.TC10.RelPerm.Alpha          3.34195
+pfset Geom.TC10.RelPerm.N              2.207814
+
+pfset Geom.TC11.RelPerm.Alpha          1.62181
+pfset Geom.TC11.RelPerm.N              2.321296
+
+pfset Geom.TC12.RelPerm.Alpha          1.496236
+pfset Geom.TC12.RelPerm.N              2.253141
 
 #---------------------------------------------------------
 # Saturation
 #---------------------------------------------------------
 pfset Phase.Saturation.Type              VanGenuchten
-pfset Phase.Saturation.GeomNames          "domain W1 W2 W3 W4 W6 W7 W8 W9 W11 W12 W13 W15 W16 W14"
+pfset Phase.Saturation.GeomNames         "domain TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12"
 
 pfset Geom.domain.Saturation.Alpha        2.0
-pfset Geom.domain.Saturation.N            3.
+pfset Geom.domain.Saturation.N            4.
 pfset Geom.domain.Saturation.SRes         0.1
 pfset Geom.domain.Saturation.SSat         1.0
 
-pfset Geom.W1.Saturation.Alpha            3.548134
-pfset Geom.W1.Saturation.N                3.162278
-pfset Geom.W1.Saturation.SRes             0.076
-pfset Geom.W1.Saturation.SSat             1.0
-pfset Geom.W2.Saturation.Alpha            3.467369
-pfset Geom.W2.Saturation.SRes             0.0628
-pfset Geom.W2.Saturation.SSat             1.0
-pfset Geom.W2.Saturation.N                2.01
-pfset Geom.W3.Saturation.Alpha            2.691535
-pfset Geom.W3.Saturation.SRes             0.05037
-pfset Geom.W3.Saturation.SSat             1.0
-pfset Geom.W3.Saturation.N                2.01
-pfset Geom.W4.Saturation.Alpha            0.501187
-pfset Geom.W4.Saturation.SRes             0.074032
-pfset Geom.W4.Saturation.SSat             1.0
-pfset Geom.W4.Saturation.N                2.01
-pfset Geom.W6.Saturation.Alpha            1.122018
-pfset Geom.W6.Saturation.SRes             0.076441
-pfset Geom.W6.Saturation.SSat             1.0
-pfset Geom.W6.Saturation.N                2.01
-pfset Geom.W7.Saturation.Alpha            2.089296
-pfset Geom.W7.Saturation.SRes             0.082031
-pfset Geom.W7.Saturation.SSat             1.0
-pfset Geom.W7.Saturation.N                2.01
-pfset Geom.W8.Saturation.Alpha            0.831764
-pfset Geom.W8.Saturation.SRes             0.093361
-pfset Geom.W8.Saturation.SSat             1.0
-pfset Geom.W8.Saturation.N                2.01
-pfset Geom.W9.Saturation.Alpha            1.584893
-pfset Geom.W9.Saturation.SRes             0.084361
-pfset Geom.W9.Saturation.SSat             1.0
-pfset Geom.W9.Saturation.N                2.01
-pfset Geom.W11.Saturation.Alpha           1.621810
-pfset Geom.W11.Saturation.SRes            0.125384
-pfset Geom.W11.Saturation.SSat            1.0
-pfset Geom.W11.Saturation.N               2.01
-pfset Geom.W12.Saturation.Alpha           1.513561
-pfset Geom.W12.Saturation.SRes            0.106704
-pfset Geom.W12.Saturation.SSat            1.0
-pfset Geom.W12.Saturation.N               2.01
-pfset Geom.W13.Saturation.Alpha           2.0
-pfset Geom.W13.Saturation.N               3.
-pfset Geom.W13.Saturation.SRes            0.1
-pfset Geom.W13.Saturation.SSat            1.0
-pfset Geom.W15.Saturation.Alpha           2.0
-pfset Geom.W15.Saturation.N               3.
-pfset Geom.W15.Saturation.SRes            0.1
-pfset Geom.W15.Saturation.SSat            1.0
-pfset Geom.W16.Saturation.Alpha           2.0
-pfset Geom.W16.Saturation.N               3.
-pfset Geom.W16.Saturation.SRes            0.2
-pfset Geom.W16.Saturation.SSat            1.0
-pfset Geom.W14.Saturation.Alpha           2.0
-pfset Geom.W14.Saturation.N               3.
-pfset Geom.W14.Saturation.SRes            0.1
-pfset Geom.W14.Saturation.SSat            1.0
+pfset Geom.TC01.Saturation.Alpha       3.523709
+pfset Geom.TC01.Saturation.N           4.176874
+pfset Geom.TC01.Saturation.SRes        0.141333
+pfset Geom.TC01.Saturation.SSat        1.0
+
+pfset Geom.TC02.Saturation.Alpha       3.475362
+pfset Geom.TC02.Saturation.N           2.745822
+pfset Geom.TC02.Saturation.SRes        0.125641
+pfset Geom.TC02.Saturation.SSat        1.0
+
+pfset Geom.TC03.Saturation.Alpha       2.666859
+pfset Geom.TC03.Saturation.N           2.448772
+pfset Geom.TC03.Saturation.SRes        0.100775
+pfset Geom.TC03.Saturation.SSat        1.0
+
+pfset Geom.TC04.Saturation.Alpha       1.111732
+pfset Geom.TC04.Saturation.N           2.472313
+pfset Geom.TC04.Saturation.SRes        0.152882
+pfset Geom.TC04.Saturation.SSat        1.0
+
+pfset Geom.TC05.Saturation.Alpha       0.505825
+pfset Geom.TC05.Saturation.N           2.663413
+pfset Geom.TC05.Saturation.SRes        0.148064
+pfset Geom.TC05.Saturation.SSat        1.0
+
+pfset Geom.TC06.Saturation.Alpha       0.657658
+pfset Geom.TC06.Saturation.N           2.678804
+pfset Geom.TC06.Saturation.SRes        0.102249
+pfset Geom.TC06.Saturation.SSat        1.0
+
+pfset Geom.TC07.Saturation.Alpha       2.108628
+pfset Geom.TC07.Saturation.N           2.330454
+pfset Geom.TC07.Saturation.SRes        0.164063
+pfset Geom.TC07.Saturation.SSat        1.0
+
+pfset Geom.TC08.Saturation.Alpha       1.581248
+pfset Geom.TC08.Saturation.N           2.415794
+pfset Geom.TC08.Saturation.SRes        0.178733
+pfset Geom.TC08.Saturation.SSat        1.0
+
+pfset Geom.TC09.Saturation.Alpha       0.83946
+pfset Geom.TC09.Saturation.N           2.520548
+pfset Geom.TC09.Saturation.SRes        0.186722
+pfset Geom.TC09.Saturation.SSat        1.0
+
+pfset Geom.TC10.Saturation.Alpha       3.34195
+pfset Geom.TC10.Saturation.N           2.207814
+pfset Geom.TC10.Saturation.SRes        0.303896
+pfset Geom.TC10.Saturation.SSat        1.0
+
+pfset Geom.TC11.Saturation.Alpha       1.62181
+pfset Geom.TC11.Saturation.N           2.321296
+pfset Geom.TC11.Saturation.SRes        0.230769
+pfset Geom.TC11.Saturation.SSat        1.0
+
+pfset Geom.TC12.Saturation.Alpha       1.496236
+pfset Geom.TC12.Saturation.N           2.253141
+pfset Geom.TC12.Saturation.SRes        0.213508
+pfset Geom.TC12.Saturation.SSat        1.0
 
 #-----------------------------------------------------------------------------
 # Wells
@@ -426,14 +461,14 @@ pfset Patch.perimeter.BCPressure.alltime.Value      0.0
 #---------------------------------------------------------
 pfset TopoSlopesX.Type			 "PFBFile"
 pfset TopoSlopesX.GeomNames		 "domain"
-pfset TopoSlopesX.FileName		 "slopex.pfb"
+pfset TopoSlopesX.FileName		 "EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_XSLOPE_TPS_HydroRIVER_sea_streams_corr.pfb"
 
 #---------------------------------------------------------
 # Topo slopes in y-direction
 #---------------------------------------------------------
 pfset TopoSlopesY.Type			 "PFBFile"
 pfset TopoSlopesY.GeomNames		 "domain"
-pfset TopoSlopesY.FileName		 "slopey.pfb"
+pfset TopoSlopesY.FileName		 "EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_YSLOPE_TPS_HydroRIVER_sea_streams_corr.pfb"
 
 #---------------------------------------------------------
 # Mannings coefficient
@@ -474,52 +509,48 @@ pfset Solver.Linear.KrylovDimension		 30
 pfset Solver.Linear.MaxRestart			 8
 pfset Solver.MaxConvergenceFailures              8
 
-#pfset Solver.Linear.Preconditioner               PFMGOctree
-
 pfset Solver.Linear.Preconditioner                      PFMG
-#pfset Solver.Linear.Preconditioner			 MGSemi
-#pfset Solver.Linear.Preconditioner.MGSemi.MaxIter	 1
-#pfset Solver.Linear.Preconditioner.MGSemi.MaxLevels	 10
-#pfset Solver.PrintSubsurf				 False
-#pfset Solver.Drop					 1E-20
-#pfset Solver.AbsTol					 1E-12
 
-pfset Solver.PrintSaturation                            True 
-pfset Solver.PrintPressure                              True 
-#pfset Solver.PrintSubsurf                               False
-#pfset Solver.Nonlinear.PrintFlag                        LowVerbosity
-#pfset Solver.PrintCLM True
-#pfset Solver.PrintLSMSink                               True
-#LSMSInk added 3.08.2020
-
-pfset Solver.WriteSiloSubsurfData		        False
-pfset Solver.WriteSiloPressure				False
-pfset Solver.WriteSiloSaturation		        False	
-pfset Solver.WriteSiloMask			        False	
-pfset Solver.WriteCLMBinary			        False	
+pfset Solver.PrintPressure                      False
+pfset Solver.PrintSaturation                    False
+pfset Solver.PrintSubsurfData                   False
+pfset Solver.PrintLSMSink                       False
+pfset Solver.PrintEvapTransSum                  False
+pfset Solver.PrintOverlandSum                   False
+#
+pfset NetCDF.NumStepsPerFile                    1
+pfset NetCDF.WritePressure                      True
+pfset NetCDF.WriteSaturation                    True
+pfset NetCDF.WriteMannings                      True
+pfset NetCDF.WriteSubsurface                    True
+pfset NetCDF.WriteSlopes                        True
+pfset NetCDF.WriteMask                          True
+pfset NetCDF.WriteDZMultiplier                  True
+pfset NetCDF.WriteEvapTrans                     True
+#
+pfset Solver.WriteSiloSubsurfData		            False
+pfset Solver.WriteSiloPressure				          False
+pfset Solver.WriteSiloSaturation		            False	
+pfset Solver.WriteSiloMask			                False	
+pfset Solver.WriteCLMBinary			                False	
 
 #---------------------------------------------------------
 # Initial conditions: water pressure
-# HydroStaticPatch > PFBFile
 #---------------------------------------------------------
-#
-pfset ICPressure.Type                    PFBFile
-pfset ICPressure.GeomNames               domain
-pfset Geom.domain.ICPressure.FileName    "__ICPressure__"
-pfdist    "__ICPressure__"
-pfset Geom.domain.ICPressure.RefGeom     domain
-pfset Geom.domain.ICPressure.RefPatch    top
+pfset ICPressure.Type                                   HydroStaticPatch
+pfset ICPressure.GeomNames                              domain
+pfset Geom.domain.ICPressure.Value                      -0.2
+pfset Geom.domain.ICPressure.RefGeom                    domain
+pfset Geom.domain.ICPressure.RefPatch                   top
 
-#pfset ICPressure.Type                                   HydroStaticPatch
-#pfset ICPressure.Type                                   Constant
-#pfset ICPressure.GeomNames                              domain
-#pfset Geom.domain.ICPressure.Value                      -0.2
-
-#pfset Geom.domain.ICPressure.RefGeom                    domain
-#pfset Geom.domain.ICPressure.RefPatch                   top
-
+#pfset ICPressure.Type                    NCFile
+#pfset ICPressure.GeomNames               domain
+#pfset Geom.domain.ICPressure.FileName    "__ICPressure__"
+##pfdist    "__ICPressure__"
+#pfset Geom.domain.ICPressure.RefGeom     domain
+#pfset Geom.domain.ICPressure.RefPatch    top
 
 #-----------------------------------------------------------------------------
 # Run and Unload the ParFlow output files
 #-----------------------------------------------------------------------------
-pfwritedb cordex0.11___startDate__
+pfwritedb __pfidb__
