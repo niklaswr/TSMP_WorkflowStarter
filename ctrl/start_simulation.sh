@@ -344,11 +344,14 @@ echo "--- clean/remove rundir"
 rm -r ${rundir}
 
 ################################################################################
-# Creating HISTORY.txt (reusability etc.)
+# Creating HISTORY.txt and store TSMP build log (reusability etc.)
 ################################################################################
-histfile=$new_simres/HISTORY.txt
+cp ${TSMP_BINDIR}/log_all* ${new_simres}/TSMP_BuildLog.txt
+
+histfile=${new_simres}/HISTORY.txt
 
 cd ${BASE_CTRLDIR}
+git diff HEAD > ${new_simres}/GitDiffHead_workflow.diff
 TAG_WORKFLOW=$(git describe --tags)
 COMMIT_WORKFLOW=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_WORKFLOW=$(git log --pretty=format:'author: %an' -n 1)
@@ -357,6 +360,7 @@ SUBJECT_WORKFLOW=$(git log --pretty=format:'subject: %s' -n 1)
 URL_WORKFLOW=$(git config --get remote.origin.url)
 
 cd ${BASE_SRCDIR}/TSMP
+git diff HEAD > ${new_simres}/GitDiffHead_model.diff
 TAG_MODEL=$(git describe --tags)
 COMMIT_MODEL=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_MODEL=$(git log --pretty=format:'author: %an' -n 1)
@@ -365,6 +369,7 @@ SUBJECT_MODEL=$(git log --pretty=format:'subject: %s' -n 1)
 URL_MODEL=$(git config --get remote.origin.url)
 
 cd ${BASE_GEODIR}
+git diff HEAD > ${new_simres}/GitDiffHead_geo.diff
 TAG_GEO=$(git describe --tags)
 COMMIT_GEO=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_GEO=$(git log --pretty=format:'author: %an' -n 1)
@@ -374,16 +379,10 @@ URL_GEO=$(git config --get remote.origin.url)
 
 /bin/cat <<EOM >$histfile
 ###############################################################################
-author: ${AUTHOR_NAME}
+Author: ${AUTHOR_NAME}
 e-mail: ${AUTHOR_MAIL}
 version: $(date)
 
-This simulation was run under
-simStatus=${SIMSTATUS} # "test": test run; "prod": production run
-# The simStatus flag does only control a seperat check right before the 
-# simulation is submitted, checking if the working tree is clean and if the
-# current commit has a tag.
-# This way we make sure below information are correct!
 ###############################################################################
 The following setup was used: 
 ###############################################################################
@@ -396,6 +395,8 @@ ${COMMIT_WORKFLOW}
 ${AUTHOR_WORKFLOW}
 ${DATE_WORKFLOW}
 ${SUBJECT_WORKFLOW}
+To check if no uncommited change is made to above repo, bypassing this tracking,
+the output of \`git diff HEAD\` is printed to \`GitDiffHead_workflow.diff\`.
 ###############################################################################
 MODEL
 -- REPO:
@@ -406,6 +407,10 @@ ${COMMIT_MODEL}
 ${AUTHOR_MODEL}
 ${DATE_MODEL}
 ${SUBJECT_MODEL}
+To check if no uncommited change is made to above repo, bypassing this tracking,
+the output of \`git diff HEAD\` is printed to \`GitDiffHead_model.diff\`.
+The specific TSMP build log is stored in \`TSMP_BuildLog.txt\`, enableing to 
+exactly reproduce the TSMP build command and sued component versions.
 ###############################################################################
 GEO
 -- REPO:
@@ -416,6 +421,12 @@ ${COMMIT_GEO}
 ${AUTHOR_GEO}
 ${DATE_GEO}
 ${SUBJECT_GEO}
+To check if no uncommited change is made to above repo, bypassing this tracking,
+the output of \`git diff HEAD\` is printed to \`GitDiffHead_geo.diff\`.
+###############################################################################
+MACHINE: $(cat /etc/FZJ/systemname)
+PARTITION: ${SIM_PARTITION}
+simStatus=${SIMSTATUS} 
 ###############################################################################
 EOM
 check4error $? "--- ERROR while creating HISTORY.txt"
