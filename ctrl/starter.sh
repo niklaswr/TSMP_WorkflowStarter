@@ -1,8 +1,6 @@
 #!/bin/bash
 #
-# author: Niklas Wagner
-# e-mail: n.wagner@fz-juelich.de
-# last modified: 2022-01-17
+# Owner / author: Niklas WAGNER, n.wagner@fz-juelich.de
 # USAGE: 
 # >> ./$0
 # >> ./starter_new.sh
@@ -97,6 +95,10 @@ export PROC_PARFLOW_P=${PROC_PARFLOW_P}
 export PROC_PARFLOW_Q=${PROC_PARFLOW_Q}
 export PROC_CLM=${PROC_CLM}
 export SIMSTATUS=${simStatus}
+export PRE_PARTITION=${pre_PARTITION}
+export SIM_PARTITION=${sim_PARTITION}
+export POST_PARTITION=${post_PARTITION}
+export FIN_PARTITION=${fin_PARTITION}
 # Export simulation information stored in SimInfo.sh as variables:
 source ${CTRLDIR}/SimInfo.sh
 # Load export_paths.ksh
@@ -115,8 +117,13 @@ TSMPbuild="JURECA_3.1.0MCT_${COMBINATION}" # The TSMP build name.
 		     # JSCMACHINE_TSMPVERSION_COMBINATION. One can look up
 		     # this name within the TSMP/bin/ dir.
 export TSMP_BINDIR=${BASE_SRCDIR}/TSMP/bin/${TSMPbuild}
-# Check git / working tree status:
-# 'checkGitStatus()' is located in 'start_helper.sh'
+
+# For SIMSTATUS=prod perform two checks:
+#  i) Check if git / working tree to be clean. If not print a message to stdout.
+# ii) Check current git commit has a tag. If not, create a new tag with 
+#     increased digit at patch level.
+# The function 'checkGitStatus()' performing above two checks (including the 
+# check if SIMSTATUS=prod|test is located in 'start_helper.sh'.
 checkGitStatus ${SIMSTATUS}
 
 ################################################################################
