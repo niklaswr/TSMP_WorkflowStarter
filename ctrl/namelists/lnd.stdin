@@ -14,7 +14,7 @@
  fatmgrid       = '__BASE_GEODIR__/clm/griddata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
  fatmlndfrc     = '__BASE_GEODIR__/clm/fracdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
  fatmtopo       = ''
- fpftcon        = '__BASE_GEODIR__/clm/inputdata/lnd/clm2/pftdata/pft-physiology.c110504'
+ fpftcon        = '__BASE_GEODIR__/pft-physiology.c110504'
  offline_atmdir = '__BASE_GEODIR__/clm/atm_forcing'
  frivinp_rtm    = 'DUMMY'
 
