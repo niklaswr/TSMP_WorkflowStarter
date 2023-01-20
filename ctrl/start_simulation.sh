@@ -107,6 +107,7 @@ for component in "${components[@]}"; do
 	cp ${BASE_NAMEDIR}/INPUT_* ${rundir}/
 	sed -i "s,__hstart__,${hstart},g" INPUT_IO
 	sed -i "s,__hstop__,${hstop},g" INPUT_IO
+	sed -i "s,__cosmo_restart_dump_interval__,$hstop,g" INPUT_IO
 	sed -i "s,__cosmo_ydir_restart_in__,${BASE_FORCINGDIR}/restarts/cosmo,g" INPUT_IO
 	sed -i "s,__cosmo_ydir_restart_out__,${BASE_FORCINGDIR}/restarts/cosmo,g" INPUT_IO
 	sed -i "s,__cosmo_ydirini__,${BASE_FORCINGDIR}/laf_lbfd/all,g" INPUT_IO
