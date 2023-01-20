@@ -273,9 +273,6 @@ wait
 # Moving model-output to simres and storing restart files
 # for individual components
 ################################################################################
-# Needed for git etc
-source ${BASE_CTRLDIR}/postpro/loadenvs
-
 echo "--- create SIMRES dir (and sub-dirs) to store simulation results"
 new_simres=${BASE_SIMRESDIR}/${formattedStartDate}
 echo "--- new_simres: $new_simres"
