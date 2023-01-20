@@ -32,7 +32,6 @@ source $BASE_CTRLDIR/start_helper.sh
 # --> aks Abouzar if still needed
 export PSP_RENDEZVOUS_OPENIB=-1
 
-#-------insert here initial, start and final dates of TSMP simulations----------
 formattedStartDate=$(date -u -d "${startDate}" ${dateString})
 echo "DEBUG NOW: formattedStartDate: $formattedStartDate"
 # NWR 20221201
@@ -55,7 +54,7 @@ rundir=${BASE_RUNDIR}/${formattedStartDate}
 pfidb="ParFlow_EU11_${formattedStartDate}"
 pfidb_m1="ParFlow_EU11_${formattedStartDate_m1}"
 
-# calculate the number of leap-days between initDate and startDate/currentDate
+# Calculate the number of leap-days between initDate and startDate/currentDate
 # Those are needed by COSMO to proper calculate start-hours
 numLeapDays=$(get_numLeapDays "$initDate" "$startDate")
 numLeapDays_p1=$(get_numLeapDays "$initDate" "$startDate_p1")
@@ -112,8 +111,6 @@ for component in "${components[@]}"; do
 	sed -i "s,__cosmo_ydir_restart_out__,${BASE_FORCINGDIR}/restarts/cosmo,g" INPUT_IO
 	sed -i "s,__cosmo_ydirini__,${BASE_FORCINGDIR}/laf_lbfd/all,g" INPUT_IO
 	sed -i "s,__cosmo_ydirbd__,${BASE_FORCINGDIR}/laf_lbfd/all,g" INPUT_IO
-	#sed -i "s,__cosmo_ydirini__,${BASE_FORCINGDIR}/laf_lbfd/all,g" INPUT_IO
-	#sed -i "s,__cosmo_ydirbd__,${BASE_FORCINGDIR}/laf_lbfd/all,g" INPUT_IO
 	sed -i "s,__cosmo_ydir__,${rundir}/cosmo_out,g" INPUT_IO
 
 	cosmo_ydate_ini=$(date -u -d "${initDate}" '+%Y%m%d%H')
@@ -261,7 +258,6 @@ fi
 ################################################################################
 # Running the simulation
 ################################################################################
-echo "started" > started.txt
 rm -rf YU*
 echo "DEBUG: start simulation"
 srun --multi-prog slm_multiprog_mapping.conf
@@ -433,4 +429,8 @@ check4error $? "--- ERROR while creating HISTORY.txt"
 
 echo "ready: TSMP simulation for ${formattedStartDate} is complete!" > ${rundir}/ready.txt
 
+echo "###################################################"
+echo "STOP Logging ($(date)):"
+echo "--- exe: $0"
+echo "###################################################"
 exit 0
