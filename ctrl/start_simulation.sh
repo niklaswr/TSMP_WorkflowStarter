@@ -292,11 +292,14 @@ for component in "${components[@]}"; do
     # Move model-output to simres/
     cp -v ${rundir}/cosmo_out/* $new_simres/cosmo
     # COSMO writs restart direct to ${BASE_FORCINGDIR}/restarts/cosmo/
-    #cp -v ${BASE_FORCINGDIR}/restarts/cosmo/lrfd${yp1}${mp1}0100o $new_simres/restarts
+    cosmoRestartFileDate=$(date -u -d "${startDate_p1}" "+%Y%m%d%H")
+    cp -v ${BASE_FORCINGDIR}/restarts/cosmo/lrfd${cosmoRestartFileDate}o $new_simres/restarts
     check4error $? "--- ERROR while moving COSMO model output to simres-dir"
   # CLM
   elif [ "${component}" = "clm" ]; then
     echo "--- - CLM"
+    # Create component subdir
+    mkdir -p "$new_simres/clm"
 
     # Do use `-` prefix for date string to avoid below error:
     # ERROR: value too great for base (error token is "09")
@@ -314,6 +317,7 @@ for component in "${components[@]}"; do
     cp -v ${rundir}/${clm_restart_fiel_p1} ${BASE_FORCINGDIR}/restarts/clm/
     # Move model-output to simres/
     cp -v ${rundir}/clmoas.clm2.h?.*.nc $new_simres/clm/
+    check4error $? "--- ERROR while moving CLM model output to simres-dir"
     cp -v ${BASE_FORCINGDIR}/restarts/clm/${clm_restart_fiel_p1} $new_simres/restarts/
     check4error $? "--- ERROR while moving CLM model output to simres-dir"
   # PFL
