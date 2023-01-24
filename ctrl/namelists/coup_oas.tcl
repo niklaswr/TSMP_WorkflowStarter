@@ -271,6 +271,9 @@ pfset Geom.Porosity.GeomNames          "domain TC01 TC02 TC03 TC04 TC05 TC06 TC0
 pfset Geom.domain.Porosity.Type        Constant
 pfset Geom.domain.Porosity.Value       0.4
 
+# USDA classes calculated based on SoilGrids
+# Values from ROSATTA project:
+# https://www.ars.usda.gov/pacific-west-area/riverside-ca/agricultural-water-efficiency-and-salinity-reSearch-unit/docs/model/rosetta-class-average-hydraulic-parameters/
 pfset Geom.TC01.Porosity.Type            Constant
 pfset Geom.TC01.Porosity.Value           0.375
 
@@ -316,41 +319,44 @@ pfset Phase.RelPerm.GeomNames          "domain TC01 TC02 TC03 TC04 TC05 TC06 TC0
 pfset Geom.domain.RelPerm.Alpha        2.0
 pfset Geom.domain.RelPerm.N            4.
 
-pfset Geom.TC01.RelPerm.Alpha          3.523709
-pfset Geom.TC01.RelPerm.N              4.176874
+# USDA classes calculated based on SoilGrids
+# Values from ROSATTA project:
+# https://www.ars.usda.gov/pacific-west-area/riverside-ca/agricultural-water-efficiency-and-salinity-reSearch-unit/docs/model/rosetta-class-average-hydraulic-parameters/
+# rounded to second digit after comma
+pfset Geom.TC01.RelPerm.Alpha          3.52
+pfset Geom.TC01.RelPerm.N              4.18
 
-pfset Geom.TC02.RelPerm.Alpha          3.475362
-pfset Geom.TC02.RelPerm.N              2.745822
+pfset Geom.TC02.RelPerm.Alpha          3.48
+pfset Geom.TC02.RelPerm.N              2.75
 
-pfset Geom.TC03.RelPerm.Alpha          2.666859
-pfset Geom.TC03.RelPerm.N              2.448772
+pfset Geom.TC03.RelPerm.Alpha          2.67
+pfset Geom.TC03.RelPerm.N              2.45
 
-pfset Geom.TC04.RelPerm.Alpha          1.111732
-pfset Geom.TC04.RelPerm.N              2.472313
+pfset Geom.TC04.RelPerm.Alpha          1.11
+pfset Geom.TC04.RelPerm.N              2.47
 
-pfset Geom.TC05.RelPerm.Alpha          0.505825
-pfset Geom.TC05.RelPerm.N              2.663413
+pfset Geom.TC05.RelPerm.Alpha          0.51
+pfset Geom.TC05.RelPerm.N              2.66
 
-pfset Geom.TC06.RelPerm.Alpha          0.657658
-pfset Geom.TC06.RelPerm.N              2.678804
+pfset Geom.TC06.RelPerm.Alpha          0.66
+pfset Geom.TC06.RelPerm.N              2.68
+pfset Geom.TC07.RelPerm.Alpha          2.11
+pfset Geom.TC07.RelPerm.N              2.33
 
-pfset Geom.TC07.RelPerm.Alpha          2.108628
-pfset Geom.TC07.RelPerm.N              2.330454
+pfset Geom.TC08.RelPerm.Alpha          1.58
+pfset Geom.TC08.RelPerm.N              2.42
 
-pfset Geom.TC08.RelPerm.Alpha          1.581248
-pfset Geom.TC08.RelPerm.N              2.415794
+pfset Geom.TC09.RelPerm.Alpha          0.84
+pfset Geom.TC09.RelPerm.N              2.52
 
-pfset Geom.TC09.RelPerm.Alpha          0.83946
-pfset Geom.TC09.RelPerm.N              2.520548
+pfset Geom.TC10.RelPerm.Alpha          3.34
+pfset Geom.TC10.RelPerm.N              2.21
 
-pfset Geom.TC10.RelPerm.Alpha          3.34195
-pfset Geom.TC10.RelPerm.N              2.207814
+pfset Geom.TC11.RelPerm.Alpha          1.62
+pfset Geom.TC11.RelPerm.N              2.32
 
-pfset Geom.TC11.RelPerm.Alpha          1.62181
-pfset Geom.TC11.RelPerm.N              2.321296
-
-pfset Geom.TC12.RelPerm.Alpha          1.496236
-pfset Geom.TC12.RelPerm.N              2.253141
+pfset Geom.TC12.RelPerm.Alpha          1.50
+pfset Geom.TC12.RelPerm.N              2.25
 
 #---------------------------------------------------------
 # Saturation
@@ -363,65 +369,69 @@ pfset Geom.domain.Saturation.N            4.
 pfset Geom.domain.Saturation.SRes         0.1
 pfset Geom.domain.Saturation.SSat         1.0
 
-pfset Geom.TC01.Saturation.Alpha       3.523709
-pfset Geom.TC01.Saturation.N           4.176874
-pfset Geom.TC01.Saturation.SRes        0.141333
-pfset Geom.TC01.Saturation.SSat        1.0
+# USDA classes calculated based on SoilGrids
+# Values from ROSATTA project:
+# https://www.ars.usda.gov/pacific-west-area/riverside-ca/agricultural-water-efficiency-and-salinity-reSearch-unit/docs/model/rosetta-class-average-hydraulic-parameters/
+# rounded to second digit after comma
+pfset Geom.TC01.Saturation.Alpha       3.52
+pfset Geom.TC01.Saturation.N           4.18
+pfset Geom.TC01.Saturation.SRes        0.14
+pfset Geom.TC01.Saturation.SSat        1.00
 
-pfset Geom.TC02.Saturation.Alpha       3.475362
-pfset Geom.TC02.Saturation.N           2.745822
-pfset Geom.TC02.Saturation.SRes        0.125641
-pfset Geom.TC02.Saturation.SSat        1.0
+pfset Geom.TC02.Saturation.Alpha       3.48
+pfset Geom.TC02.Saturation.N           2.75
+pfset Geom.TC02.Saturation.SRes        0.13
+pfset Geom.TC02.Saturation.SSat        1.00
 
-pfset Geom.TC03.Saturation.Alpha       2.666859
-pfset Geom.TC03.Saturation.N           2.448772
-pfset Geom.TC03.Saturation.SRes        0.100775
-pfset Geom.TC03.Saturation.SSat        1.0
+pfset Geom.TC03.Saturation.Alpha       2.67
+pfset Geom.TC03.Saturation.N           2.45
+pfset Geom.TC03.Saturation.SRes        0.10
+pfset Geom.TC03.Saturation.SSat        1.00
 
-pfset Geom.TC04.Saturation.Alpha       1.111732
-pfset Geom.TC04.Saturation.N           2.472313
-pfset Geom.TC04.Saturation.SRes        0.152882
-pfset Geom.TC04.Saturation.SSat        1.0
+pfset Geom.TC04.Saturation.Alpha       1.11
+pfset Geom.TC04.Saturation.N           2.47
+pfset Geom.TC04.Saturation.SRes        0.15
+pfset Geom.TC04.Saturation.SSat        1.00
 
-pfset Geom.TC05.Saturation.Alpha       0.505825
-pfset Geom.TC05.Saturation.N           2.663413
-pfset Geom.TC05.Saturation.SRes        0.148064
-pfset Geom.TC05.Saturation.SSat        1.0
+pfset Geom.TC05.Saturation.Alpha       0.51
+pfset Geom.TC05.Saturation.N           2.66
+pfset Geom.TC05.Saturation.SRes        0.15
+pfset Geom.TC05.Saturation.SSat        1.00
 
-pfset Geom.TC06.Saturation.Alpha       0.657658
-pfset Geom.TC06.Saturation.N           2.678804
-pfset Geom.TC06.Saturation.SRes        0.102249
-pfset Geom.TC06.Saturation.SSat        1.0
+pfset Geom.TC06.Saturation.Alpha       0.66
+pfset Geom.TC06.Saturation.N           2.68
+pfset Geom.TC06.Saturation.SRes        0.10
+pfset Geom.TC06.Saturation.SSat        1.00
 
-pfset Geom.TC07.Saturation.Alpha       2.108628
-pfset Geom.TC07.Saturation.N           2.330454
-pfset Geom.TC07.Saturation.SRes        0.164063
-pfset Geom.TC07.Saturation.SSat        1.0
+pfset Geom.TC07.Saturation.Alpha       2.11
+pfset Geom.TC07.Saturation.N           2.33
+pfset Geom.TC07.Saturation.SRes        0.16
+pfset Geom.TC07.Saturation.SSat        1.00
 
-pfset Geom.TC08.Saturation.Alpha       1.581248
-pfset Geom.TC08.Saturation.N           2.415794
-pfset Geom.TC08.Saturation.SRes        0.178733
-pfset Geom.TC08.Saturation.SSat        1.0
+pfset Geom.TC08.Saturation.Alpha       1.58
+pfset Geom.TC08.Saturation.N           2.42
+pfset Geom.TC08.Saturation.SRes        0.18
+pfset Geom.TC08.Saturation.SSat        1.00
 
-pfset Geom.TC09.Saturation.Alpha       0.83946
-pfset Geom.TC09.Saturation.N           2.520548
-pfset Geom.TC09.Saturation.SRes        0.186722
-pfset Geom.TC09.Saturation.SSat        1.0
+pfset Geom.TC09.Saturation.Alpha       0.84
+pfset Geom.TC09.Saturation.N           2.52
+pfset Geom.TC09.Saturation.SRes        0.19
+pfset Geom.TC09.Saturation.SSat        1.00
 
-pfset Geom.TC10.Saturation.Alpha       3.34195
-pfset Geom.TC10.Saturation.N           2.207814
-pfset Geom.TC10.Saturation.SRes        0.303896
-pfset Geom.TC10.Saturation.SSat        1.0
+pfset Geom.TC10.Saturation.Alpha       3.34
+pfset Geom.TC10.Saturation.N           2.21
+pfset Geom.TC10.Saturation.SRes        0.30
+pfset Geom.TC10.Saturation.SSat        1.00
 
-pfset Geom.TC11.Saturation.Alpha       1.62181
-pfset Geom.TC11.Saturation.N           2.321296
-pfset Geom.TC11.Saturation.SRes        0.230769
-pfset Geom.TC11.Saturation.SSat        1.0
+pfset Geom.TC11.Saturation.Alpha       1.62
+pfset Geom.TC11.Saturation.N           2.32
+pfset Geom.TC11.Saturation.SRes        0.23
+pfset Geom.TC11.Saturation.SSat        1.00
 
-pfset Geom.TC12.Saturation.Alpha       1.496236
-pfset Geom.TC12.Saturation.N           2.253141
-pfset Geom.TC12.Saturation.SRes        0.213508
-pfset Geom.TC12.Saturation.SSat        1.0
+pfset Geom.TC12.Saturation.Alpha       1.50
+pfset Geom.TC12.Saturation.N           2.25
+pfset Geom.TC12.Saturation.SRes        0.21
+pfset Geom.TC12.Saturation.SSat        1.00
 
 #-----------------------------------------------------------------------------
 # Wells
