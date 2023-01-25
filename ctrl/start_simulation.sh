@@ -22,6 +22,9 @@ echo "---              sim_NTASKS: ${sim_NTASKS}"
 echo "---               sim_NODES: ${sim_NODES}"
 echo "--- HOST:  $(hostname)"
 
+echo "--- save script start time to calculate total runtime"
+scriptStartTime=$(date -u "+%s")
+
 echo "--- source helper scripts"
 source $BASE_CTRLDIR/start_helper.sh
 
@@ -273,6 +276,10 @@ echo "--- create SIMRES dir (and sub-dirs) to store simulation results"
 new_simres=${BASE_SIMRESDIR}/${formattedStartDate}
 echo "--- new_simres: $new_simres"
 mkdir -p "$new_simres/restarts"
+mkdir -p "$new_simres/log"
+
+echo "--- Moving model-log to simres/"
+cp -v ${BASE_CTRLDIR}/logs/${CaseID}_simulation.??? $new_simres/log/
 
 echo "--- Moving model-output to simres/ and restarts/"
 # looping over all component set in COMBINATION
@@ -342,12 +349,19 @@ rm -r ${rundir}
 ################################################################################
 # Creating HISTORY.txt and store TSMP build log (reusability etc.)
 ################################################################################
-cp ${TSMP_BINDIR}/log_all* ${new_simres}/TSMP_BuildLog.txt
+echo "--- save script end time to calculate total runtime"
+scriptEndTime=$(date -u "+%s")
+totalRunTime_sec=$(($scriptEndTime - $scriptStartTime))
+# Oneliner to convert second in %H:%M:%S taken from:
+# https://stackoverflow.com/a/39452629
+totalRunTime=$(printf '%02dh:%02dm:%02ds\n' $((secs/3600)) $((secs%3600/60)) $((secs%60)))
 
-histfile=${new_simres}/HISTORY.txt
+cp ${TSMP_BINDIR}/log_all* ${new_simres}/log/TSMP_BuildLog.txt
+
+histfile=${new_simres}/log/HISTORY.txt
 
 cd ${BASE_CTRLDIR}
-git diff HEAD > ${new_simres}/GitDiffHead_workflow.diff
+git diff HEAD > ${new_simres}/log/GitDiffHead_workflow.diff
 TAG_WORKFLOW=$(git describe --tags)
 COMMIT_WORKFLOW=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_WORKFLOW=$(git log --pretty=format:'author: %an' -n 1)
@@ -356,7 +370,7 @@ SUBJECT_WORKFLOW=$(git log --pretty=format:'subject: %s' -n 1)
 URL_WORKFLOW=$(git config --get remote.origin.url)
 
 cd ${BASE_SRCDIR}/TSMP
-git diff HEAD > ${new_simres}/GitDiffHead_model.diff
+git diff HEAD > ${new_simres}/log/GitDiffHead_model.diff
 TAG_MODEL=$(git describe --tags)
 COMMIT_MODEL=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_MODEL=$(git log --pretty=format:'author: %an' -n 1)
@@ -365,7 +379,7 @@ SUBJECT_MODEL=$(git log --pretty=format:'subject: %s' -n 1)
 URL_MODEL=$(git config --get remote.origin.url)
 
 cd ${BASE_GEODIR}
-git diff HEAD > ${new_simres}/GitDiffHead_geo.diff
+git diff HEAD > ${new_simres}/log/GitDiffHead_geo.diff
 TAG_GEO=$(git describe --tags)
 COMMIT_GEO=$(git log --pretty=format:'commit: %H' -n 1)
 AUTHOR_GEO=$(git log --pretty=format:'author: %an' -n 1)
@@ -423,6 +437,8 @@ the output of \`git diff HEAD\` is printed to \`GitDiffHead_geo.diff\`.
 MACHINE: $(cat /etc/FZJ/systemname)
 PARTITION: ${SIM_PARTITION}
 simStatus=${SIMSTATUS} 
+###############################################################################
+# Total runtime: ${totalRunTime}
 ###############################################################################
 EOM
 check4error $? "--- ERROR while creating HISTORY.txt"
