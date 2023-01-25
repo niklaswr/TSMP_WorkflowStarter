@@ -2,9 +2,9 @@
 n0meanval=0,
 lgplong=.FALSE.,
 n0gp=0,
-nincmeanval=24,
+nincmeanval=36,
 lgpshort=.TRUE.,
 lgpspec=.FALSE.,
-hincgp=6,
+! hincgp=,
 itype_diag_gusts=1,
 /

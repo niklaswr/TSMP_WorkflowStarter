@@ -9,12 +9,12 @@
  
  !finidat        = '__BASE_FORCINGDIR__/restarts/clm/__clm_restart__'
  finidat        = ''
- flndtopo       = '__BASE_GEODIR__/clm/topodata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
- fsurdat        = '__BASE_GEODIR__/clm/surfdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
- fatmgrid       = '__BASE_GEODIR__/clm/griddata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
- fatmlndfrc     = '__BASE_GEODIR__/clm/fracdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_NikiTest.nc'
+ flndtopo       = '__BASE_GEODIR__/clm/topodata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_NikiTest.nc'
+ fsurdat        = '__BASE_GEODIR__/clm/surfdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_NikiTest.nc'
+ fatmgrid       = '__BASE_GEODIR__/clm/griddata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_NikiTest.nc'
+ fatmlndfrc     = '__BASE_GEODIR__/clm/fracdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_NikiTest.nc'
  fatmtopo       = ''
- fpftcon        = '__BASE_GEODIR__/pft-physiology.c110504'
+ fpftcon        = '__BASE_GEODIR__/clm/pft-physiology.c110504'
  offline_atmdir = '__BASE_GEODIR__/clm/atm_forcing'
  frivinp_rtm    = 'DUMMY'
 

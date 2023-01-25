@@ -3,19 +3,20 @@ lappend auto_path $env(PARFLOW_DIR)/bin
 package require parflow
 namespace import Parflow::*
 
-#--------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset FileVersion 4
-#-------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Process.Topology.P __nprocx_pfl_bldsva__
 pfset Process.Topology.Q __nprocy_pfl_bldsva__
 pfset Process.Topology.R 1
 
-# THE COMPUTATIONAL GRID IS A (BOX) THT CONTAINS THE MAIN PROBLEM. THIS CAN EITHER BE EXACTLY THE SIZE
-# OF THE PROBLEM OR LARGER. A BOX GEOMETRY IN PARFLOW CAN BE ASIGNED BY EITHER SPECIFYING COORDINATES FOR
-# TWO CORNERS OF THE BOX OR GRID SIZE AND NUMBER OF CELLS IN X,Y, AND Z.
-#------------------------------------------------------------------------
+# THE COMPUTATIONAL GRID IS A (BOX) THT CONTAINS THE MAIN PROBLEM. THIS CAN 
+# EITHER BE EXACTLY THE SIZE OF THE PROBLEM OR LARGER. A BOX GEOMETRY IN PARFLOW 
+# CAN BE ASIGNED BY EITHER SPECIFYING COORDINATES FOR TWO CORNERS OF THE BOX OR 
+# GRID SIZE AND NUMBER OF CELLS IN X,Y, AND Z.
+#-------------------------------------------------------------------------------
 # Computational Grid: It Defines The Grid Resolutions within The Domain
-#------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset ComputationalGrid.Lower.X			 0.0
 pfset ComputationalGrid.Lower.Y			 0.0
 pfset ComputationalGrid.Lower.Z			 0.0
@@ -24,22 +25,24 @@ pfset ComputationalGrid.DX			 12500.
 pfset ComputationalGrid.DY		   12500. 
 pfset ComputationalGrid.DZ			 2.00
 
-pfset ComputationalGrid.NX			 440
-pfset ComputationalGrid.NY			 428
+pfset ComputationalGrid.NX			 444
+pfset ComputationalGrid.NY			 432
 pfset ComputationalGrid.NZ			 15 
 
-# DOMAIN GEOMETRY IS THE (EXACTLY) OUTER DOMAIN OR BOUNDARY OF THE MODEL PROBLEM. IT HAS TO BE CONTAINED WITHIN THE COMPUTATIONAL GRID (i.e.
-# OR HAS THE SAME SIZE OF IT). THE DOMAIN GEOMETRY COULD BE A BOX OR IT COULD BE A SOLID-FILE.
-# BOUNDARY CONDITIONS ARE ASSIGNED TO THE DOMAIN SIDES WITH SOMETHING CALLED (PATCHES) IN THE TCL-SCRIPT.
-# A BOX HAS SIX (6) SIDES AND (6) PATCHES WHILE A SOLID-FILE CAN HAVE ANY NUMBER OF PATCHES.
-#-----------------------------------------------------------------------------
+# DOMAIN GEOMETRY IS THE (EXACTLY) OUTER DOMAIN OR BOUNDARY OF THE MODEL 
+# PROBLEM. IT HAS TO BE CONTAINED WITHIN THE COMPUTATIONAL GRID (i.e. OR HAS THE 
+# SAME SIZE OF IT). THE DOMAIN GEOMETRY COULD BE A BOX OR IT COULD BE A 
+# SOLID-FILE. BOUNDARY CONDITIONS ARE ASSIGNED TO THE DOMAIN SIDES WITH 
+# SOMETHING CALLED (PATCHES) IN THE TCL-SCRIPT. A BOX HAS SIX (6) SIDES AND (6) 
+# PATCHES WHILE A SOLID-FILE CAN HAVE ANY NUMBER OF PATCHES.
+#-------------------------------------------------------------------------------
 # Domain
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Domain.GeomName                            domain
 
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Domain Geometry Input 
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 
  #pfset GeomInput.Names                 "solidinput"
  pfset GeomInput.Names                 "solidinput indi_input"
@@ -48,9 +51,9 @@ pfset Domain.GeomName                            domain
  pfset GeomInput.solidinput.FileName   __BASE_GEODIR__/parflow/PfbMask4SolidFile.pfsol
  pfset Geom.domain.Patches             "top bottom perimeter"
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # VARIABLE dz ASSIGNMENTS
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Solver.Nonlinear.VariableDz    True
 pfset dzScale.GeomNames              domain
 pfset dzScale.Type                   nzList
@@ -74,13 +77,13 @@ pfset Cell.13.dzScale.Value          0.015
 pfset Cell.14.dzScale.Value          0.01
 
 
-#----------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Indicator Geometry Input
-#----------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 pfset GeomInput.indi_input.InputType IndicatorField
 pfset GeomInput.indi_input.GeomNames "TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12 Allv BGR1 BGR2 BGR3 BGR4 BGR5 BGR6 Lake Sea"
-pfset Geom.indi_input.FileName EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_INDICATOR_regridded_rescaled_SoilGrids250-v2017_BGR3_alv.pfb
+pfset Geom.indi_input.FileName EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_INDICATOR_regridded_rescaled_SoilGrids250-v2017_BGR3_alv.pfb
 
 # USDA classes calculated based on SoilGrids
 # 12 soil classes TC01-TC12 
@@ -127,9 +130,9 @@ pfset GeomInput.Lake.Value 21
 pfset GeomInput.Sea.Value 22
 
 #TIME SETUP
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Setup timing info
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset TimingInfo.BaseUnit                0.0025
 pfset TimingInfo.StartCount              0.0
 pfset TimingInfo.StartTime               0.0
@@ -139,7 +142,7 @@ pfset TimeStep.Value                     0.25
 pfset TimingInfo.DumpInterval            0.25
 
 # Time Cycles
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Cycle.Names "constant"
 pfset Cycle.constant.Names              "alltime"
 pfset Cycle.constant.alltime.Length      1
@@ -148,9 +151,9 @@ pfset Cycle.constant.Repeat             -1
 # HYDROLOGICAL PARAMETERS
 # Schaap and Leiz (1998), Soil Science
 # SETUP AND VALUES
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Perm
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Geom.Perm.Names              "domain TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12 Allv BGR1 BGR2 BGR3 BGR4 BGR5 BGR6 Lake Sea"
 
 pfset Geom.domain.Perm.Type        Constant
@@ -232,40 +235,40 @@ pfset Geom.domain.Perm.TensorValX	 1000.0
 pfset Geom.domain.Perm.TensorValY	 1000.0
 pfset Geom.domain.Perm.TensorValZ	 1.0
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Specific Storage
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset SpecificStorage.Type			 Constant
 pfset SpecificStorage.GeomNames			 "domain"
 pfset Geom.domain.SpecificStorage.Value		 1.0e-4
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Phases
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Phase.Names			 "water"
 pfset Phase.water.Density.Type		 Constant
 pfset Phase.water.Density.Value		 1.0
 pfset Phase.water.Viscosity.Type	 Constant
 pfset Phase.water.Viscosity.Value	 1.0
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Gravity
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Gravity				 1.0
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Contaminants
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Contaminants.Names		 ""
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Retardation
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Geom.Retardation.GeomNames	 ""
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Porosity
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Geom.Porosity.GeomNames          "domain TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12"
 
 pfset Geom.domain.Porosity.Type        Constant
@@ -310,9 +313,9 @@ pfset Geom.TC11.Porosity.Value           0.481
 pfset Geom.TC12.Porosity.Type            Constant
 pfset Geom.TC12.Porosity.Value           0.459
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Relative Permeability
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Phase.RelPerm.Type               VanGenuchten
 pfset Phase.RelPerm.GeomNames          "domain TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12"
 
@@ -358,9 +361,9 @@ pfset Geom.TC11.RelPerm.N              2.32
 pfset Geom.TC12.RelPerm.Alpha          1.50
 pfset Geom.TC12.RelPerm.N              2.25
 
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Saturation
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Phase.Saturation.Type              VanGenuchten
 pfset Phase.Saturation.GeomNames         "domain TC01 TC02 TC03 TC04 TC05 TC06 TC07 TC08 TC09 TC10 TC11 TC12"
 
@@ -433,97 +436,96 @@ pfset Geom.TC12.Saturation.N           2.25
 pfset Geom.TC12.Saturation.SRes        0.21
 pfset Geom.TC12.Saturation.SSat        1.00
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Wells
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Wells.Names				 ""
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Boundary Conditions: Pressure
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
-pfset BCPressure.PatchNames                   [pfget Geom.domain.Patches]
+pfset BCPressure.PatchNames                     [pfget Geom.domain.Patches]
 
-pfset Patch.top.BCPressure.Type                     OverlandFlow
-pfset Patch.top.BCPressure.Cycle                    "constant"
-pfset Patch.top.BCPressure.alltime.Value            0.0
+pfset Patch.top.BCPressure.Type                 OverlandFlow
+pfset Patch.top.BCPressure.Cycle                "constant"
+pfset Patch.top.BCPressure.alltime.Value        0.0
 
-pfset Patch.bottom.BCPressure.Type                  FluxConst
-pfset Patch.bottom.BCPressure.Cycle                 "constant"
-pfset Patch.bottom.BCPressure.alltime.Value         0.0
+pfset Patch.bottom.BCPressure.Type              FluxConst
+pfset Patch.bottom.BCPressure.Cycle             "constant"
+pfset Patch.bottom.BCPressure.alltime.Value     0.0
 
-pfset Patch.perimeter.BCPressure.Type               FluxConst
-pfset Patch.perimeter.BCPressure.Cycle              "constant"
-pfset Patch.perimeter.BCPressure.alltime.Value      0.0
+pfset Patch.perimeter.BCPressure.Type           FluxConst
+pfset Patch.perimeter.BCPressure.Cycle          "constant"
+pfset Patch.perimeter.BCPressure.alltime.Value  0.0
 
 
 # Dirichlet BC
- pfset Patch.perimeter.BCPressure.Type               DirEquilRefPatch
- pfset Patch.perimeter.BCPressure.Cycle              "constant"
- pfset Patch.perimeter.BCPressure.RefGeom            domain
- pfset Patch.perimeter.BCPressure.RefPatch           top
- pfset Patch.perimeter.BCPressure.alltime.Value      -0.05
+ pfset Patch.perimeter.BCPressure.Type          DirEquilRefPatch
+ pfset Patch.perimeter.BCPressure.Cycle         "constant"
+ pfset Patch.perimeter.BCPressure.RefGeom       domain
+ pfset Patch.perimeter.BCPressure.RefPatch      top
+ pfset Patch.perimeter.BCPressure.alltime.Value -0.05
 
 #  TOPOGRAPHY & SLOPES IN
 #  BOTH X- & Y- DIRECTIONS
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Topo slopes in x-direction
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset TopoSlopesX.Type			 "PFBFile"
 pfset TopoSlopesX.GeomNames		 "domain"
-pfset TopoSlopesX.FileName		 "EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_XSLOPE_TPS_HydroRIVER_sea_streams_corr.pfb"
+pfset TopoSlopesX.FileName		 "EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_XSLOPE_TPS_HydroRIVER_sea_streams_corr.pfb"
 
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Topo slopes in y-direction
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset TopoSlopesY.Type			 "PFBFile"
 pfset TopoSlopesY.GeomNames		 "domain"
-pfset TopoSlopesY.FileName		 "EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_440x428_YSLOPE_TPS_HydroRIVER_sea_streams_corr.pfb"
+pfset TopoSlopesY.FileName		 "EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432_YSLOPE_TPS_HydroRIVER_sea_streams_corr.pfb"
 
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Mannings coefficient
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset Mannings.Type			 "Constant"
 pfset Mannings.GeomNames		 "domain"
 pfset Mannings.Geom.domain.Value	 5.5e-5
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Phase sources:
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfset PhaseSources.water.Type			 Constant
 pfset PhaseSources.water.GeomNames		 domain
 pfset PhaseSources.water.Geom.domain.Value	 0.0
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Exact solution specification for error calculations
-#-----------------------------------------------------------------------------
-pfset KnownSolution				 NoKnownSolution
+#-------------------------------------------------------------------------------
+pfset KnownSolution				                      NoKnownSolution
 
+#-------------------------------------------------------------------------------
 # Set solver parameters
-#-----------------------------------------------------------------------------
-pfset Solver					 Richards
-pfset Solver.MaxIter				 100000
+#-------------------------------------------------------------------------------
+pfset Solver					                          Richards
+pfset Solver.MaxIter				                    100000
 
-pfset Solver.TerrainFollowingGrid                True
+pfset Solver.TerrainFollowingGrid               True
 
-pfset Solver.Nonlinear.MaxIter			 400
-pfset Solver.Nonlinear.ResidualTol		 1e-4
-pfset Solver.Nonlinear.EtaChoice		 Walker1
-#pfset Solver.Nonlinear.EtaChoice		 EtaConstant
-#pfset Solver.Nonlinear.EtaValue			 1.0e-16
-pfset Solver.Nonlinear.UseJacobian		 True
-pfset Solver.Nonlinear.DerivativeEpsilon	 1e-16
-pfset Solver.Nonlinear.StepTol			 1e-16
-pfset Solver.Nonlinear.Globalization		 LineSearch
-pfset Solver.Linear.KrylovDimension		 30
-pfset Solver.Linear.MaxRestart			 8
-pfset Solver.MaxConvergenceFailures              8
+pfset Solver.Nonlinear.MaxIter			            400
+pfset Solver.Nonlinear.ResidualTol		          1e-4
+pfset Solver.Nonlinear.EtaChoice		            Walker1
+pfset Solver.Nonlinear.UseJacobian		          True
+pfset Solver.Nonlinear.DerivativeEpsilon	      1e-16
+pfset Solver.Nonlinear.StepTol			            1e-16
+pfset Solver.Nonlinear.Globalization		        LineSearch
+pfset Solver.Linear.KrylovDimension		          30
+pfset Solver.Linear.MaxRestart			            8
+pfset Solver.MaxConvergenceFailures             8
 
-pfset Solver.Linear.Preconditioner                      PFMG
+pfset Solver.Linear.Preconditioner              PFMG
 
 pfset Solver.PrintPressure                      False
 pfset Solver.PrintSaturation                    False
-pfset Solver.PrintSubsurfData                   False
+pfset Solver.PrintSubsurfData                   True
 pfset Solver.PrintLSMSink                       False
 pfset Solver.PrintEvapTransSum                  False
 pfset Solver.PrintOverlandSum                   False
@@ -532,9 +534,12 @@ pfset NetCDF.NumStepsPerFile                    1
 pfset NetCDF.WritePressure                      True
 pfset NetCDF.WriteSaturation                    True
 pfset NetCDF.WriteMannings                      True
-pfset NetCDF.WriteSubsurface                    True
 pfset NetCDF.WriteSlopes                        True
-pfset NetCDF.WriteMask                          True
+# Set NetCDF.WriteSubsurface and NetCDF.WriteMask to False, as those are coverd 
+# by Solver.PrintSubsurfData and vanGenuchten parameter are coverd by 
+# Solver.PrintSubsurfData as well, but not by NetCDf output.
+pfset NetCDF.WriteSubsurface                    False
+pfset NetCDF.WriteMask                          False
 pfset NetCDF.WriteDZMultiplier                  True
 pfset NetCDF.WriteEvapTrans                     True
 #
@@ -544,14 +549,14 @@ pfset Solver.WriteSiloSaturation		            False
 pfset Solver.WriteSiloMask			                False	
 pfset Solver.WriteCLMBinary			                False	
 
-#---------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Initial conditions: water pressure
-#---------------------------------------------------------
-pfset ICPressure.Type                                   HydroStaticPatch
-pfset ICPressure.GeomNames                              domain
-pfset Geom.domain.ICPressure.Value                      -0.2
-pfset Geom.domain.ICPressure.RefGeom                    domain
-pfset Geom.domain.ICPressure.RefPatch                   top
+#-------------------------------------------------------------------------------
+pfset ICPressure.Type                           HydroStaticPatch
+pfset ICPressure.GeomNames                      domain
+pfset Geom.domain.ICPressure.Value              -0.2
+pfset Geom.domain.ICPressure.RefGeom            domain
+pfset Geom.domain.ICPressure.RefPatch           top
 
 #pfset ICPressure.Type                    NCFile
 #pfset ICPressure.GeomNames               domain
@@ -560,7 +565,7 @@ pfset Geom.domain.ICPressure.RefPatch                   top
 #pfset Geom.domain.ICPressure.RefGeom     domain
 #pfset Geom.domain.ICPressure.RefPatch    top
 
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Run and Unload the ParFlow output files
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 pfwritedb __pfidb__
