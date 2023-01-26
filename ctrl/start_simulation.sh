@@ -350,7 +350,7 @@ scriptEndTime=$(date -u "+%s")
 totalRunTime_sec=$(($scriptEndTime - $scriptStartTime))
 # Oneliner to convert second in %H:%M:%S taken from:
 # https://stackoverflow.com/a/39452629
-totalRunTime=$(printf '%02dh:%02dm:%02ds\n' $((secs/3600)) $((secs%3600/60)) $((secs%60)))
+totalRunTime=$(printf '%02dh:%02dm:%02ds\n' $((totalRunTime_sec/3600)) $((totalRunTime_sec%3600/60)) $((totalRunTime_sec%60)))
 
 cp ${TSMP_BINDIR}/log_all* ${new_simres}/log/TSMP_BuildLog.txt
 
@@ -401,6 +401,7 @@ ${COMMIT_WORKFLOW}
 ${AUTHOR_WORKFLOW}
 ${DATE_WORKFLOW}
 ${SUBJECT_WORKFLOW}
+
 To check if no uncommited change is made to above repo, bypassing this tracking,
 the output of \`git diff HEAD\` is printed to \`GitDiffHead_workflow.diff\`.
 ###############################################################################
@@ -413,6 +414,7 @@ ${COMMIT_MODEL}
 ${AUTHOR_MODEL}
 ${DATE_MODEL}
 ${SUBJECT_MODEL}
+
 To check if no uncommited change is made to above repo, bypassing this tracking,
 the output of \`git diff HEAD\` is printed to \`GitDiffHead_model.diff\`.
 The specific TSMP build log is stored in \`TSMP_BuildLog.txt\`, enableing to 
@@ -427,6 +429,7 @@ ${COMMIT_GEO}
 ${AUTHOR_GEO}
 ${DATE_GEO}
 ${SUBJECT_GEO}
+
 To check if no uncommited change is made to above repo, bypassing this tracking,
 the output of \`git diff HEAD\` is printed to \`GitDiffHead_geo.diff\`.
 ###############################################################################
