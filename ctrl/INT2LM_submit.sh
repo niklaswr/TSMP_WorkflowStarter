@@ -6,8 +6,8 @@
 #SBATCH --ntasks-per-node=128
 #SBATCH --output=int2lm.out
 #SBATCH --error=int2lm.err
-#SBATCH --time=01:59:00
-#SBATCH --partition=dc-cpu-devel
+#SBATCH --time=23:59:00
+#SBATCH --partition=dc-cpu
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=n.wagner@fz-juelich.de
 #SBATCH --account=jjsc39
@@ -21,9 +21,8 @@
 ###############################################################################
 #### Adjust according to your need BELOW
 ###############################################################################
-startDate=20200701  # start date
-int2lm_hstop=744    # --> 31 * 24h
-int2lm_hincbound=3  # dumpinterval of forcing (3h, 6h, 24h, etc)
+startDate=19700101  # start date
+int2lm_hstop=8784   # --> 366 * 24h
 dependency=3949924  # JOBID to depend the following jobs at
                     # if set JOBID is below latest JOBID the job starts without
                     # dependency automatically
@@ -121,7 +120,6 @@ echo "DEBUG: modify namelist (sed inserts etc.)"
 sed "s,__start_date__,${int2lm_start_date},g" -i ${rundir}/INPUT
 sed "s,__init_date__,${int2lm_start_date},g" -i ${rundir}/INPUT
 sed "s,__hstop__,${int2lm_hstop},g" -i ${rundir}/INPUT
-sed "s,__hincbound__,${int2lm_hincbound},g" -i ${rundir}/INPUT
 sed "s,__lm_ext_dir__,${BASE_GEODIR}/TSMP_EU11/static/int2lm,g" -i ${rundir}/INPUT
 sed "s,__in_ext_dir__,${BASE_FORCINGDIR}/ERA5raw/INT2LM_inext,g" -i ${rundir}/INPUT
 sed "s,__in_cat_dir__,${BASE_FORCINGDIR}/ERA5raw/${y0},g" -i ${rundir}/INPUT
