@@ -12,6 +12,20 @@ The version number is used as a tag.
 Version numbering:
 MAJOR.Minor.patch
 
+v1.2.0
+======
+tag: v1.2.0
+
+Changes: 
+- More centralization of workflow control to the starter.sh script.
+- Generalisation of simulation length.
+- Move towards a more generic workflow:
+  - Handling of arbitrary model combinations
+  - Add ctrl/envs
+- Activate CASE mode
+- Add log dir to simres output and add more logging.
+- Add TSMP as a submodule.  
+
 v1.1.0
 ======
 tag: v1.1.0
