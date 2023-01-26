@@ -1,32 +1,8 @@
 # Oasis reads in this file at run-time.
 # Prepared for the SVA System (COMSO, CLM und ParFlow) 
-# Prabhakar Shrestha (pshrestha@uni-bonn.de)
 #
 # Any line beginning with # is ignored. Blank lines are not allowed.
 # LOCTRANS AVERAGE is used for sending COSMO field to CLM
-#
- $SEQMODE
-# This keyword concerns the coupling algorithm. Put here the maximum number
-# of fields that have to be, at one particular coupling timestep,
-# exchanged sequentially in a given order.
-  4 
- $END
-#########################################################################
- $CHANNEL
-# The communication technique you want to use.
-# Choices are MPI1 or MPI2, NONE.
-# - if you want to use MPI1 or MPI2 message passing, you must write 
-# MPI1 or MPI2 (+ NOBSEND if you do not want to use the default MPI_BSend)
-# on one line 
-# + one line per model giving for the model the total number of procs,
-# the number of procs implied in the coupling and, for MPI2 only, an
-# optional launching argument
-#
-  MPI1 NOBSEND
-   __NPROC_COSMO__ __NPROC_COSMO__
-   __NPROC_PARFLOW__ __NPROC_PARFLOW__
-   __NPROC_CLM__ __NPROC_CLM__
- $END
 #########################################################################
  $NFIELDS
 # Put the number of fields exchanged by OASIS.
@@ -36,11 +12,6 @@
 # For the definition of the fields, see under $STRINGS keyword
 #
              51 
- $END
-#########################################################################
- $JOBNAME
-# This is an acronym for this run (3 characters).
-  TR3
  $END
 ##########################################################################
  $NBMODEL
@@ -57,35 +28,10 @@
   __runTime__
  $END
 ###########################################################################
- $INIDATE
-# This is the initial date of the run. This is important only if
-# FILLING analysis is used for a coupling field in the run.
-# The format is YYYYMMDD.
-  19491201 
- $END
-###########################################################################
- $MODINFO
-# Indicates if a header is encapsulated within the field brick 
-# in binary restart files for all communication techniques,  
-# (and for coupling field exchanges for PIPE, SIPC and GMEM.
-# (YES or NOT)
-  NOT
- $END
-###########################################################################
  $NLOGPRT
 # Index of printing level in output file cplout: 0 = no printing
 #  1 = main routines and field names when treated, 2 = complete output
   0
- $END
-###########################################################################
- $CALTYPE
-# Calendar type :  0      = 365 day calendar (no leap years)
-#                  1      = 365 day, or 366 days for leap years, calendar
-#                  n (>1) = n day month calendar
-# This is important only if FILLING analysis is used for a coupling
-# field in the run.
-#
-  30
  $END
 ###########################################################################
  $STRINGS

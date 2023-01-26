@@ -225,10 +225,6 @@ cp ${BASE_GEODIR}/oasis/* ${rundir}/
 cp ${BASE_NAMEDIR}/namcouple_${COMBINATION} ${rundir}/namcouple
 runTime=$((numHours*3600+900))
 sed -i "s,__runTime__,${runTime},g" namcouple
-sed -i "s,__NPROC_COSMO__,$((PROC_COSMO_X*PROC_COSMO_Y)),g" namcouple
-sed -i "s,__NPROC_PARFLOW__,$((PROC_PARFLOW_P*PROC_PARFLOW_Q)),g" namcouple
-sed -i "s,__NPROC_CLM__,${PROC_CLM},g" namcouple
-
 
 ################################################################################
 # Prepare slm_multiprog_mapping.conf
