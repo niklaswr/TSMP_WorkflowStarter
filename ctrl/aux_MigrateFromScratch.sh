@@ -27,7 +27,7 @@ for SOURCE in $SOURCES; do
   if [[ $? != 0 ]] ; then echo "ERROR" && exit 1 ; fi
   echo "-- remove source"
   #mv ${source_name} REMOVE_${source_name} 
-  rm -r ${source_name}
+  rm -rf ${source_name}
   echo "-- linking"
   ln -sf ${TARGET}/${source_name}.tar ./
   echo "-- done"
