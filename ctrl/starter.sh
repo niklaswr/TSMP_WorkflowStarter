@@ -96,9 +96,13 @@ export PROC_PARFLOW_Q=${PROC_PARFLOW_Q}
 export PROC_CLM=${PROC_CLM}
 export SIMSTATUS=${simStatus}
 export PRE_PARTITION=${pre_PARTITION}
+export PRE_NTASKS=${pre_NTASKS}
 export SIM_PARTITION=${sim_PARTITION}
-export POST_PARTITION=${post_PARTITION}
+export SIM_NTASKS=${sim_NTASKS}
+export POST_PARTITION=${pos_PARTITION}
+export POST_NTASKS=${pos_NTASKS}
 export FIN_PARTITION=${fin_PARTITION}
+export FIN_NTASKS=${fin_NTASKS}
 # Export simulation information stored in SimInfo.sh as variables:
 source ${CTRLDIR}/SimInfo.sh
 # Load export_paths.ksh
@@ -171,6 +175,7 @@ submit_prepro=$dependency # fake $start_simulation for the first time
 loop_counter=0
 while [ $loop_counter -lt $NoS ]
 do
+  echo "loop_counter $loop_counter / NoS $NoS"
   # if there are not enough simmulations left to fill the job
   # reduce $simPerJob to number of jobs left
   if [[ $((loop_counter+simPerJob)) -gt $NoS ]]; then
