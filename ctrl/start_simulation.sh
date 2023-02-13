@@ -110,8 +110,8 @@ for component in "${components[@]}"; do
 	sed -i "s,__hstart__,${hstart},g" INPUT_IO
 	sed -i "s,__hstop__,${hstop},g" INPUT_IO
 	sed -i "s,__cosmo_restart_dump_interval__,$hstop,g" INPUT_IO
-	sed -i "s,__cosmo_ydir_restart_in__,${BASE_FORCINGDIR}/restarts/cosmo,g" INPUT_IO
-	sed -i "s,__cosmo_ydir_restart_out__,${BASE_FORCINGDIR}/restarts/cosmo,g" INPUT_IO
+	sed -i "s,__cosmo_ydir_restart_in__,${BASE_RUNDIR}/restarts/cosmo,g" INPUT_IO
+	sed -i "s,__cosmo_ydir_restart_out__,${BASE_RUNDIR}/restarts/cosmo,g" INPUT_IO
 	sed -i "s,__cosmo_ydirini__,${BASE_FORCINGDIR}/laf_lbfd/all,g" INPUT_IO
 	sed -i "s,__cosmo_ydirbd__,${BASE_FORCINGDIR}/laf_lbfd/all,g" INPUT_IO
 	sed -i "s,__cosmo_ydir__,${rundir}/cosmo_out,g" INPUT_IO
@@ -143,6 +143,7 @@ for component in "${components[@]}"; do
 	clm_restart_date=$(date -u -d "${startDate}" '+%Y-%m-%d')
   clm_restart_sec=$(printf "%05d" ${start_tod=})
 	sed -i "s,__clm_restart__,clmoas.clm2.r.${clm_restart_date}-${clm_restart_sec}.nc,g" lnd.stdin
+	sed -i "s,__BASE_RUNDIR__,${BASE_RUNDIR},g" lnd.stdin
 	sed -i "s,__BASE_FORCINGDIR__,${BASE_FORCINGDIR},g" lnd.stdin
 	sed -i "s,__BASE_GEODIR__,${BASE_GEODIR},g" lnd.stdin
 	sed -i "s,__sim_rundir__,${rundir},g" lnd.stdin
@@ -171,16 +172,16 @@ for component in "${components[@]}"; do
   # will not crash the program, but ParFlow is assuming init pressure of zero 
   # everywhere.
   # So check if file exist and force exit if needed.
-  echo "test: ls -1 "${BASE_FORCINGDIR}/restarts/parflow/${pfidb_m1}.out.*.nc" | tail -1"
+  echo "test: ls -1 "${BASE_RUNDIR}/restarts/parflow/${pfidb_m1}.out.*.nc" | tail -1"
   # Just for cold start!
-  #pfl_restart_file=`ls -1 ${BASE_FORCINGDIR}/restarts/parflow/${pfidb_m1}.out.*.nc | tail -1`
-  #if [ -f "${pfl_restart_file}" ]; then
-  #    cp -v ${pfl_restart_file} "${rundir}/"
-  #else
-  #    echo "ParFlow restart file (${pfl_restart_file}) does not exist --> exit"
-  #    exit 1
-  #fi
-	cp ${BASE_FORCINGDIR}/restarts/parflow/${pfidb_m1}.out.*.nc .
+  pfl_restart_file=`ls -1 ${BASE_RUNDIR}/restarts/parflow/${pfidb_m1}.out.*.nc | tail -1`
+  if [ -f "${pfl_restart_file}" ]; then
+      cp -v ${pfl_restart_file} "${rundir}/"
+  else
+      echo "ParFlow restart file (${pfl_restart_file}) does not exist --> exit"
+      exit 1
+  fi
+	cp ${BASE_RUNDIR}/restarts/parflow/${pfidb_m1}.out.*.nc .
 	ic_pressure=`ls -1 ${pfidb_m1}.out.*.nc | tail -1`
 	sed -i "s,__ICPressure__,${ic_pressure},g" coup_oas.tcl
 	sed -i "s,__pfidb__,${pfidb},g" coup_oas.tcl
@@ -188,8 +189,8 @@ for component in "${components[@]}"; do
 	sed -i "s,__nprocx_pfl_bldsva__,${PROC_PARFLOW_P},g" coup_oas.tcl
 	sed -i "s,__nprocy_pfl_bldsva__,${PROC_PARFLOW_Q},g" coup_oas.tcl
 	# Check if COMBINATION does NOT contain "clm", so that neither COSMO nor
-        # CLM ist used, wherefore ParFlow needs forcing files
-        if [[ $COMBINATION != *"clm"* ]]; then
+  # CLM ist used, wherefore ParFlow needs forcing files
+    if [[ $COMBINATION != *"clm"* ]]; then
 	  # Adjust lines if ParFlow forcing is needed
 	  evaptransfile="SpinUpForcing_ClimateMean.pfb"
     pfl_EvapTrans="ParFlow_Spinup_30yAve"
@@ -209,8 +210,11 @@ for component in "${components[@]}"; do
 	sed -i "s,__nprocx_pfl_bldsva__,${PROC_PARFLOW_P},g" ascii2pfb_SoilInd.tcl
 	sed -i "s,__nprocy_pfl_bldsva__,${PROC_PARFLOW_Q},g" ascii2pfb_SoilInd.tcl
 	tclsh ascii2pfb_SoilInd.tcl
-        srun -N 1 -n 1 tclsh coup_oas.tcl
-        #
+	sed -i "s,__nprocx_pfl_bldsva__,${PROC_PARFLOW_P},g" ascii2pfb_hetPermTen.tcl
+	sed -i "s,__nprocy_pfl_bldsva__,${PROC_PARFLOW_Q},g" ascii2pfb_hetPermTen.tcl
+	tclsh ascii2pfb_hetPermTen.tcl
+  srun -N 1 -n 1 tclsh coup_oas.tcl
+  #
 	cp ${TSMP_BINDIR}/parflow ${rundir}/
   
   else
@@ -274,9 +278,6 @@ echo "--- new_simres: $new_simres"
 mkdir -p "$new_simres/restarts"
 mkdir -p "$new_simres/log"
 
-echo "--- Moving model-log to simres/"
-cp -v ${BASE_CTRLDIR}/logs/${CaseID}_simulation.??? $new_simres/log/
-
 echo "--- Moving model-output to simres/ and restarts/"
 # looping over all component set in COMBINATION
 IFS='-' read -ra components <<< "${COMBINATION}"
@@ -290,9 +291,9 @@ for component in "${components[@]}"; do
     # -- COSMO does store the restart files in correct dir already
     # Move model-output to simres/
     cp -v ${rundir}/cosmo_out/* $new_simres/cosmo
-    # COSMO writs restart direct to ${BASE_FORCINGDIR}/restarts/cosmo/
+    # COSMO writs restart direct to ${BASE_RUNDIR}/restarts/cosmo/
     cosmoRestartFileDate=$(date -u -d "${startDate_p1}" "+%Y%m%d%H")
-    cp -v ${BASE_FORCINGDIR}/restarts/cosmo/lrfd${cosmoRestartFileDate}o $new_simres/restarts
+    cp -v ${BASE_RUNDIR}/restarts/cosmo/lrfd${cosmoRestartFileDate}o $new_simres/restarts
     check4error $? "--- ERROR while moving COSMO model output to simres-dir"
   # CLM
   elif [ "${component}" = "clm" ]; then
@@ -313,11 +314,11 @@ for component in "${components[@]}"; do
     
     # Create component subdir
 
-    cp -v ${rundir}/${clm_restart_fiel_p1} ${BASE_FORCINGDIR}/restarts/clm/
+    cp -v ${rundir}/${clm_restart_fiel_p1} ${BASE_RUNDIR}/restarts/clm/
     # Move model-output to simres/
     cp -v ${rundir}/clmoas.clm2.h?.*.nc $new_simres/clm/
     check4error $? "--- ERROR while moving CLM model output to simres-dir"
-    cp -v ${BASE_FORCINGDIR}/restarts/clm/${clm_restart_fiel_p1} $new_simres/restarts/
+    cp -v ${BASE_RUNDIR}/restarts/clm/${clm_restart_fiel_p1} $new_simres/restarts/
     check4error $? "--- ERROR while moving CLM model output to simres-dir"
   # PFL
   elif [ "${component}" = "pfl" ]; then
@@ -325,11 +326,11 @@ for component in "${components[@]}"; do
     # Create component subdir
     mkdir -p "$new_simres/parflow"
     # Save restart files for next simulation
-    pfl_restart=`ls -1 ${pfidb}.out*.nc | tail -1`
-    cp -v ${pfl_restart} ${BASE_FORCINGDIR}/restarts/parflow/
+    pfl_restart=`ls -1 ${rundir}/${pfidb}.out.?????.nc | tail -1`
+    cp -v ${pfl_restart} ${BASE_RUNDIR}/restarts/parflow/
     # Move model-output to simres/
-    cp -v ${rundir}/${pfidb}.out.*.nc $new_simres/parflow
-    cp -v ${BASE_FORCINGDIR}/restarts/parflow/${pfidb}.out.?????.nc $new_simres/restarts
+    cp -v ${rundir}/${pfidb}.out.* $new_simres/parflow
+    cp -v ${BASE_RUNDIR}/restarts/parflow/${pfidb}.out.?????.nc $new_simres/restarts
     check4error $? "--- ERROR while moving ParFlow model output to simres-dir"
   else
     echo "ERROR: unknown component ($component) --> Exit"
@@ -337,8 +338,10 @@ for component in "${components[@]}"; do
   fi
 done
 
-# Wait for all procs to finish than clean rundir
+# Wait for all procs to finish than save simres and clean rundir
 wait
+echo "--- remove write permission from all files in simres"
+find ${new_simres} -type f -exec chmod a-w {} \;
 echo "--- clean/remove rundir"
 rm -r ${rundir}
 
@@ -352,7 +355,11 @@ totalRunTime_sec=$(($scriptEndTime - $scriptStartTime))
 # https://stackoverflow.com/a/39452629
 totalRunTime=$(printf '%02dh:%02dm:%02ds\n' $((totalRunTime_sec/3600)) $((totalRunTime_sec%3600/60)) $((totalRunTime_sec%60)))
 
+echo "--- Moving TSMP log to simres/"
 cp ${TSMP_BINDIR}/log_all* ${new_simres}/log/TSMP_BuildLog.txt
+
+echo "--- Moving SLURM log to simres/"
+cp -v ${BASE_CTRLDIR}/logs/${CaseID}_simulation-??? $new_simres/log/
 
 histfile=${new_simres}/log/HISTORY.txt
 
@@ -435,7 +442,8 @@ the output of \`git diff HEAD\` is printed to \`GitDiffHead_geo.diff\`.
 ###############################################################################
 MACHINE: $(cat /etc/FZJ/systemname)
 PARTITION: ${SIM_PARTITION}
-simStatus=${SIMSTATUS} 
+simStatus: ${SIMSTATUS} 
+CaseID: ${CaseID}
 ###############################################################################
 # Total runtime: ${totalRunTime}
 ###############################################################################
