@@ -4,3 +4,6 @@
 [submodule "src/TSMP"]
 	path = src/TSMP
 	url = https://github.com/HPSCTerrSys/TSMP.git
+[submodule "ctrl/postpro/pCMORizer.f90"]
+	path = ctrl/postpro/pCMORizer.f90
+	url = https://icg4geo.icg.kfa-juelich.de/ModelSystems/WRF_tools/postpro_WRF-CMORizer.git
