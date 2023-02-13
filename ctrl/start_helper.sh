@@ -65,44 +65,82 @@ EOM
 }
 
 parallelGzip() {
-    # Idea is taken from:
-    # https://www.unix.com/unix-for-dummies-questions-and-answers/117695-gzip-parallelized.html
-    cd $2
-    DIR=$2
-    MAX_PARALLEL=$1
-    if [[ ! -d $DIR ]]; then echo "START_HELPER.sh parallelGzip: DIR does not exist --> EXIT" && exit 1; fi
-    nroffiles=$(ls $DIR|wc -w)
-    (( setsize=nroffiles/MAX_PARALLEL ))
-    # catch case if setsize / -n is less or equal 1
-    # in this case parallel execution makes no sense
-    if [ $setsize -le 1 ]; then 
-        gzip ./*
-    else
-        ls -1 $DIR/* | xargs -n $setsize | while read workset; do
-          gzip $workset&
-        done
+  MAX_PARALLEL=$1
+  shift
+  echo "MAX_PARALLEL: $MAX_PARALLEL"
+  inFiles=$@
+  echo "${inFiles[@]}"
+  # set some helper-vars
+  tmp_parallel_counter=0
+  for inFile in $inFiles
+  do
+    gzip ${inFile} &
+    # Count how many tasks are already started, and wait if MAX_PARALLEL
+    # (set to max number of available CPU) is reached.
+    (( tmp_parallel_counter++ ))
+    if [ $tmp_parallel_counter -ge $MAX_PARALLEL ]; then
+      # If MAX_PARALLEL is reached wait for all tasks to finsh before continue
+      wait
+      tmp_parallel_counter=0
     fi
-    wait
+  done
+  wait
 }
+
 parallelGunzip() {
-    # Idea is taen from:
-    # https://www.unix.com/unix-for-dummies-questions-and-answers/117695-gzip-parallelized.html
-    cd $2
-    DIR=$2
-    MAX_PARALLEL=$1
-    if [[ ! -d $DIR ]]; then echo "START_HELPER.sh parallelGunzip: DIR does not exist --> EXIT" && exit 1; fi
-    nroffiles=$(ls $DIR|wc -w)
-    (( setsize=nroffiles/MAX_PARALLEL ))
-    # catch case if setsize / -n is less or equal 1
-    # in this case parallel execution makes no sense
-    if [ $setsize -le 1 ]; then 
-        gunzip ./*
-    else
-        ls -1 $DIR/* | xargs -n $setsize | while read workset; do
-          gunzip $workset&
-        done
-        wait
+  MAX_PARALLEL=$1
+  shift
+  echo "MAX_PARALLEL: $MAX_PARALLEL"
+  inFiles=$@
+  echo "${inFiles[@]}"
+  # set some helper-vars
+  tmp_parallel_counter=0
+  for inFile in $inFiles
+  do
+    gunzip ${inFile} &
+    # Count how many tasks are already started, and wait if MAX_PARALLEL
+    # (set to max number of available CPU) is reached.
+    (( tmp_parallel_counter++ ))
+    if [ $tmp_parallel_counter -ge $MAX_PARALLEL ]; then
+      # If MAX_PARALLEL is reached wait for all tasks to finsh before continue
+      wait
+      tmp_parallel_counter=0
     fi
+  done
+  wait
+}
+
+calc_sha512sum() (
+  # Simple calculates the sha512 sum for given file.
+  # Assuming to get abs. paths to file, spliting into PATH and FILE to cd into
+  # PATH first to get proper stats in CheckSum.sha512
+  inFile=$1
+  inFilePath="${inFile%/*}"
+  inFileName="${inFile##*/}"
+  cd ${inFilePath}
+  sha512sum ${inFileName} >> "checksum.sha512"
+)
+wrap_calc_sha512sum() {
+  MAX_PARALLEL=$1
+  shift
+  echo "MAX_PARALLEL: $MAX_PARALLEL"
+  inFiles=$@
+  echo "${inFiles[@]}"
+  # set some helper-vars
+  tmp_parallel_counter=0
+  for inFile in $inFiles
+  do
+    calc_sha512sum ${inFile} &
+    # Count how many tasks are already started, and wait if MAX_PARALLEL
+    # (set to max number of available CPU) is reached.
+    (( tmp_parallel_counter++ ))
+    if [ $tmp_parallel_counter -ge $MAX_PARALLEL ]; then
+      # If MAX_PARALLEL is reached wait for all tasks to finsh before continue
+      wait
+      tmp_parallel_counter=0
+    fi
+  done
+  wait
 }
 
 checkGitStatus() {
@@ -223,4 +261,3 @@ updatePathsForCASES() {
     CaseCombination=$(git config -f ${ConfigFile} --get ${CaseID}.CASE-COMBINATION)
     export COMBINATION="${CaseCombination}"
 }
-
