@@ -1,0 +1,90 @@
+[template]
+varName:    None
+fileName:   None
+unitsOrig:  None
+unitsPlot:  None
+unitCoef:   None
+unitOffset: None
+Slices:     None
+SanityKind: None
+maskBelow:  None
+maskAbove:  None
+
+[DEFAULT]
+cmapName:   Spectral   
+
+# CLM
+[clm_RAIN]
+varName:    RAIN
+fileName:   clm/clmoas.clm2.h0.????-??-??-?????.nc
+unitsOrig:  [mm/s]
+unitsPlot:  [mm/h]
+unitCoef:   3600
+unitOffset: None
+Slices:     None
+SanityKind: mean
+maskBelow:  None
+maskAbove:  1e35
+
+[clm_SNOW]
+varName:    SNOW
+fileName:   clm/clmoas.clm2.h0.????-??-??-?????.nc
+unitsOrig:  [mm/s]
+unitsPlot:  [mm/h]
+unitCoef:   3600
+unitOffset: None
+Slices:     None
+SanityKind: mean
+maskBelow:  None
+maskAbove:  1e35
+
+[clm_TSA]
+varName:    TSA
+fileName:   clm/clmoas.clm2.h0.????-??-??-?????.nc
+unitsOrig:  [K]
+unitsPlot:  [°C]
+unitCoef:   None
+unitOffset: -275.15
+Slices:     None
+SanityKind: mean
+cmapName:   Spectral_r
+maskBelow:  None
+maskAbove:  1e35
+
+# CSOMO
+[cos_T2M]
+varName:    T_2M
+fileName:   cosmo/lffd??????????.nc
+unitsOrig:  [K]
+unitsPlot:  [°C]
+unitCoef:   None
+unitOffset: -275.15
+Slices:     None
+SanityKind: mean
+cmapName:   Spectral_r
+maskBelow:  None
+maskAbove:  None
+
+[cos_V10m]
+varName:    V_10M
+fileName:   cosmo/lffd??????????.nc
+unitsOrig:  [m/s]
+unitsPlot:  [m/s]
+unitCoef:   None
+unitOffset: None
+Slices:     None
+SanityKind: mean
+maskBelow:  None
+maskAbove:  None
+
+[cos_U10m]
+varName:    U_10M
+fileName:   cosmo/lffd??????????.nc
+unitsOrig:  [m/s]
+unitsPlot:  [m/s]
+unitCoef:   None
+unitOffset: None
+Slices:     None
+SanityKind: mean
+maskBelow:  None
+maskAbove:  None

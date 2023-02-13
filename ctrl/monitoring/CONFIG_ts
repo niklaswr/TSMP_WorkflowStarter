@@ -1,0 +1,23 @@
+[template]
+varName:    None
+fileName:   None
+unitsOrig:  None
+unitsPlot:  None
+unitCoef:   None
+unitOffset: None
+Slices:     None
+SanityKind: None
+
+[DEFAULT]
+cmapName:   Spectral   
+
+# ParFlow
+[pfl_subSurfStor_ts]
+varName:    subSurfStor
+fileName:   ParFlow_EU11_*_subSurfStor.nc
+unitsOrig:  [mm]
+unitsPlot:  [mm] 
+unitCoef:   None
+unitOffset: None
+Slices:     None
+SanityKind: mean
