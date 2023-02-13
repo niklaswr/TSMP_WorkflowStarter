@@ -19,6 +19,8 @@ module load parallel-netcdf/1.12.1
 module load cURL/7.71.1
 module load Szip/.2.1.1
 module load Python/3.8.5
+module load SciPy-Stack/2020-Python-3.8.5
+module load netcdf4-python/1.5.4-Python-3.8.5
 module load NCO/4.9.5
 module load CMake/3.18.0
 #
