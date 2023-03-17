@@ -7,3 +7,6 @@
 [submodule "ctrl/postpro/pCMORizer.f90"]
 	path = ctrl/postpro/pCMORizer.f90
 	url = https://icg4geo.icg.kfa-juelich.de/ModelSystems/WRF_tools/postpro_WRF-CMORizer.git
+[submodule "geo/TSMP_EUR-11"]
+	path = geo/TSMP_EUR-11
+	url = https://icg4geo.icg.kfa-juelich.de/Configurations/TSMP_statfiles_IBG3/TSMP_EUR-11.git
