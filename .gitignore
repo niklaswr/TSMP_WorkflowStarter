@@ -24,6 +24,9 @@ geo/**
 # ignore content of monitoring
 monitoring/**
 
+# ignore local rendered documentation
+doc/_build/**
+
 # general keeps:
 ################
 # keep .gitkeep files to keep dir-structure
