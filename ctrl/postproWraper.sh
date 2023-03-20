@@ -19,8 +19,8 @@ exe_dir="${tmp_filename%/*}"
 cd $exe_dir
 cwd=$(pwd)/postpro
 
-echo "--- source export_paths.ksh"
-source ${exe_dir}/export_paths.ksh
+echo "--- source export_paths.sh"
+source ${exe_dir}/export_paths.sh
 echo "--- source loadenvs"
 source ${cwd}/loadenvs
 

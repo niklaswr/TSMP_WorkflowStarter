@@ -13,9 +13,9 @@ simLength='1 month'  # length of one simulaiton. Has to be a valid `date`
                      # IMPORTANT!)
                      # AT THE MOMENT simLength>=1day IS NEEDED!
 NoS=1                # number of simulations 
-startDate="2020-01-01T00:00Z" # start date - is changing while simulation is
+startDate="1970-01-01T00:00Z" # start date - is changing while simulation is
                      # progressing.
-initDate="2020-01-01T00:00Z"  # init date - is fix for entre simulation 
+initDate="1970-01-01T00:00Z"  # init date - is fix for entre simulation 
                      # The format of `startDate` and `initDate` hast to follow 
 		                 # ISO norm 8601 --> https://de.wikipedia.org/wiki/ISO_8601
 		                 # This is importat to ensure `date` is working properly!
@@ -105,10 +105,10 @@ export FIN_PARTITION=${fin_PARTITION}
 export FIN_NTASKS=${fin_NTASKS}
 # Export simulation information stored in SimInfo.sh as variables:
 source ${CTRLDIR}/SimInfo.sh
-# Load export_paths.ksh
-source ${CTRLDIR}/export_paths.ksh
+# Load export_paths.sh
+source ${CTRLDIR}/export_paths.sh
 source ${BASE_CTRLDIR}/start_helper.sh
-# In case of CaseMode=true, update some paths exported via 'export_paths.ksh'
+# In case of CaseMode=true, update some paths exported via 'export_paths.sh'
 # 'updatePathsForCASES()' is located in 'start_helper.sh'
 if [ "$CaseMode" = true ]; then
     updatePathsForCASES ${BASE_CTRLDIR}/CASES.conf ${CaseID}

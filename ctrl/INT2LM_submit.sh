@@ -37,7 +37,7 @@ PROCIO_INT2LM=0
 ###############################################################################
 
 echo "DEBUG: setup environment"
-source ${CTRLDIR}/export_paths.ksh
+source ${CTRLDIR}/export_paths.sh
 source ${BASE_CTRLDIR}/start_helper.sh
 export INT2LM_BINDIR="${BASE_SRCDIR}/int2lm3.00"
 export INT2LM_EXNAME="int2lm3.00"
