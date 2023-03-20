@@ -41,7 +41,7 @@ COMBINATION="clm-cos-pfl" # Set the component model combination run run.
 
 
 CaseMode=true        # true, if running in case mode, false if not.
-CaseID="SPINUP"      # already implemented for alter use -- currently NOT used.
+CaseID="MainRun"      # already implemented for alter use -- currently NOT used.
                      # This will be needed if I implement the 'CaseMode'
 
 
