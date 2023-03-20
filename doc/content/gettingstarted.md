@@ -10,7 +10,7 @@ cd $PROJECT_DIR
 git clone --recurse-submodules https://github.com/niklaswr/TSMP_WorkflowStarter.git
 ```
 
-and export the following path to an environment variable for later use,
+and export the following path to an environment variable for later use.
 
 ``` bash
 cd $PROJECT_DIR/TSMP_WorkflowStarter
@@ -37,7 +37,7 @@ patch ${TSMP_DIR}/parflow3_2/pfsimulator/parflow_lib/solver_richards.c ${BASE_RO
 ----
 I guess not needed sinde ParFlow write .nc 
 ----
-and build the binaries
+and build the binaries.
 
 ``` bash
 cd $TSMP_DIR/bldsva
@@ -53,9 +53,11 @@ cd $BASE_ROOT/ctrl
 vi export_paths.sh
 ```
 
-Within this file change the line `rootdir="/p/scratch/cesmtst/wagner6/${expid}"` 
+Within this file change the line   
+`rootdir="/p/scratch/cesmtst/wagner6/${expid}"`   
 according to you `$PROJECT_DIR` from above. To verify `rootdir` is set properly 
-do `source $BASE_ROOT/ctrl/export_paths.sh && echo "$rootdir" && ls -l $rootdir`. 
+do   
+`source $BASE_ROOT/ctrl/export_paths.sh && echo "$rootdir" && ls -l $rootdir`.    
 You should see the following content:
 
 ```
@@ -79,9 +81,9 @@ forcing files.
 ## Provide restart files
 
 To continue a simulation, restart-files are needed to define the initial 
-state of the simulation. Since large simulations such as we are aiming for 
-(simulation period of years / several decades) are usually calculated as a 
-sequence of smaller simulations (simulation period of days / months), each 
+state of the simulation. Since large simulations (simulation period of years / 
+several decades), such as we are aiming for, are usually calculated as a 
+sequence of shorter simulations (simulation period of days / months), each 
 simulation represents a restart of the previous simulation. Therefore, restart 
 files must be provided for each component and simulation.
 
@@ -100,10 +102,10 @@ cold-start, while CLM and ParFlow always expect restart-files. So the user
 only needs to provide restart-files for ParFlow and CLM only.
 
 In this example, we do run a simulation over the EUR-11 domain for the year 
-2020, for which restart files could be taken from:
+1970, for which restart files could be taken from:
 
 ```
-/p/largedata/jibg33/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/run/restarts
+/PATH/TO/SOME/RESTART/FILES
 ``` 
 
 Do request access to the data project jjibg33 via [JuDoor](https://judoor.fz-juelich.de/login).
@@ -115,15 +117,15 @@ needs of this workflow:
 ``` bash
 cd $BASE_ROOT/rundir/MainRun/restarts
 # copy CLM restart file
-cp /p/largedata/jibg33/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/run/restarts/clm/clmoas.clm2.r.2020-01-01-00000.nc ./clm/
+cp XXXX ./clm/
 # copy ParFlow restart file
-cp /p/largedata/jibg33/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/run/restarts/parflow/cordex0.11_2019_12.out.press.00248.pfb ./parflow/
-mv ./parflow/cordex0.11_2019_12.out.press.00248.pfb ./parflow/cordex0.11_2019120100.out.press.00248.pfb
+cp XXXX ./parflow/
+mv XXXX YYYY
 ```
 **NOTE**: 
 ParFlow needs the previous model-outpt as a restart-file 
-(`2019_12.*.00248.pfb`), whereas CLM needs a special restart-file from the 
-current time-step (`2020-01-01-00000.nc`)
+(`XXXX`), whereas CLM needs a special restart-file from the 
+current time-step (`YYYY`)
 
 ## Provide forcing (boundary) files
 
@@ -144,10 +146,10 @@ $BASE_ROOT/forcing/laf_lbfd/all
 ```
 
 In this example, we do run a simulation over the EUR-11 domain for the year 
-2020, for which restart files could be taken from:
+1970, for which restart files could be taken from:
 
 ```
-/p/largedata/jibg33/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/run/laf_lbfd/
+/PATH/TO/SOME/FORCING
 ``` 
 
 Do request access to the data project jjibg33 via [JuDoor](https://judoor.fz-juelich.de/login).
@@ -157,13 +159,13 @@ all files inside, and link those files to `$BASE_ROOT/forcing/laf_lbfd/all`
 ``` bash
 # extract boundary fiels to desrired location
 cd $BASE_ROOT/forcing/laf_lbfd/
-tar -xvf /p/largedata/jibg33/tsmpforecast/ERA5Climat_EUR11_ECMWF-ERA5_analysis_FZJ-IBG3/run/laf_lbfd/2020.tar --directory ./
+tar -xvf XXX.tar --directory ./
 # uncompress boundary-files
 cd $BASE_ROOT/ctrl
-sbatch ./aux_gunzip.sh $BASE_ROOT/forcing/laf_lbfd/2020/*gz
+sbatch ./aux_gunzip.sh $BASE_ROOT/forcing/laf_lbfd/1970/*gz
 # link boundary files to all/
 cd $BASE_ROOT/forcing/laf_lbfd/all
-ln -sf ../2020/l* ./
+ln -sf ../1971/l* ./
 ```
 
 `aux_gunzip.sh` is a wrapper for running uncompromising (gunzip) in parallel 
