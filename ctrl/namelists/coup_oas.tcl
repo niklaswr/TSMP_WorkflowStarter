@@ -552,18 +552,17 @@ pfset Solver.WriteCLMBinary			                False
 #-------------------------------------------------------------------------------
 # Initial conditions: water pressure
 #-------------------------------------------------------------------------------
-pfset ICPressure.Type                           HydroStaticPatch
-pfset ICPressure.GeomNames                      domain
-pfset Geom.domain.ICPressure.Value              -0.2
-pfset Geom.domain.ICPressure.RefGeom            domain
-pfset Geom.domain.ICPressure.RefPatch           top
+#pfset ICPressure.Type                           HydroStaticPatch
+#pfset ICPressure.GeomNames                      domain
+#pfset Geom.domain.ICPressure.Value              -0.2
+#pfset Geom.domain.ICPressure.RefGeom            domain
+#pfset Geom.domain.ICPressure.RefPatch           top
 
-#pfset ICPressure.Type                    NCFile
-#pfset ICPressure.GeomNames               domain
-#pfset Geom.domain.ICPressure.FileName    "__ICPressure__"
-##pfdist    "__ICPressure__"
-#pfset Geom.domain.ICPressure.RefGeom     domain
-#pfset Geom.domain.ICPressure.RefPatch    top
+pfset ICPressure.Type                    NCFile
+pfset ICPressure.GeomNames               domain
+pfset Geom.domain.ICPressure.FileName    "__ICPressure__"
+pfset Geom.domain.ICPressure.RefGeom     domain
+pfset Geom.domain.ICPressure.RefPatch    top
 
 #-------------------------------------------------------------------------------
 # Run and Unload the ParFlow output files
