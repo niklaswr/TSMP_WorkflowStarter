@@ -31,7 +31,7 @@ pre=false            # Define which substeps (PREprocessing, SIMulation,
 sim=true             # POStprocessing, FINishing) should be run. Default is to
 pos=false            # set each substep to 'true', if one need to run individual 
 fin=false            # steps exclude other substeps by setting to 'false'
-computeAcount='jjsc39' # jjsc39, slts, esmtst
+computeAcount='slts' # jjsc39, slts, esmtst
 CTRLDIR=$(pwd)       # assuming one is executing this script from the 
                      # BASE_CTRLDIR, what is the cast most of the time
 COMBINATION="clm-cos-pfl" # Set the component model combination run run. 
