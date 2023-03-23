@@ -21,22 +21,14 @@ export BASE_ROOT=$(pwd)
 CLM, and Oasis) into `src/TSMP/`, 
 
 ``` bash
-cd ${TSMP_DIR}
+cd ${BASE_ROOT}/src/TSMP
+export TSMP_DIR=$(pwd)
 git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_src/cosmo5.01_fresh.git  cosmo5_1
 git clone -b v3.12.0 https://github.com/parflow/parflow.git                             parflow
 git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_src/clm3.5_fresh.git     clm3_5
 git clone https://icg4geo.icg.kfa-juelich.de/ModelSystems/tsmp_src/oasis3-mct.git       oasis3-mct
 ```
-----
-I guess not needed sinde ParFlow write .nc 
-----
-Patch `ParFlow` to enable writing out `et.pfb` where usually compilation with CLM is needed, but not possible with TSMP:
-``` bash
-patch ${TSMP_DIR}/parflow3_2/pfsimulator/parflow_lib/solver_richards.c ${BASE_ROOT}/ctrl/externals/ParFlowPatches/patch2writeSourceAndSinksWithoutCLM/patch_solver_richards.c
-```
-----
-I guess not needed sinde ParFlow write .nc 
-----
+
 and build the binaries.
 
 ``` bash
@@ -105,27 +97,25 @@ In this example, we do run a simulation over the EUR-11 domain for the year
 1970, for which restart files could be taken from:
 
 ```
-/PATH/TO/SOME/RESTART/FILES
+/p/project/cslts/wagner6/TempForcAndRestFileFor_TSMP_WorkflowStarter/restarts
 ``` 
 
-Do request access to the data project jjibg33 via [JuDoor](https://judoor.fz-juelich.de/login).
+If needed, do request access to the related data project via [JuDoor](https://judoor.fz-juelich.de/login).
 
-To make the restart files available, go to the restart directory, copy the 
-restart files there, and rename the ParFlow restart file according to the 
-needs of this workflow:
+To make the restart files available, go to the restart directory, and copy the 
+restart files there:
 
 ``` bash
 cd $BASE_ROOT/rundir/MainRun/restarts
 # copy CLM restart file
-cp XXXX ./clm/
+cp -r /p/project/cslts/wagner6/TempForcAndRestFileFor_TSMP_WorkflowStarter/restarts/clm ./
 # copy ParFlow restart file
-cp XXXX ./parflow/
-mv XXXX YYYY
+cp -r /p/project/cslts/wagner6/TempForcAndRestFileFor_TSMP_WorkflowStarter/restarts/parflow ./
 ```
 **NOTE**: 
-ParFlow needs the previous model-outpt as a restart-file 
-(`XXXX`), whereas CLM needs a special restart-file from the 
-current time-step (`YYYY`)
+ParFlow needs the previous model-outpt as a restart-file, whereas CLM needs a 
+special restart-file from the current time-step. This is why the date within 
+the file name is different.
 
 ## Provide forcing (boundary) files
 
@@ -139,38 +129,33 @@ information is passed to COSMO with so called ‘local analysis files’  (laf f
 short).
 
 These two types of boundary files must to be provided for each simulation and 
-are expected by the workflow to be stored under:
+are expected by the workflow under:
 
 ``` bash 
 $BASE_ROOT/forcing/laf_lbfd/all
 ```
 
 In this example, we do run a simulation over the EUR-11 domain for the year 
-1970, for which restart files could be taken from:
+1970, for which forcing files could be taken from:
 
 ```
-/PATH/TO/SOME/FORCING
+/p/project/cslts/wagner6/TempForcAndRestFileFor_TSMP_WorkflowStarter/forcing/laf_lbfd/1970
 ``` 
 
-Do request access to the data project jjibg33 via [JuDoor](https://judoor.fz-juelich.de/login).
+If needed, do request access to the data project via [JuDoor](https://judoor.fz-juelich.de/login).
 
-To properly provide these files, do extract related `.tar` archive, uncompress 
-all files inside, and link those files to `$BASE_ROOT/forcing/laf_lbfd/all`
+To properly provide these files, do copy the directory from above to your 
+workflow and link all files to `$BASE_ROOT/forcing/laf_lbfd/all`
 ``` bash
-# extract boundary fiels to desrired location
+# move to forcing dir and copy forcing files
 cd $BASE_ROOT/forcing/laf_lbfd/
-tar -xvf XXX.tar --directory ./
-# uncompress boundary-files
-cd $BASE_ROOT/ctrl
-sbatch ./aux_gunzip.sh $BASE_ROOT/forcing/laf_lbfd/1970/*gz
+cp -rv /p/project/cslts/wagner6/TempForcAndRestFileFor_TSMP_WorkflowStarter/forcing/laf_lbfd/1970 ./
 # link boundary files to all/
-cd $BASE_ROOT/forcing/laf_lbfd/all
-ln -sf ../1971/l* ./
+cd $BASE_ROOT/forcing/laf_lbfd/
+mkdir all
+cd all
+ln -sf ../1970/l* ./
 ```
-
-`aux_gunzip.sh` is a wrapper for running uncompromising (gunzip) in parallel 
-on compute node. This simply speeds up the progress of uncompromising, as each 
-year requires many boundary files, which takes a very long time on a single CPU.
 
 ## Start a simulation
 
