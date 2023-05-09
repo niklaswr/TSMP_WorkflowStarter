@@ -467,6 +467,10 @@ pfset Patch.perimeter.BCPressure.alltime.Value  0.0
  pfset Patch.perimeter.BCPressure.RefPatch      top
  pfset Patch.perimeter.BCPressure.alltime.Value -0.05
 
+# Transient EvapTrans Forcing. Used to force ParFlow standalone
+pfset NetCDF.EvapTransFileTransient __EvapTransFile__
+pfset NetCDF.EvapTrans.FileName __EvapTrans_FileName__
+
 #  TOPOGRAPHY & SLOPES IN
 #  BOTH X- & Y- DIRECTIONS
 #-------------------------------------------------------------------------------
@@ -561,6 +565,7 @@ pfset Solver.WriteCLMBinary			                False
 pfset ICPressure.Type                    NCFile
 pfset ICPressure.GeomNames               domain
 pfset Geom.domain.ICPressure.FileName    "__ICPressure__"
+#pfdist    "__ICPressure__"
 pfset Geom.domain.ICPressure.RefGeom     domain
 pfset Geom.domain.ICPressure.RefPatch    top
 

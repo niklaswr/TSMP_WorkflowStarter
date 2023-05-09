@@ -1,0 +1,42 @@
+&clm_inparm
+ caseid         = 'clmoas'
+ ctitle         = 'clmoas'
+ nsrest         =  0
+ nelapse        =  __nelapse__
+ dtime          =  900
+ start_ymd      =  __start_ymd__
+ start_tod      =  __start_tod__
+ 
+ finidat        = '__BASE_RUNDIR__/restarts/clm/__clm_restart__'
+ !finidat        = ''
+ flndtopo       = '__BASE_GEODIR__/clm/topodata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432.nc'
+ fsurdat        = '__BASE_GEODIR__/clm/surfdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432.nc'
+ fatmgrid       = '__BASE_GEODIR__/clm/griddata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432.nc'
+ fatmlndfrc     = '__BASE_GEODIR__/clm/fracdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432.nc'
+ fatmtopo       = ''
+ fpftcon        = '__BASE_GEODIR__/clm/pft-physiology.c110504'
+ offline_atmdir = '__BASE_FORCINGDIR__/clm/atm_forcing'
+ frivinp_rtm    = 'DUMMY'
+
+ hist_crtinic   = 'NONE'
+ hist_nhtfrq    =  1, 1
+ hist_mfilt     =  96, 96
+ hist_dov2xy    = .true.
+ hist_avgflag_pertape = 'A', 'A'
+ hist_empty_htapes = .true.
+! hist_fincl1 valid for all combinations
+ hist_fincl1    = 'H2OSNO','H2OSOI','SOILLIQ','FSH','FSDS','FLDS','FGR','FGEV','FCTR','FCEV','FSR','FIRA','TBOT','TSA','QFLX_RAIN_GRND','QFLX_SNOW_GRND','QFLX_EVAP_TOT','RAIN','SNOW','WIND','THBOT','QBOT', 'ZBOT'
+! hist_fincl2 valid without PLF only
+ hist_fincl2    = 'WT'
+!
+ hist_fincl3    = 'ERRSOI','ERRSEB','ERRSOL'
+ mss_irt        =  0
+ archive_dir    = ''
+ 
+ irad           =  1
+ wrtdia         = .true.
+ rest_flag      = .true. 
+ rpntpath       = '__sim_rundir__/lnd.clmoas.rpointer'
+/
+ &prof_inparm
+ /

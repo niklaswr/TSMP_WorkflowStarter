@@ -8,7 +8,7 @@
  start_tod      =  __start_tod__
  
  finidat        = '__BASE_RUNDIR__/restarts/clm/__clm_restart__'
- !finidat       = ''
+ !finidat        = ''
  flndtopo       = '__BASE_GEODIR__/clm/topodata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432.nc'
  fsurdat        = '__BASE_GEODIR__/clm/surfdata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432.nc'
  fatmgrid       = '__BASE_GEODIR__/clm/griddata_CLM_EUR-11_TSMP_FZJ-IBG3_CLMPFLDomain_444x432.nc'

@@ -3,7 +3,7 @@
 # Owner / author: Niklas WAGNER, n.wagner@fz-juelich.de
 # USAGE: 
 # >> ./$0
-# >> ./starter_new.sh
+# >> ./starter.sh
 
 ###############################################################################
 #### Adjust according to your need BELOW
@@ -24,34 +24,34 @@ dateString='+%Y%m%d%H' # The date string used to name simulation results etc.
 dependency=3556111   # JOBID to depend the following jobs at
                      # if set JOBID is below latest JOBID the job starts without
 		                 # dependency automatically
-simPerJob=5          # number of simulaitons to run within one job (less queuing 
+simPerJob=1          # number of simulaitons to run within one job (less queuing 
                      # time?)
                      # -> 6: run 6 simulaitons within one big job
 pre=false            # Define which substeps (PREprocessing, SIMulation, 
 sim=true             # POStprocessing, FINishing) should be run. Default is to
-pos=false            # set each substep to 'true', if one need to run individual 
-fin=false            # steps exclude other substeps by setting to 'false'
-computeAcount='slts' # jjsc39, slts, esmtst
+pos=true            # set each substep to 'true', if one need to run individual 
+fin=true            # steps exclude other substeps by setting to 'false'
+computeAcount='jjsc39' # jjsc39, slts, esmtst
 CTRLDIR=$(pwd)       # assuming one is executing this script from the 
                      # BASE_CTRLDIR, what is the cast most of the time
-COMBINATION="clm-cos-pfl" # Set the component model combination run run. 
+COMBINATION="clm3-cos5-pfl" # Set the component model combination run run. 
                      # "cos-clm-pfl" is fully coupled.
 		                 # IMPORTANT if CaseMode=true (below) COMBINATION is 
 		                 # overwritten by the individual setting in CASE.conf !
 
 
 CaseMode=true        # true, if running in case mode, false if not.
-CaseID="MainRun"      # already implemented for alter use -- currently NOT used.
-                     # This will be needed if I implement the 'CaseMode'
-
+CaseID="MainRun"     # Which case to run? Cases are defined in ctrl/CASES.conf
+                     # Available are: "ActiveLakes", "HetTen", "NoPfsol", 
+                     #   "TestHincrad05", "SeepageFace", "SeepageFaceAndHetTen"
 
 simStatus="test"     # supported are "test" and "prod"
 # PROC (processor) distribution of individual component models
 PROC_COSMO_X=16
 PROC_COSMO_Y=24
-PROC_PARFLOW_P=12
-PROC_PARFLOW_Q=12
-PROC_CLM=48
+PROC_PARFLOW_P=14
+PROC_PARFLOW_Q=14
+PROC_CLM=60
 # def SBATCH for prepro
 pre_NODES=1
 pre_NTASKS=1
@@ -63,23 +63,23 @@ pre_MAILTYPE=NONE
 # sim_NODES and sim_NTASKS are set automatically based on
 # PROC_* further below.
 sim_NTASKSPERNODE=128 # 128, 48 
-sim_WALLCLOCK=1:59:00
+sim_WALLCLOCK=23:59:00
 sim_PARTITION=dc-cpu #dc-cpu, mem192, batch, esm
-sim_MAILTYPE=NONE
+sim_MAILTYPE=ALL
 # def SBATCH for postpro
 pos_NODES=1
-pos_NTASKS=1
-pos_NTASKSPERNODE=1
-pos_WALLCLOCK=01:59:00
-pos_PARTITION=dc-cpu-devel
-pos_MAILTYPE=NONE
+pos_NTASKS=128
+pos_NTASKSPERNODE=128
+pos_WALLCLOCK=04:59:00
+pos_PARTITION=dc-cpu
+pos_MAILTYPE=FAIL
 # def SBATCH for finishing
 fin_NODES=1
-fin_NTASKS=48
-fin_NTASKSPERNODE=48
+fin_NTASKS=128
+fin_NTASKSPERNODE=128
 fin_WALLCLOCK=23:59:00
 fin_PARTITION=dc-cpu
-fin_MAILTYPE=NONE
+fin_MAILTYPE=FAIL
 ###############################################################################
 #### Adjust according to your need ABOVE
 ###############################################################################
@@ -105,17 +105,17 @@ export FIN_PARTITION=${fin_PARTITION}
 export FIN_NTASKS=${fin_NTASKS}
 # Export simulation information stored in SimInfo.sh as variables:
 source ${CTRLDIR}/SimInfo.sh
-# Load export_paths.sh
-source ${CTRLDIR}/export_paths.sh
+# Load export_paths.ksh
+source ${CTRLDIR}/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
-# In case of CaseMode=true, update some paths exported via 'export_paths.sh'
+# In case of CaseMode=true, update some paths exported via 'export_paths.ksh'
 # 'updatePathsForCASES()' is located in 'start_helper.sh'
 if [ "$CaseMode" = true ]; then
     updatePathsForCASES ${BASE_CTRLDIR}/CASES.conf ${CaseID}
 fi
 export COMBINATION=${COMBINATION}
-TSMPbuild="JURECA_3.1.0MCT_${COMBINATION}" # The TSMP build name.
-#TSMPbuild="JUWELS_3.1.0MCT_${COMBINATION}" # The TSMP build name.
+TSMPbuild="JURECA_${COMBINATION}" # The TSMP build name.
+#TSMPbuild="JUWELS_${COMBINATION}" # The TSMP build name.
                      # This name is automatically created during the TSMP 
 		     # builing step (compilation) and typically consists of
 		     # JSCMACHINE_TSMPVERSION_COMBINATION. One can look up
@@ -138,11 +138,11 @@ sim_NTASKS=0
 IFS='-' read -ra components <<< "${COMBINATION}"
 for component in "${components[@]}"; do
   # COSMO
-  if [ "${component}" = "cos" ]; then
+  if [[ "${component}" == cos? ]]; then
     sim_NTASKS=$(( ($PROC_COSMO_X*$PROC_COSMO_Y) + $sim_NTASKS ))
-  elif [ "${component}" = "clm" ]; then
+  elif [[ "${component}" == clm? ]]; then
     sim_NTASKS=$(( $PROC_CLM + $sim_NTASKS ))
-  elif [ "${component}" = "pfl" ]; then
+  elif [[ "${component}" == pfl ]]; then
     sim_NTASKS=$(( ($PROC_PARFLOW_P*$PROC_PARFLOW_Q) + $sim_NTASKS ))
   else
     echo "ERROR: unknown component ($component) --> Exit"

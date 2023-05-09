@@ -189,6 +189,7 @@ diag = sloth.diagnostics.Diagnostics.Diagnostics(Mask=mask,
 print(f'DEBUG: start calculating lvl-1')
 times            = []
 wtd              = []
+overlandFlow     = []
 surfStor         = []
 subSurfStor      = []
 saturSubSurfStor = []
@@ -214,11 +215,16 @@ for count, pressureFile in enumerate(pressureFiles):
     gwb_mask, wtd_z_index = sloth.analysis.get_3Dgroundwaterbody_mask(tmp_satur)
     # Get surface pressure
     surfPress = diag.TopLayerPressure(press)
+    # Calculate overlandFlow in [L^2/T]
+    tmp_qx, tmp_qy = diag.OverlandFlow(surfPress)
+    # [L^2/T] --> [L^3/T]
+    tmp_overlandFlow = ht.absolute(tmp_qx*dx) + ht.absolute(tmp_qy*dy)
     # Calculate subsurface storage and convert to units of [L] 
     tmp_subSurfStor = diag.SubsurfaceStorage(press, tmp_satur)
     tmp_subSurfStor = tmp_subSurfStor / (dx*dy)
 
     wtd.append(sloth.analysis.calc_wtd(press=press, cellDepths=dz*Dzmult))
+    overlandFlow.append(tmp_overlandFlow)
     subSurfStor.append(tmp_subSurfStor)
     saturSubSurfStor.append(post.calc_ssss(sss=tmp_subSurfStor, 
         press_t=press, poro=porosity, gwb_mask=gwb_mask, 
@@ -235,6 +241,10 @@ wtd_ht              = ht.stack(wtd, axis=0)
 wtd                 = wtd_ht.numpy()
 print(f'Now Np: wtd.shape: {wtd.shape}')
 del wtd_ht
+overlandFlow_ht     = ht.stack(overlandFlow, axis=0)
+overlandFlow        = overlandFlow_ht.numpy()
+print(f'Now Np: overlandFlow.shape: {overlandFlow.shape}')
+del overlandFlow_ht
 surfStor_ht         = ht.stack(surfStor, axis=0)
 surfStor            = surfStor_ht.numpy()
 print(f'Now Np: surfStor.shape: {surfStor.shape}')
@@ -289,6 +299,7 @@ print(f'DEBUG: mask lakes and sea')
 # Assuming all variables does have the same dim (t,y,x) (t=1, but anyway)
 llsm_b           = np.broadcast_to(LLSM, wtd.shape )
 wtd              = np.ma.masked_where((llsm_b < 2), wtd)
+overlandFlow     = np.ma.masked_where((llsm_b < 2), overlandFlow)
 surfStor         = np.ma.masked_where((llsm_b < 2), surfStor)
 subSurfStor      = np.ma.masked_where((llsm_b < 2), subSurfStor)
 saturSubSurfStor = np.ma.masked_where((llsm_b < 2), saturSubSurfStor)
@@ -329,13 +340,46 @@ with nc.Dataset(netCDFFileName, 'a') as nc_file:
     ncTime[...] = times[...]
 
 ###############################################################################
+#### overlandFlow
+###############################################################################
+saveFile = f'{outDir}/{outPrepandName}_overlandFlow.nc'
+if not os.path.exists(f'{outDir}'):
+    os.makedirs(f'{outDir}')
+
+description_str = [f'overlandFlow based on ParFlow output (post-processed variable)',
+                ]
+description_str = ' '.join(description_str)
+netCDFFileName = sloth.IO.createNetCDF(saveFile, domain=griddesFile,
+        calcLatLon=True, timeUnit=timeUnit, timeCalendar=timeCalendar,
+        author='Niklas WAGNER', contact='n.wagner@fz-juelich.de',
+        institution='FZJ - IBG-3', 
+        history=f'Created: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")}',
+        description=description_str)
+
+with nc.Dataset(netCDFFileName, 'a') as nc_file:
+    # add some global attributes to the created netCDF file
+    for name, value in globAttrs.items():
+        setattr(nc_file, name, value)
+
+    ncVar = nc_file.createVariable('overlandFlow', 'f8', ('time', 'rlat', 'rlon',),
+                                        fill_value=-9999, zlib=True)
+    ncVar.standard_name = 'overlandFlow'
+    ncVar.long_name = 'overlandFlow'
+    ncVar.units ='m^3/h'
+    ncVar.grid_mapping = 'rotated_pole'
+    ncVar[...] = overlandFlow[...]
+
+    ncTime = nc_file.variables['time']
+    ncTime[...] = times[...]
+
+###############################################################################
 #### Surface Storage
 ###############################################################################
 saveFile = f'{outDir}/{outPrepandName}_surfStor.nc'
 if not os.path.exists(f'{outDir}'):
     os.makedirs(f'{outDir}')
 
-description_str = [f'Surface Storage based on ParFlow',
+description_str = [f'Surface Storage based on ParFlow (post-processed variable)',
                 ]
 description_str = ' '.join(description_str)
 netCDFFileName = sloth.IO.createNetCDF(saveFile, domain=griddesFile,
@@ -368,7 +412,7 @@ saveFile = f'{outDir}/{outPrepandName}_subSurfStor.nc'
 if not os.path.exists(f'{outDir}'):
     os.makedirs(f'{outDir}')
 
-description_str = [f'Subsurface Storage based on ParFlow',
+description_str = [f'Subsurface Storage based on ParFlow (post-processed variable)',
                 ]
 description_str = ' '.join(description_str)
 netCDFFileName = sloth.IO.createNetCDF(saveFile, domain=griddesFile,
@@ -401,7 +445,7 @@ saveFile = f'{outDir}/{outPrepandName}_saturSubSurfStor.nc'
 if not os.path.exists(f'{outDir}'):
     os.makedirs(f'{outDir}')
 
-description_str = [f'Saturated Subsurface Storage based on ParFlow',
+description_str = [f'Saturated Subsurface Storage based on ParFlow (post-processed variable)',
                 ]
 description_str = ' '.join(description_str)
 netCDFFileName = sloth.IO.createNetCDF(saveFile, domain=griddesFile,
@@ -434,7 +478,7 @@ saveFile = f'{outDir}/{outPrepandName}_subSurfRunoff.nc'
 if not os.path.exists(f'{outDir}'):
     os.makedirs(f'{outDir}')
 
-description_str = [f'Subsurface Runoff based on ParFlow',
+description_str = [f'Subsurface Runoff based on ParFlow (post-processed variable)',
                 ]
 description_str = ' '.join(description_str)
 netCDFFileName = sloth.IO.createNetCDF(saveFile, domain=griddesFile,

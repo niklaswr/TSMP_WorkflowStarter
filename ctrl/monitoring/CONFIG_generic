@@ -88,3 +88,15 @@ Slices:     None
 SanityKind: mean
 maskBelow:  None
 maskAbove:  None
+
+[cos_TOTPREC]
+varName:    TOT_PREC
+fileName:   cosmo/lffd??????????.nc
+unitsOrig:  [kg m^-2]
+unitsPlot:  [kg m^-2]
+unitCoef:   None
+unitOffset: None
+Slices:     None
+SanityKind: sum
+maskBelow:  None
+maskAbove:  None

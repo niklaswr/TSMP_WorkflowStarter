@@ -62,7 +62,7 @@ for component in "${components[@]}"; do
   ##############################################################################
   # COSMO
   ##############################################################################
-  if [ "${component}" = "cos" ]; then
+  if [[ "${component}" == cos? ]]; then
     echo "--- -- - cos"
     echo "DEBUG: Create subdir within ToPostPro"
     mkdir -vp ${ToPostProDir}/cosmo_out
@@ -73,7 +73,7 @@ for component in "${components[@]}"; do
   ##############################################################################
   # CLM
   ##############################################################################
-  elif [ "${component}" = "clm" ]; then
+  elif [[ "${component}" == clm? ]]; then
     echo "--- -- - clm"
     echo "DEBUG: Create subdir within ToPostPro"
     mkdir -vp ${ToPostProDir}/clm_out
@@ -84,7 +84,7 @@ for component in "${components[@]}"; do
   ##############################################################################
   # ParFlow
   ##############################################################################
-  elif [ "${component}" = "pfl" ]; then
+  elif [[ "${component}" == pfl ]]; then
     echo "--- -- - pfl"
     echo "DEBUG: Create subdir within ToPostPro"
     mkdir -vp ${ToPostProDir}/parflow_out
@@ -237,6 +237,11 @@ python monitoring_ts.py \
 	--dataRootDir ${ToPostProDir}/parflow_out \
   --tmpDataDir ${BASE_MONITORINGDIR} \
 	--saveDir ${newMonitoringDir}
+python monitoring_ts_prud.py \
+  --configFile ./CONFIG_ts_prud \
+  --dataRootDir ${ToPostProDir}/parflow_out \
+  --tmpDataDir ${BASE_MONITORINGDIR} \
+  --saveDir ${newMonitoringDir}
 python monitoring_generic.py \
   --configFile CONFIG_generic \
   --dataRootDir ${SimresDir} \

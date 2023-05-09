@@ -103,9 +103,10 @@ echo "--- -- copying binaries, geo files, and namlists for"
 IFS='-' read -ra components <<< "${COMBINATION}"
 for component in "${components[@]}"; do
   # COSMO
-  if [ "${component}" = "cos" ]; then
+  if [[ "${component}" == cos? ]]; then
 	echo "--- -- - cos"
 	mkdir -vp ${rundir}/cosmo_out
+  mkdir -vp ${BASE_RUNDIR}/restarts/cosmo
 	cp ${BASE_NAMEDIR}/INPUT_* ${rundir}/
 	sed -i "s,__hstart__,${hstart},g" INPUT_IO
 	sed -i "s,__hstop__,${hstop},g" INPUT_IO
@@ -125,7 +126,7 @@ for component in "${components[@]}"; do
 	cp ${TSMP_BINDIR}/lmparbin_pur ${rundir}/
 
   # CLM
-  elif [ "${component}" = "clm" ]; then
+  elif [[ "${component}" == clm? ]]; then
 	echo "--- -- - clm"
 	cp ${BASE_NAMEDIR}/lnd.stdin ${rundir}/
 	nelapse=$((numHours*3600/900+1))
@@ -159,7 +160,7 @@ for component in "${components[@]}"; do
 	cp ${TSMP_BINDIR}/clm ${rundir}/
 
   # ParFlow
-  elif [ "${component}" = "pfl" ]; then
+  elif [[ "${component}" == pfl ]]; then
 	echo "--- -- - pfl"
         # Export PARFLOW_DIR, which is equal to TSMP_BINDIR, but needed
         # by ParFlow as PARFLOW_DIR
@@ -190,18 +191,17 @@ for component in "${components[@]}"; do
 	sed -i "s,__nprocy_pfl_bldsva__,${PROC_PARFLOW_Q},g" coup_oas.tcl
 	# Check if COMBINATION does NOT contain "clm", so that neither COSMO nor
   # CLM ist used, wherefore ParFlow needs forcing files
-    if [[ $COMBINATION != *"clm"* ]]; then
+  if [[ $COMBINATION != *"clm"* ]]; then
 	  # Adjust lines if ParFlow forcing is needed
-	  evaptransfile="SpinUpForcing_ClimateMean.pfb"
-    pfl_EvapTrans="ParFlow_Spinup_30yAve"
-	  cp -v ${BASE_FORCINGDIR}/${pfl_EvapTrans}/${evaptransfile} ${rundir}/
-          sed -i "s,__EvapTransFile__,"True",g" coup_oas.tcl
-          sed -i "s,__EvapTrans_FileName__,"${evaptransfile}",g" coup_oas.tcl
-        else
-	  # Remove lines if no ParFlow forcing is needed
+	  evaptransfile="ParFlow_EvapTransFile_${formattedStartDate}.nc"
+	  cp -v ${BASE_FORCINGDIR}/ParFlow_EvapTransFile/${evaptransfile} ${rundir}/
+    sed -i "s,__EvapTransFile__,"True",g" coup_oas.tcl
+    sed -i "s,__EvapTrans_FileName__,"${evaptransfile}",g" coup_oas.tcl
+	# Remove lines if no ParFlow forcing is needed
+  else
 	  sed -i '/__EvapTransFile__/d' coup_oas.tcl
 	  sed -i '/__EvapTrans_FileName__/d' coup_oas.tcl
-        fi
+  fi
 
 	echo "--- execute ParFlow distributeing tcl-scripts "
 	sed -i "s,__nprocx_pfl_bldsva__,${PROC_PARFLOW_P},g" ascii2pfb_slopes.tcl
@@ -234,26 +234,26 @@ sed -i "s,__runTime__,${runTime},g" namcouple
 # Prepare slm_multiprog_mapping.conf
 # prviding information which component to run at which CPUs
 ################################################################################
-if [ "$COMBINATION" = "clm-cos-pfl" ]; then
+if [[ "$COMBINATION" == clm?-cos?-pfl ]]; then
 	get_mappingConf ./slm_multiprog_mapping.conf \
 		$((${PROC_COSMO_X} * ${PROC_COSMO_Y})) "./lmparbin_pur" \
 		$((${PROC_PARFLOW_P} * ${PROC_PARFLOW_Q})) "./parflow ${pfidb}" \
 		${PROC_CLM} "./clm"
-elif [ "$COMBINATION" = "clm-pfl" ]; then
+elif [[ "$COMBINATION" == clm?-pfl ]]; then
 	get_mappingConf ./slm_multiprog_mapping.conf \
 		$((${PROC_PARFLOW_P} * ${PROC_PARFLOW_Q})) "./parflow ${pfidb}" \
 		${PROC_CLM} "./clm"
-elif [ "$COMBINATION" = "clm-cos" ]; then
+elif [[ "$COMBINATION" == clm?-cos? ]]; then
 	get_mappingConf ./slm_multiprog_mapping.conf \
 		$((${PROC_COSMO_X} * ${PROC_COSMO_Y})) "./lmparbin_pur" \
 		${PROC_CLM} "./clm"
-elif [ "$COMBINATION" = "cos" ]; then
+elif [[ "$COMBINATION" == cos? ]]; then
 	get_mappingConf ./slm_multiprog_mapping.conf \
 		$((${PROC_COSMO_X} * ${PROC_COSMO_Y})) "./lmparbin_pur" 
-elif [ "$COMBINATION" = "clm" ]; then
+elif [[ "$COMBINATION" == clm? ]]; then
 	get_mappingConf ./slm_multiprog_mapping.conf \
 		${PROC_CLM} "./clm"
-elif [ "$COMBINATION" = "pfl" ]; then
+elif [[ "$COMBINATION" == pfl ]]; then
 	get_mappingConf ./slm_multiprog_mapping.conf \
     $((${PROC_PARFLOW_P} * ${PROC_PARFLOW_Q})) "./parflow ${pfidb}"
 fi
@@ -283,10 +283,11 @@ echo "--- Moving model-output to simres/ and restarts/"
 IFS='-' read -ra components <<< "${COMBINATION}"
 for component in "${components[@]}"; do
   # COSMO
-  if [ "${component}" = "cos" ]; then
+  if [[ "${component}" == cos? ]]; then
     echo "--- - COSMO"
     # Create component subdir
     mkdir -p "$new_simres/cosmo"
+    mkdir -p -v ${BASE_RUNDIR}/restarts/cosmo
     # Save restart files for next simulation
     # -- COSMO does store the restart files in correct dir already
     # Move model-output to simres/
@@ -296,10 +297,11 @@ for component in "${components[@]}"; do
     cp -v ${BASE_RUNDIR}/restarts/cosmo/lrfd${cosmoRestartFileDate}o $new_simres/restarts
     check4error $? "--- ERROR while moving COSMO model output to simres-dir"
   # CLM
-  elif [ "${component}" = "clm" ]; then
+  elif [[ "${component}" == clm? ]]; then
     echo "--- - CLM"
     # Create component subdir
     mkdir -p "$new_simres/clm"
+    mkdir -p -v ${BASE_RUNDIR}/restarts/clm
 
     # Do use `-` prefix for date string to avoid below error:
     # ERROR: value too great for base (error token is "09")
@@ -321,10 +323,11 @@ for component in "${components[@]}"; do
     cp -v ${BASE_RUNDIR}/restarts/clm/${clm_restart_fiel_p1} $new_simres/restarts/
     check4error $? "--- ERROR while moving CLM model output to simres-dir"
   # PFL
-  elif [ "${component}" = "pfl" ]; then
+  elif [[ "${component}" == pfl ]]; then
     echo "--- - PFL"
     # Create component subdir
     mkdir -p "$new_simres/parflow"
+    mkdir -p -v ${BASE_RUNDIR}/restarts/parflow
     # Save restart files for next simulation
     pfl_restart=`ls -1 ${rundir}/${pfidb}.out.?????.nc | tail -1`
     cp -v ${pfl_restart} ${BASE_RUNDIR}/restarts/parflow/
@@ -332,6 +335,8 @@ for component in "${components[@]}"; do
     cp -v ${rundir}/${pfidb}.out.* $new_simres/parflow
     cp -v ${BASE_RUNDIR}/restarts/parflow/${pfidb}.out.?????.nc $new_simres/restarts
     check4error $? "--- ERROR while moving ParFlow model output to simres-dir"
+    # Move *kinsol.log to simres/log
+    cp -v ${rundir}/*out.kinsol.log ${new_simres}/log/
   else
     echo "ERROR: unknown component ($component) --> Exit"
     exit 1
@@ -356,7 +361,8 @@ totalRunTime_sec=$(($scriptEndTime - $scriptStartTime))
 totalRunTime=$(printf '%02dh:%02dm:%02ds\n' $((totalRunTime_sec/3600)) $((totalRunTime_sec%3600/60)) $((totalRunTime_sec%60)))
 
 echo "--- Moving TSMP log to simres/"
-cp ${TSMP_BINDIR}/log_all* ${new_simres}/log/TSMP_BuildLog.txt
+TSMPLogFile=`ls -rt ${TSMP_BINDIR}/log_all* | tail -1`
+cp ${TSMPLogFile} ${new_simres}/log/TSMP_BuildLog.txt
 
 echo "--- Moving SLURM log to simres/"
 cp -v ${BASE_CTRLDIR}/logs/${CaseID}_simulation-??? $new_simres/log/
@@ -449,8 +455,6 @@ CaseID: ${CaseID}
 ###############################################################################
 EOM
 check4error $? "--- ERROR while creating HISTORY.txt"
-
-echo "ready: TSMP simulation for ${formattedStartDate} is complete!" > ${rundir}/ready.txt
 
 echo "###################################################"
 echo "STOP Logging ($(date)):"

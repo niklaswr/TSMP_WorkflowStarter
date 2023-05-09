@@ -171,44 +171,44 @@ checkGitStatus() {
       echo "${red}Are you aware of this?${reset}"
       echo "${red}Changes not tracked by git are not part of HISTORY.txt${reset}"
     fi
-    # Further we want a tag at the current commit (git tag --points-at HEAD)
-    # to make sure we find this commit again, e.g. in case a rebase was
-    # performed which does change the commit-hash
-    if [ -z "$(git tag --points-at HEAD)" ]; then
-      # No tag at current commit found --> set a tag
-
-      # Fetch current version / tag
-      local version=$(git describe --abbrev=0 --tags)
-      # Remove the v in the tag v2.1.0 for example
-      local version=${version:1}
-      # Build array from version string.
-      local a=( ${version//./ } )
-      # Increase pacth numver in vMAJOR.MINOR.PATCH
-      ((a[2]++))
-      # Def new version / tag
-      local next_version="${a[0]}.${a[1]}.${a[2]}"
-      # Set new version / tag
-      git tag -a "v$next_version" -m "set by workflow"
-    fi
-    # Further we want a tag at the current commit (git tag --points-at HEAD)
-    # to make sure we find this commit again, e.g. in case a rebase was
-    # performed which does change the commit-hash
-    if [ -z "$(git tag --points-at HEAD)" ]; then
-      # No tag at current commit found --> set a tag
-
-      # Fetch current version / tag
-      local version=$(git describe --abbrev=0 --tags)
-      # Remove the v in the tag v2.1.0 for example
-      local version=${version:1}
-      # Build array from version string.
-      local a=( ${version//./ } )
-      # Increase pacth numver in vMAJOR.MINOR.PATCH
-      ((a[2]++))
-      # Def new version / tag
-      local next_version="${a[0]}.${a[1]}.${a[2]}"
-      # Set new version / tag
-      git tag -a "v$next_version" -m "set by workflow"
-    fi
+    ## Further we want a tag at the current commit (git tag --points-at HEAD)
+    ## to make sure we find this commit again, e.g. in case a rebase was
+    ## performed which does change the commit-hash
+    #if [ -z "$(git tag --points-at HEAD)" ]; then
+    #  # No tag at current commit found --> set a tag
+    #
+    #  # Fetch current version / tag
+    #  local version=$(git describe --abbrev=0 --tags)
+    #  # Remove the v in the tag v2.1.0 for example
+    #  local version=${version:1}
+    #  # Build array from version string.
+    #  local a=( ${version//./ } )
+    #  # Increase pacth numver in vMAJOR.MINOR.PATCH
+    #  ((a[2]++))
+    #  # Def new version / tag
+    #  local next_version="${a[0]}.${a[1]}.${a[2]}"
+    #  # Set new version / tag
+    #  git tag -a "v$next_version" -m "set by workflow"
+    #fi
+    ## Further we want a tag at the current commit (git tag --points-at HEAD)
+    ## to make sure we find this commit again, e.g. in case a rebase was
+    ## performed which does change the commit-hash
+    #if [ -z "$(git tag --points-at HEAD)" ]; then
+    #  # No tag at current commit found --> set a tag
+    #
+    #  # Fetch current version / tag
+    #  local version=$(git describe --abbrev=0 --tags)
+    #  # Remove the v in the tag v2.1.0 for example
+    #  local version=${version:1}
+    #  # Build array from version string.
+    #  local a=( ${version//./ } )
+    #  # Increase pacth numver in vMAJOR.MINOR.PATCH
+    #  ((a[2]++))
+    #  # Def new version / tag
+    #  local next_version="${a[0]}.${a[1]}.${a[2]}"
+    #  # Set new version / tag
+    #  git tag -a "v$next_version" -m "set by workflow"
+    #fi
   else
     echo "###################"
     echo "You are running with an unsupported simulation status!"
@@ -233,11 +233,11 @@ updatePathsForCASES() {
     # Version: 2022-06-01
     # Description:
     # This function does update the paths which are exported as environmental 
-    # variables within the export_paths.sh. The update is needed if the 
+    # variables within the export_paths.ksh. The update is needed if the 
     # workflow is running in CaseMode to ensure all simulations are 
     # running within its own sub directory to avoid interference.
     # IMPORTANT
-    # Make sure this is called after 'export_paths.sh' is sourced
+    # Make sure this is called after 'export_paths.ksh' is sourced
     ConfigFile=$1
     CaseID=$2
     CASENAMEDIR=$(git config -f ${ConfigFile} --get ${CaseID}.CASE-NAMEDIR)

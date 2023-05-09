@@ -37,7 +37,7 @@ PROCIO_INT2LM=0
 ###############################################################################
 
 echo "DEBUG: setup environment"
-source ${CTRLDIR}/export_paths.sh
+source ${CTRLDIR}/export_paths.ksh
 source ${BASE_CTRLDIR}/start_helper.sh
 export INT2LM_BINDIR="${BASE_SRCDIR}/int2lm3.00"
 export INT2LM_EXNAME="int2lm3.00"
@@ -120,7 +120,7 @@ echo "DEBUG: modify namelist (sed inserts etc.)"
 sed "s,__start_date__,${int2lm_start_date},g" -i ${rundir}/INPUT
 sed "s,__init_date__,${int2lm_start_date},g" -i ${rundir}/INPUT
 sed "s,__hstop__,${int2lm_hstop},g" -i ${rundir}/INPUT
-sed "s,__lm_ext_dir__,${BASE_GEODIR}/TSMP_EU11/static/int2lm,g" -i ${rundir}/INPUT
+sed "s,__lm_ext_dir__,${BASE_GEODIR}/TSMP_EUR-11/static/int2lm,g" -i ${rundir}/INPUT
 sed "s,__in_ext_dir__,${BASE_FORCINGDIR}/ERA5raw/INT2LM_inext,g" -i ${rundir}/INPUT
 sed "s,__in_cat_dir__,${BASE_FORCINGDIR}/ERA5raw/${y0},g" -i ${rundir}/INPUT
 sed "s,__lm_cat_dir__,${int2lm_LmCatDir},g" -i ${rundir}/INPUT
